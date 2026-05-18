@@ -6,6 +6,7 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 ```text
 /issue new <title> --feature <name> [--milestone <label>] [--label <label>]
+/issue new <title> --bug [--label <label>]
 /issue list [--milestone <name>] [--state open|closed]
 /issue show <#>
 /issue do <#>       구현 시작
@@ -19,21 +20,31 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 ### new — GitHub Issue 생성
 
+**Feature 태스크**:
+
 ```text
 /issue new "ServiceLocator 구현" --feature core_foundation --milestone "M1 · Core Foundation"
 ```
 
-**동작**:
-
-1. `issues/features/<name>/spec.md`를 읽어 issue body 초안 작성:
+1. `features/<name>/spec.md`를 읽어 issue body 초안 작성:
    ```
    Feature: <name>
 
    <spec.md 목표 섹션>
 
-   관련 설계 문서: issues/features/<name>/
+   관련 설계 문서: features/<name>/
    ```
 2. `gh issue create --title <title> --body <body> --milestone <milestone> --label <label>` 실행
+3. 생성된 issue 번호(`#N`)를 출력
+
+**버그 리포트**:
+
+```text
+/issue new "SceneService 씬 언로드 누락" --bug
+```
+
+1. 재현 조건·기대 동작·실제 동작을 사용자에게 확인한다.
+2. `gh issue create --title <title> --body <body> --label bug` 실행
 3. 생성된 issue 번호(`#N`)를 출력
 
 ---
@@ -69,7 +80,7 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 **동작**:
 
 1. `gh issue view <#> --json title,body,milestone,labels` 로 컨텍스트 수집
-2. body에서 `Feature: <name>` 파싱 → `issues/features/<name>/spec.md`, `decisions.md` 읽기
+2. body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기
 3. 아래 프롬프트로 **Agent tool (`model='haiku'`)** 에 위임:
 
    ```text
@@ -111,7 +122,7 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 **동작**:
 
 1. `gh issue view <#> --json title,body` 로 Issue 컨텍스트 수집
-2. body에서 `Feature: <name>` 파싱 → `issues/features/<name>/decisions.md` 읽기
+2. body에서 `Feature: <name>` 파싱 → `features/<name>/decisions.md` 읽기
 3. `.claude/docs/style/coding-style.md` 읽기
 4. `git diff HEAD~1` 실행 결과 수집
 5. 아래 프롬프트로 **Agent tool (`model='opus'`)** 에 위임:

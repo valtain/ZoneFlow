@@ -13,7 +13,7 @@
 ## 폴더 구조
 
 ```text
-issues/features/<name>/
+features/<name>/
   spec.md          설계 스펙 (목표, 컴포넌트, 데이터 흐름)
   decisions.md     주요 설계 결정과 이유
   testcases.md     검증 시나리오 체크리스트
@@ -31,7 +31,7 @@ issues/features/<name>/
 
 **동작**:
 
-1. `issues/features/<name>/` 폴더 생성
+1. `features/<name>/` 폴더 생성
 2. 아래 3개 파일을 빈 템플릿으로 생성
 
 **spec.md 템플릿**:
@@ -66,7 +66,7 @@ issues/features/<name>/
 3. `BACKLOG.md` Features 테이블에 행 추가:
 
 ```text
-| <name> | issues/features/<name>/ |
+| <name> | features/<name>/ |
 ```
 
 ---
@@ -79,7 +79,7 @@ issues/features/<name>/
 
 ### show — feature 상세 출력
 
-`issues/features/<name>/spec.md`와 `decisions.md`를 읽어 요약 출력한다.
+`features/<name>/spec.md`와 `decisions.md`를 읽어 요약 출력한다.
 
 ---
 

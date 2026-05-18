@@ -39,10 +39,14 @@
 | 커맨드 | Hint | 비고 |
 | --- | --- | --- |
 | `/bridge` | Low | 맥락 압축, 파일 읽기 중심 |
+| `/feature` | Low | 설계 폴더 생성·목록·요약 출력 |
 | `/git-commit` | Low | diff 읽기 + 메시지 작성 |
-| `/init` | Medium | 코드베이스 전체 탐색 포함 |
-| `/review` | Medium | 변경사항 분석 + 의견 제시 |
-| `/security-review` | High | 취약점 분석, 판단 요구 높음 |
-| `/simplify` | Medium | 변경 코드 품질·효율성 검토 및 수정 |
+| `/issue new / list / show / close` | Low | gh 명령 실행 + 파일 읽기 중심 |
 | `/work-log` | Low | diff 해석 + 설계 의도 기반 보고서 작성 |
+| `/init` | Medium | 코드베이스 전체 탐색 포함 |
+| `/issue do` | Medium | spec/decisions 읽기 + Haiku 에이전트 구현 위임 |
+| `/review` | Medium | 변경사항 분석 + 의견 제시 |
+| `/simplify` | Medium | 변경 코드 품질·효율성 검토 및 수정 |
 | `/explore` | High | 아키텍처 탐색, 다중 candidate 비교, 트레이드오프 추론 |
+| `/issue review` | High | decisions/coding-style 읽기 + Opus 에이전트 리뷰 위임 |
+| `/security-review` | High | 취약점 분석, 판단 요구 높음 |
