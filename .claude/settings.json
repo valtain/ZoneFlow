@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -NonInteractive -File \"c:\\nexus_frame\\ZoneFlow\\.claude\\hooks\\complexity-hint.ps1\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -NonInteractive -File \"c:\\nexus_frame\\ZoneFlow\\.claude\\hooks\\commit-transition.ps1\""
+          }
+        ]
+      }
+    ]
+  }
+}
