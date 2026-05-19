@@ -28,78 +28,25 @@
   - **Implementation Plan** (기능 구현·리팩터링·버그 수정 등 코드 변경 수반):
     1. **Plan 모드** 진입 → 설계 정리 및 사용자 승인
     2. 승인 후 `/issue new task`로 TASK 등록
-    3. 사용자에게 `/work-on` 시작 여부 확인 후 진행
+    3. `/issue do <#>`로 구현 시작
     - 단순 버그 수정·1줄 변경은 예외 (이슈 생략 가능)
   - **Analysis Plan** (코드 리뷰·보안 리뷰·설계 검토 등 코드 변경 없음):
     1. **Plan 모드** 진입 → 분석 범위 정리 및 사용자 승인
-    2. 승인 후 바로 작업 실행 (이슈 등록·`/work-on` 생략)
+    2. 승인 후 바로 작업 실행 (이슈 등록·`/issue do` 생략)
 
 ## Architectural Principles
 
-불일치 시 구현 반복 발생.
+→ [memory/architecture-principles.md](memory/architecture-principles.md)
 
-| 원칙 | 결정 | 이유 |
-| --- | --- | --- |
-| 서비스 생성 책임 | **씬** (GameObject 배치) | 코드가 생성하면 씬 구조와 충돌 |
-| DontDestroyOnLoad | **가급적 사용 안 함** | 씬 상주가 생명주기를 보장 |
-| MonoService 자동 GameObject 생성 | **사용 안 함** | MonoService는 참조(ServiceLocator)만 |
-| SO 씬 이름 | `so.name` (에셋 파일명) | 별도 SerializeField 불필요 |
-| 레지스트리 접근 | Inspector 직렬화 우선 | Resources.Load는 CoreServices.asset + PrefabZone 전용 Resources 폴더만 허용 |
-| 예외 처리 | `Debug.Assert` | `throw` 사용 안 함 |
-| 비동기 | UniTask 전용 | Coroutine 혼용 금지 |
-| ColdStartup 씬 재로드 | **unload → reload 유지** | 정상 Play 흐름과 동일한 초기화 순서 보장 목적 |
-| 개발용 Bootstrap | **auto-managed 씬에 배치 금지** | `GamePlayBootstrap`은 `DevBootstrap.unity` 전용 |
-| CoreServices·GamePlayServices 직접 로드 | **SceneService 경유 원칙** | 직접 `SceneManager.LoadSceneAsync` 호출 금지 |
+## Architecture & Coding Style
 
-### 씬 계층
-
-| 씬 종류 | 예시 | 특징 |
-| --- | --- | --- |
-| **Auto-managed** | CoreServices, GamePlayServices | SceneService가 SceneType 기반으로 자동 로드; 수동 배치 금지 |
-| **Content** | Zone0, Zone1 | ColdStartup 배치; SceneType=Zone → Prerequisites 자동 로드 후 reload |
-| **Dev** | DevBootstrap | 개발 전용; GamePlayBootstrap 배치; 빌드 포함 금지 |
-
-### 시스템 계층
-
-| 계층 | 역할 |
-| --- | --- |
-| **Service** | 영속적 시스템 (ServiceLocator로 등록) |
-| **Scene** | additive 씬 로드·언로드 오케스트레이션 |
-| **Zone** | 게임플레이 컨텍스트 단위; 씬 그룹 소유 |
-| **Mode** | Zone 내부의 게임플레이 행동 단위 |
-
-## Architecture
-
-### Package Layout
-
-- `Assets/ZoneFlowAssets/` — main package (`Runtime/`, `Editor/`, `Tests/`, `.asmdef`)
-- 독립 패키지: `{PackageName}Assets/` 동일 레벨
-
-### Key Dependencies
-
-| Package | Notes |
-| --- | --- |
-| UniTask | Async/await; git UPM |
-| URP | Render pipeline |
-
-## Coding Style
-
-See [/.claude/docs/style/coding-style.md](/.claude/docs/style/coding-style.md) — key rules:
-
-- **Acronyms as single words**: `HudView`, `_hudView` — not `HUDView`, `_UIPanel`
-- **Inspector properties**: `[field: SerializeField]` with `public T Foo { get; private set; } = default;`
-- **XML docs in Korean** on all `public` and `protected` members
-- **Early init**: `[DefaultExecutionOrder(-1000)]`
-- **No `#if UNITY_EDITOR`** in `Editor/` folder scripts
-
-## Project Structure Conventions
-
-See [/.claude/docs/style/project-structure.md](/.claude/docs/style/project-structure.md)
+→ 씬 계층·시스템 계층: [docs/architecture/](docs/architecture/)
+→ 코딩 스타일·네이밍: [memory/naming-conventions.md](memory/naming-conventions.md) · [.claude/docs/style/coding-style.md](.claude/docs/style/coding-style.md)
+→ 프로젝트 구조: [.claude/docs/style/project-structure.md](.claude/docs/style/project-structure.md)
 
 ## Custom Commands
 
-- `/bridge` — compresses session context into a handoff prompt for new conversations
-- `/git-commit` — `.claude/commands/git-commit.md` 기반 워크플로우 수행
-- `/issue` — TASK 등록·조회·상태 변경
-- `/work-on` — Task 전체 생명주기 자동화 (구현 → 커밋 → 리뷰)
+- `/bridge` — 세션 컨텍스트 압축 및 인수인계
+- `/git-commit` — staged 파일 선택 → .meta 자동 처리 → 커밋
+- `/issue` — TASK 등록·조회·상태 변경 (`/issue new`, `do`, `review`, `close`)
 - `/explore` — 아키텍처 탐색 및 후보 비교
