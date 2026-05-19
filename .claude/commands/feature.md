@@ -8,6 +8,7 @@
 /feature new <name>      로컬 설계 폴더 생성
 /feature list            로컬 feature 목록 출력
 /feature show <name>     spec.md + decisions.md 요약 출력
+/feature plan <name>     spec.md 분석 → tasks.md task 목록 생성
 ```
 
 ## 폴더 구조
@@ -80,6 +81,39 @@ features/<name>/
 ### show — feature 상세 출력
 
 `features/<name>/spec.md`와 `decisions.md`를 읽어 요약 출력한다.
+
+---
+
+### plan — task 목록 생성
+
+```text
+/feature plan service_locator
+```
+
+**동작**:
+
+1. `features/<name>/spec.md` + `features/<name>/decisions.md` 읽기
+2. CLAUDE.md Architectural Principles 참조
+3. 아래 기준으로 task 목록 생성:
+   - 독립적으로 구현·커밋 가능한 단위로 분해
+   - 의존 순서가 있으면 번호 순서에 반영
+   - 타입 정의 → 핵심 로직 → 씬 연결 → 테스트 순으로 그룹화 권장
+4. `features/<name>/tasks.md`의 빈 테이블을 채워 저장:
+
+```markdown
+| # | 태스크 | 상태 |
+| --- | --- | --- |
+| 1 | <task title> | todo |
+| 2 | <task title> | todo |
+```
+
+- 결과 출력: 생성된 task 목록
+- 안내 출력: `이제 /issue new "<title>" --feature <name>으로 GitHub Issue를 등록하세요`
+
+**상태 컬럼 규칙**:
+
+- `todo` — 아직 GitHub Issue 미생성
+- `#N` — `/issue new` 실행 후 GitHub Issue 번호로 교체
 
 ---
 

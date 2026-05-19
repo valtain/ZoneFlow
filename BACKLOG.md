@@ -7,8 +7,12 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 
 | Feature | 설계 폴더 |
 | --- | --- |
+| service_locator | features/service_locator/ |
+| scene_service | features/scene_service/ |
+| bootstrap | features/bootstrap/ |
 
 ## Explorations
 
 | Name | Status | Promoted To |
 | --- | --- | --- |
+| milestone1-impl | closed | service_locator, scene_service, bootstrap |
