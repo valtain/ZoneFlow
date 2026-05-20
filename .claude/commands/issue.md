@@ -27,13 +27,15 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 ```
 
 1. `features/<name>/spec.md`를 읽어 issue body 초안 작성:
-   ```
+
+   ```text
    Feature: <name>
 
    <spec.md 목표 섹션>
 
    관련 설계 문서: features/<name>/
    ```
+
 2. `gh issue create --title <title> --body <body> --milestone <milestone> --label <label>` 실행
 3. 생성된 issue 번호(`#N`)를 출력
 
