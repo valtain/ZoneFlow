@@ -41,8 +41,8 @@
 ## Architecture & Coding Style
 
 → 씬 계층·시스템 계층: [docs/architecture/](docs/architecture/)
-→ 코딩 스타일·네이밍: [memory/naming-conventions.md](memory/naming-conventions.md) · [.claude/docs/style/coding-style.md](.claude/docs/style/coding-style.md)
-→ 프로젝트 구조: [.claude/docs/style/project-structure.md](.claude/docs/style/project-structure.md)
+→ 코딩 스타일·네이밍: [memory/naming-conventions.md](memory/naming-conventions.md) · [docs/conventions/coding-style.md](docs/conventions/coding-style.md)
+→ 프로젝트 구조: [docs/architecture/project-structure.md](docs/architecture/project-structure.md)
 
 ## Custom Commands
 
