@@ -77,12 +77,21 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 ```text
 /issue do 3
+/issue do 3 --worktree    대규모 feature — Git worktree 격리 후 구현
 ```
+
+`--worktree` 플래그: 다수 파일 변경이 예상되는 대규모 feature에 한해 명시적으로 사용. Unity asset 특성상 브랜치 생성 비용이 크므로 기본값은 비활성.
 
 **동작**:
 
 1. `gh issue view <#> --json title,body,milestone,labels` 로 컨텍스트 수집
 2. body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기
+2-a. **TodoWrite** 도구로 구현 단계 체크리스트 생성:
+   - `[ ] Issue 컨텍스트 수집` (완료)
+   - `[ ] 설계 스펙 읽기` (완료)
+   - `[ ] Haiku 에이전트 구현`
+   - `[ ] 완료 처리 (close 또는 blocked 보고)`
+2-b. `--worktree` 플래그가 있으면 **EnterWorktree** 도구로 `.claude/worktrees/<#>/` 격리 환경 진입
 3. 아래 프롬프트로 **Agent tool (`model='haiku'`)** 에 위임:
 
    ```text
@@ -110,8 +119,9 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
    3. blocked인 경우: 중단 이유와 필요한 결정 사항
    ```
 
-4. **success** → `/issue close <#>` 자동 호출
-5. **blocked** → 중단 이유를 사용자에게 보고 후 STOP
+4. **success** → TodoWrite의 `완료 처리` 항목 체크 → `/issue close <#>` 자동 호출
+   - `--worktree` 사용 시 **ExitWorktree** 도구로 격리 환경 종료 후 close
+5. **blocked** → TodoWrite의 `완료 처리` 항목에 blocked 표시 → 중단 이유를 사용자에게 보고 후 STOP
 
 ---
 

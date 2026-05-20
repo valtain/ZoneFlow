@@ -79,7 +79,11 @@ Out of scope: [탐색하지 않을 것]
 
 2. `BACKLOG.md`의 `## Explorations` 테이블에 행을 추가한다 (Status=active).
 3. 사용자에게 핵심 질문을 물어 `question.md`를 채운다.
-4. 관련 소스 파일을 자동으로 조회해 탐색을 즉시 시작한다.
+4. **Brainstorming** — 아래를 병렬로 실행한 뒤, 관련 소스 파일을 조회해 탐색을 계속한다:
+   - **WebSearch** / **WebFetch**: Unity 공식 문서, GitHub 이슈, 관련 패턴 레퍼런스 검색
+   - **병렬 Agent**: 동일 설계 문제를 복수 관점(성능 / 유지보수성 / Unity 관행 / 테스트 용이성)에서 동시 탐색
+   - **TodoWrite**: 탐색 중 부상하는 후보를 실시간 캡처 → `candidates.md` 초안에 반영
+   - 새 candidate 도출 시 `discussion.md`에 `[YYYY-MM-DD | brainstorm]` 태그로 append
 
 ---
 
@@ -212,6 +216,7 @@ Out of scope: [탐색하지 않을 것]
 | --- | --- |
 | `start` | exploration 시작 |
 | `explore` | Claude Code 내 논의 요약 |
+| `brainstorm` | WebSearch + 병렬 Agent 탐색으로 도출된 후보 |
 | `external` | 외부 LLM 논의 import |
 | `decision` | 방향을 좁히는 결정 |
 | `promote` | candidate → feature issue 승격 |
