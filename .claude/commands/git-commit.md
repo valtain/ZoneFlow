@@ -32,4 +32,9 @@ staged diff를 분석하여 아래 규칙으로 메시지 초안을 작성하고
 
 ## 6. 커밋
 
-`git commit -m "<message>"` 실행 후 결과 출력.
+실행할 명령을 아래 형식으로 사용자에게 먼저 보여주고 확인받아:
+
+> 실행할 명령: `git commit -m "[prefix] 메시지"`
+
+확인 후 `git commit -m "<승인된 메시지>"` 실행.
+완료 후 `git log --oneline -1` 출력으로 실제 커밋 메시지를 검증해.
