@@ -22,10 +22,7 @@ namespace ZoneFlow
         /// <summary>게임플레이 부트스트랩 비동기 작업을 처리한다.</summary>
         private async UniTaskVoid BootstrapGamePlayAsync()
         {
-            // Zone 타입 서비스 부트스트랩
             await SceneService.Instance.BootstrapAsync(SceneType.Zone);
-
-            // 시작 존 로드
             await SceneService.Instance.LoadSceneAdditiveAsync(StartZone);
         }
     }
