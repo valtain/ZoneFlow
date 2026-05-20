@@ -18,5 +18,12 @@ namespace ZoneFlow
             // scene_service feature에서 구현
             return UniTask.CompletedTask;
         }
+
+        /// <summary>지정된 SceneSo 자산으로부터 씬을 추가로 로드한다.</summary>
+        public UniTask LoadSceneAdditiveAsync(SceneSo scene)
+        {
+            // scene_service feature에서 구현
+            return UniTask.CompletedTask;
+        }
     }
 }
