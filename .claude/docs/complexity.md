@@ -39,12 +39,15 @@
 | 커맨드 | Hint | 비고 |
 | --- | --- | --- |
 | `/bridge` | Low | 맥락 압축, 파일 읽기 중심 |
-| `/feature` | Low | 설계 폴더 생성·목록·요약 출력 |
+| `/feature new / list / show` | Low | 설계 폴더 생성·목록·요약 출력 |
 | `/git-commit` | Low | diff 읽기 + 메시지 작성 |
 | `/issue new / list / show / close` | Low | gh 명령 실행 + 파일 읽기 중심 |
+| `/quick` | Low | 소규모 설정·문서 변경, 이슈 추적 없음 |
 | `/work-log` | Low | diff 해석 + 설계 의도 기반 보고서 작성 |
+| `/feature plan` | Medium | spec/decisions 분석 → task 목록 생성 |
 | `/init` | Medium | 코드베이스 전체 탐색 포함 |
 | `/issue do` | Medium | spec/decisions 읽기 + Haiku 에이전트 구현 위임 |
+| `/next` | Medium | 상태 자동 감지 → feature plan·이슈 생성·구현 흐름 오케스트레이션 |
 | `/review` | Medium | 변경사항 분석 + 의견 제시 |
 | `/simplify` | Medium | 변경 코드 품질·효율성 검토 및 수정 |
 | `/explore` | High | 아키텍처 탐색, 다중 candidate 비교, 트레이드오프 추론 |
