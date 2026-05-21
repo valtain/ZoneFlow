@@ -1,0 +1,18 @@
+{
+    "name": "ZoneFlow.Tests.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c20236a68f036cc4ca9e4460a4e95f4b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "Editor"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

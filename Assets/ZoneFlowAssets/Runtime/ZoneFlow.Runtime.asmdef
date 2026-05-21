@@ -1,0 +1,19 @@
+{
+    "name": "ZoneFlow.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "PrimeTween.Runtime",
+        "Unity.Cinemachine",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
