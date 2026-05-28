@@ -5,7 +5,8 @@
         "UniTask",
         "PrimeTween.Runtime",
         "Unity.Cinemachine",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
