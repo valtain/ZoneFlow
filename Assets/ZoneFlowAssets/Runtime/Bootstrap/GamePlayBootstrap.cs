@@ -1,5 +1,5 @@
-using UnityEngine;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace ZoneFlow
 {
@@ -9,21 +9,20 @@ namespace ZoneFlow
     {
         /// <summary>게임 시작 시 로드할 첫 번째 존.</summary>
         [field: SerializeField]
-        public SceneSo StartZone { get; set; }
+        public ZoneAsset StartZone { get; private set; } = default;
 
-        /// <summary>
-        /// 게임 시작 시 호출되어 서비스를 초기화하고 시작 존을 로드한다.
-        /// </summary>
+        /// <summary>게임 시작 시 호출되어 서비스를 초기화하고 시작 존을 로드한다.</summary>
         protected virtual void Start()
         {
-            _ = BootstrapGamePlayAsync();
+            BootstrapGamePlayAsync().Forget();
         }
 
         /// <summary>게임플레이 부트스트랩 비동기 작업을 처리한다.</summary>
         private async UniTaskVoid BootstrapGamePlayAsync()
         {
             await SceneService.Instance.BootstrapAsync(SceneType.Zone);
-            await SceneService.Instance.LoadSceneAdditiveAsync(StartZone);
+            var uri = NavigationUriBuilder.Exploration(StartZone.ZoneId);
+            await GamePlayDirector.Instance.NavigateAsync(uri, destroyCancellationToken);
         }
     }
 }
