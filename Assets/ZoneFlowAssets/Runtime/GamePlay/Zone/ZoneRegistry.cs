@@ -17,6 +17,13 @@ namespace ZoneFlow
         }
 
         private readonly Dictionary<string, ZoneHandle> _handles = new();
+        private readonly Transform _prefabRoot;
+
+        /// <summary>프리팹 기반 Zone을 인스턴스화할 부모 Transform을 지정하여 생성한다. null이면 월드 루트에 생성된다.</summary>
+        internal ZoneRegistry(Transform prefabRoot = null)
+        {
+            _prefabRoot = prefabRoot;
+        }
 
         /// <summary>ZoneAsset을 로드하거나 이미 로드된 Zone의 참조 카운트를 증가시켜 반환한다.</summary>
         public async UniTask<Zone> AcquireAsync(ZoneAsset asset, CancellationToken ct)
@@ -41,7 +48,7 @@ namespace ZoneFlow
             else
             {
                 Debug.Assert(asset.ZonePrefab != null, $"[ZoneRegistry] ZoneAsset '{asset.ZoneId}'의 ZonePrefab이 null입니다.");
-                var go = Object.Instantiate(asset.ZonePrefab);
+                var go = Object.Instantiate(asset.ZonePrefab, _prefabRoot);
                 zone = go.GetComponentInChildren<Zone>(true);
                 Debug.Assert(zone != null, $"[ZoneRegistry] 프리팹 '{asset.ZoneId}'에서 Zone 컴포넌트를 찾지 못했습니다.");
                 isPrefabBased = true;

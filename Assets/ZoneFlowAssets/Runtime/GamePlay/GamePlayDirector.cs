@@ -12,8 +12,11 @@ namespace ZoneFlow
         /// <summary>ZoneId로 ZoneAsset을 조회하는 레지스트리.</summary>
         [field: SerializeField] public ZoneAssetRegistry ZoneAssets { get; private set; } = default;
 
-        /// <summary>SpawnPointId로 소속 ZoneAsset을 조회하는 레지스트리.</summary>
+        /// <summary>SpawnPointId로 소속 ZoneId를 역조회하는 레지스트리.</summary>
         [field: SerializeField] public SpawnPointRegistry SpawnPoints { get; private set; } = default;
+
+        /// <summary>프리팹 기반 Zone 인스턴스를 생성할 부모 Transform. null이면 월드 루트에 생성된다.</summary>
+        [field: SerializeField] public Transform ZonePrefabRoot { get; private set; } = default;
 
         /// <summary>현재 활성 모드. 스택이 비어 있으면 null.</summary>
         public GamePlayMode ActiveMode => _stack.Count > 0 ? _stack[^1] : null;
@@ -24,7 +27,13 @@ namespace ZoneFlow
         private readonly List<GamePlayMode> _stack = new();
 
         /// <summary>Zone 인스턴스 생명주기를 관리하는 레지스트리.</summary>
-        internal ZoneRegistry ZoneRegistry { get; } = new();
+        internal ZoneRegistry ZoneRegistry { get; private set; }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            ZoneRegistry = new ZoneRegistry(ZonePrefabRoot);
+        }
 
         /// <summary>URI 문자열로 내비게이션 요청을 처리한다.</summary>
         public UniTask NavigateAsync(string uri, CancellationToken ct)
@@ -110,7 +119,8 @@ namespace ZoneFlow
             }
             else if (!string.IsNullOrEmpty(request.SpawnPointId))
             {
-                SpawnPoints.TryGetZone(request.SpawnPointId, out zoneAsset);
+                if (SpawnPoints.TryGetZoneId(request.SpawnPointId, out var zoneId))
+                    ZoneAssets.TryGetZone(zoneId, out zoneAsset);
             }
 
             switch (request.ModeType)
