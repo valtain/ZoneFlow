@@ -2,7 +2,10 @@
     "name": "ZoneFlow.Tests.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:c20236a68f036cc4ca9e4460a4e95f4b"
+        "GUID:c20236a68f036cc4ca9e4460a4e95f4b",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:43e10eece694fc14084053594e51e5bb"
     ],
     "includePlatforms": [],
     "excludePlatforms": [

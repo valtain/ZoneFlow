@@ -32,6 +32,8 @@ namespace ZoneFlow
 
             if (switchMode == ModeSwitch.Stack)
                 Append(queryBuilder, "switch", "stack");
+            else if (switchMode == ModeSwitch.ReplaceAll)
+                Append(queryBuilder, "switch", "replaceall");
 
             if (!string.IsNullOrEmpty(id))
                 Append(queryBuilder, "id", id);

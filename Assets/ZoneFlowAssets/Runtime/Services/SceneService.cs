@@ -1,25 +1,29 @@
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace ZoneFlow
 {
-    /// <summary>씬 관리 서비스. 씬 로드·언로드·부트스트랩을 담당한다. 실제 구현은 scene_service feature에서 진행.</summary>
+    /// <summary>씬 관리 서비스. 씬 로드·언로드를 담당한다. 외부에서는 GamePlayDirector를 통해 간접 호출한다.</summary>
     public class SceneService : MonoService<SceneService>
     {
-        /// <summary>주어진 씬 타입으로 서비스를 초기화하고 필요한 씬들을 로드한다.</summary>
-        public UniTask BootstrapAsync(SceneType sceneType)
+        private const string CoreServicesSceneName = "CoreServices";
+
+        /// <summary>CoreServices 씬이 로드되어 있지 않으면 Additive로 로드한다. Instance 없이도 호출 가능한 static 진입점.</summary>
+        public static async UniTask EnsureCoreServicesLoaded()
         {
-            // scene_service feature에서 구현
-            return UniTask.CompletedTask;
+            if (!SceneManager.GetSceneByName(CoreServicesSceneName).isLoaded)
+                await SceneManager.LoadSceneAsync(CoreServicesSceneName, LoadSceneMode.Additive).ToUniTask();
         }
 
-        /// <summary>지정된 이름의 씬을 추가로 로드한다.</summary>
-        public UniTask LoadSceneAdditiveAsync(string sceneName)
-        {
-            // scene_service feature에서 구현
-            return UniTask.CompletedTask;
-        }
+        /// <summary>지정된 씬을 Additive 모드로 로드한다.</summary>
+        public UniTask LoadSceneAdditiveAsync(string sceneName) =>
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive).ToUniTask();
 
-        /// <summary>씬을 언로드한다. 실제 구현은 scene_service feature에서 진행.</summary>
-        public UniTask UnloadSceneAsync(string sceneName) => UniTask.CompletedTask;
+        /// <summary>지정된 씬을 언로드한다.</summary>
+        public UniTask UnloadSceneAsync(string sceneName) =>
+            SceneManager.UnloadSceneAsync(sceneName).ToUniTask();
+
+        /// <summary>SceneType에 따른 Prerequisites 로드. 현재는 EnsureCoreServicesLoaded로 위임한다.</summary>
+        internal UniTask BootstrapAsync(SceneType _) => EnsureCoreServicesLoaded();
     }
 }

@@ -80,9 +80,13 @@ namespace ZoneFlow
             var queryParams = ParseQuery(parsed.Query);
 
             var switchMode = ModeSwitch.Replace;
-            if (queryParams.TryGetValue("switch", out var switchValue) &&
-                string.Equals(switchValue, "stack", StringComparison.OrdinalIgnoreCase))
-                switchMode = ModeSwitch.Stack;
+            if (queryParams.TryGetValue("switch", out var switchValue))
+            {
+                if (string.Equals(switchValue, "stack", StringComparison.OrdinalIgnoreCase))
+                    switchMode = ModeSwitch.Stack;
+                else if (string.Equals(switchValue, "replaceall", StringComparison.OrdinalIgnoreCase))
+                    switchMode = ModeSwitch.ReplaceAll;
+            }
 
             string zoneId = null;
             var pathSegments = parsed.AbsolutePath.Trim('/');

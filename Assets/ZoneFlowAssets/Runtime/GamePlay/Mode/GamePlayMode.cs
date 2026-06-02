@@ -70,6 +70,19 @@ namespace ZoneFlow
             State = ModeState.Active;
         }
 
+        /// <summary>슬립 상태의 모드를 ModeOut 없이 소멸시킨다. ReplaceAll에서 슬립 모드 정리에 사용한다.</summary>
+        internal async UniTask DestroySleptAsync(CancellationToken ct)
+        {
+            State = ModeState.Stopped;
+            await OnStoppedAsync(ct);
+
+            if (ZoneAsset != null)
+                await Director.ZoneRegistry.ReleaseAsync(ZoneAsset.ZoneId);
+
+            State = ModeState.Destroyed;
+            await OnDestroyedAsync(ct);
+        }
+
         /// <summary>모드를 중지하고 소멸시킨다. Active → ModeOut → Stopped → Destroyed 순으로 전이한다.</summary>
         internal async UniTask StopAndDestroyAsync(CancellationToken ct)
         {

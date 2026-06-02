@@ -11,8 +11,11 @@ namespace ZoneFlow
         /// <summary>이동할 대상의 NavigationUri. ?switch= 파라미터 포함 가능.</summary>
         [field: SerializeField] public string NavigationUri { get; private set; } = default;
 
-        /// <summary>gameplay://portal?id= 참조용 포털 고유 ID.</summary>
+        /// <summary>gameplay://portal?id= 참조용 포털 고유 ID. Zone 자식에 배치해야 Zone 관리 대상이 된다.</summary>
         [field: SerializeField] public string PortalId { get; private set; } = default;
+
+        /// <summary>IInteractable 인터페이스 구현. PortalId를 반환한다.</summary>
+        public string InteractableId => PortalId;
 
         private void OnTriggerEnter(Collider other)
         {

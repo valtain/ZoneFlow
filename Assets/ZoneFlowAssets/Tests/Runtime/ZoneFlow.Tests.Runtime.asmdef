@@ -1,17 +1,17 @@
 {
-    "name": "ZoneFlow.Editor",
+    "name": "ZoneFlow.Tests.Runtime",
     "rootNamespace": "",
     "references": [
-        "GUID:c20236a68f036cc4ca9e4460a4e95f4b"
+        "GUID:c20236a68f036cc4ca9e4460a4e95f4b",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

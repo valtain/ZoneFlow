@@ -307,8 +307,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06c1421e99e6bf42a52ea826851746c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.GamePlayDirector
-  <ZoneAssets>k__BackingField: {fileID: 0}
-  <SpawnPoints>k__BackingField: {fileID: 0}
+  <ZoneAssets>k__BackingField: {fileID: 11400000, guid: 26fbe400189c9f745b6f33bf25b0c89f, type: 2}
+  <SpawnPoints>k__BackingField: {fileID: 11400000, guid: f72ca061ebd223d4692b9990e68a09dd, type: 2}
+  <Interactables>k__BackingField: {fileID: 11400000, guid: 28621cc8b0ca49cb9d6c32fd3c489871, type: 2}
 --- !u!4 &131728368
 Transform:
   m_ObjectHideFlags: 0

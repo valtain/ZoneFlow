@@ -12,4 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea1f636d63399b428914f29123e16de, type: 3}
   m_Name: ZoneAssetRegistry
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.ZoneAssetRegistry
-  _zones: []
+  _zones:
+  - <ZoneId>k__BackingField: intro
+    <SceneName>k__BackingField: Intro
+    <ZonePrefab>k__BackingField: {fileID: 0}
+  - <ZoneId>k__BackingField: world1
+    <SceneName>k__BackingField: World1
+    <ZonePrefab>k__BackingField: {fileID: 0}
+  - <ZoneId>k__BackingField: world2
+    <SceneName>k__BackingField: World2
+    <ZonePrefab>k__BackingField: {fileID: 0}
