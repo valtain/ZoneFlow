@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e069e84f0c634125b304a8ad279c84c0, type: 3}
   m_Name: PanelRegistry
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.PanelRegistry
-  _panels: []
+  _panels:
+  - PanelId: menu
+    Prefab: {fileID: 4689722195991533621, guid: 4cc54ccaebe695a48a3bc63f7ea67a3a, type: 3}

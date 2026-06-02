@@ -12,4 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec7b55bbdbf0d87498441f6981a7b319, type: 3}
   m_Name: SpawnPointRegistry
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.SpawnPointRegistry
-  _entries: []
+  _entries:
+  - spawnPointId: default
+    zoneId: intro
+  - spawnPointId: default
+    zoneId: world1
+  - spawnPointId: world1_default
+    zoneId: world1
+  - spawnPointId: world1_entrance
+    zoneId: world1
+  - spawnPointId: default
+    zoneId: world2
+  - spawnPointId: world2_default
+    zoneId: world2
+  - spawnPointId: world2_entrance
+    zoneId: world2
