@@ -45,7 +45,7 @@ namespace ZoneFlow
         /// <summary>NavigationRequest로 내비게이션 요청을 처리한다.</summary>
         public async UniTask NavigateAsync(NavigationRequest request, CancellationToken ct)
         {
-            if (request.Scheme == NavigationHost.Portal)
+            if (request.Host == NavigationHost.Portal)
             {
                 var portals = FindObjectsByType<Portal>(FindObjectsSortMode.None);
                 foreach (var portal in portals)
@@ -60,7 +60,7 @@ namespace ZoneFlow
                 return;
             }
 
-            if (request.Scheme == NavigationHost.Pop)
+            if (request.Host == NavigationHost.Pop)
             {
                 await PopAsync(ct);
                 return;
@@ -126,7 +126,7 @@ namespace ZoneFlow
                     ZoneAssets.TryGetZone(zoneId, out zoneAsset);
             }
 
-            switch (request.Scheme)
+            switch (request.Host)
             {
                 case NavigationHost.Exploration:
                     return new ExplorationMode(zoneAsset, request.Id);
@@ -137,7 +137,7 @@ namespace ZoneFlow
                 case NavigationHost.Shell:
                     return new ShellMode(request.Id, zoneAsset, spawnPointId: null);
                 default:
-                    Debug.Assert(false, $"[GamePlayDirector] 알 수 없는 Scheme: {request.Scheme}");
+                    Debug.Assert(false, $"[GamePlayDirector] 알 수 없는 Scheme: {request.Host}");
                     return new ExplorationMode(zoneAsset, request.Id);
             }
         }

@@ -7,7 +7,7 @@ namespace ZoneFlow
     public readonly struct NavigationRequest
     {
         /// <summary>전환할 내비게이션 스킴 (URI host).</summary>
-        public NavigationHost Scheme { get; }
+        public NavigationHost Host { get; }
 
         /// <summary>모드 전환 방식. Scheme이 Pop/Portal일 때는 무의미.</summary>
         public ModeSwitch Switch { get; }
@@ -24,7 +24,7 @@ namespace ZoneFlow
             string zoneId,
             string id)
         {
-            Scheme = scheme;
+            Host = scheme;
             Switch = @switch;
             ZoneId = zoneId;
             Id = id;
