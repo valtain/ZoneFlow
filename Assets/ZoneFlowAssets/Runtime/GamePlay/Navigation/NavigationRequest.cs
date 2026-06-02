@@ -6,38 +6,28 @@ namespace ZoneFlow
     /// <summary>NavigationUri를 파싱한 결과를 담는 불변 구조체.</summary>
     public readonly struct NavigationRequest
     {
-        /// <summary>모드 전환 방식.</summary>
-        public ModeSwitchType SwitchType { get; }
+        /// <summary>전환할 내비게이션 스킴 (URI host).</summary>
+        public NavigationHost Scheme { get; }
 
-        /// <summary>전환할 모드 타입.</summary>
-        public ModeType ModeType { get; }
+        /// <summary>모드 전환 방식. Scheme이 Pop/Portal일 때는 무의미.</summary>
+        public ModeSwitch Switch { get; }
 
         /// <summary>대상 존 ID. 없으면 null.</summary>
         public string ZoneId { get; }
 
-        /// <summary>스폰 포인트 ID. 없으면 null.</summary>
-        public string SpawnPointId { get; }
-
-        /// <summary>패널 ID (Shell 모드 전용). 없으면 null.</summary>
-        public string PanelId { get; }
-
-        /// <summary>포털 ID. 있으면 포털 리다이렉트 처리가 수행된다.</summary>
-        public string PortalId { get; }
+        /// <summary>스폰 포인트 ID, 패널 ID, 포털 ID 등 단일 식별자. 없으면 null.</summary>
+        public string Id { get; }
 
         private NavigationRequest(
-            ModeSwitchType switchType,
-            ModeType modeType,
+            NavigationHost scheme,
+            ModeSwitch @switch,
             string zoneId,
-            string spawnPointId,
-            string panelId,
-            string portalId)
+            string id)
         {
-            SwitchType = switchType;
-            ModeType = modeType;
+            Scheme = scheme;
+            Switch = @switch;
             ZoneId = zoneId;
-            SpawnPointId = spawnPointId;
-            PanelId = panelId;
-            PortalId = portalId;
+            Id = id;
         }
 
         /// <summary>URI 문자열을 파싱하여 NavigationRequest를 반환한다.</summary>
@@ -72,7 +62,7 @@ namespace ZoneFlow
 
             if (host == "pop")
             {
-                request = new NavigationRequest(ModeSwitchType.Pop, default, null, null, null, null);
+                request = new NavigationRequest(NavigationHost.Pop, default, null, null);
                 return true;
             }
 
@@ -80,19 +70,19 @@ namespace ZoneFlow
             {
                 var portalQuery = ParseQuery(parsed.Query);
                 portalQuery.TryGetValue("id", out var portalId);
-                request = new NavigationRequest(ModeSwitchType.Replace, default, null, null, null, portalId);
+                request = new NavigationRequest(NavigationHost.Portal, default, null, portalId);
                 return true;
             }
 
-            if (!TryParseModeType(host, out var modeType))
+            if (!TryParseModeScheme(host, out var modeScheme))
                 return false;
 
             var queryParams = ParseQuery(parsed.Query);
 
-            var switchType = ModeSwitchType.Replace;
+            var switchMode = ModeSwitch.Replace;
             if (queryParams.TryGetValue("switch", out var switchValue) &&
                 string.Equals(switchValue, "stack", StringComparison.OrdinalIgnoreCase))
-                switchType = ModeSwitchType.Stack;
+                switchMode = ModeSwitch.Stack;
 
             string zoneId = null;
             var pathSegments = parsed.AbsolutePath.Trim('/');
@@ -103,10 +93,9 @@ namespace ZoneFlow
                     zoneId = segments[0];
             }
 
-            queryParams.TryGetValue("spawn", out var spawnPointId);
-            queryParams.TryGetValue("panel", out var panelId);
+            queryParams.TryGetValue("id", out var id);
 
-            request = new NavigationRequest(switchType, modeType, zoneId, spawnPointId, panelId, null);
+            request = new NavigationRequest(modeScheme, switchMode, zoneId, id);
             return true;
         }
 
@@ -134,15 +123,15 @@ namespace ZoneFlow
             return result;
         }
 
-        private static bool TryParseModeType(string host, out ModeType modeType)
+        private static bool TryParseModeScheme(string host, out NavigationHost modeScheme)
         {
             switch (host)
             {
-                case "exploration": modeType = ModeType.Exploration; return true;
-                case "battle":      modeType = ModeType.Battle;      return true;
-                case "story":       modeType = ModeType.Story;       return true;
-                case "shell":       modeType = ModeType.Shell;       return true;
-                default:            modeType = default;              return false;
+                case "exploration": modeScheme = NavigationHost.Exploration; return true;
+                case "battle":      modeScheme = NavigationHost.Battle;      return true;
+                case "story":       modeScheme = NavigationHost.Story;       return true;
+                case "shell":       modeScheme = NavigationHost.Shell;       return true;
+                default:            modeScheme = default;                      return false;
             }
         }
     }

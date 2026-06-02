@@ -45,27 +45,30 @@ namespace ZoneFlow
         /// <summary>NavigationRequest로 내비게이션 요청을 처리한다.</summary>
         public async UniTask NavigateAsync(NavigationRequest request, CancellationToken ct)
         {
-            if (!string.IsNullOrEmpty(request.PortalId))
+            if (request.Scheme == NavigationHost.Portal)
             {
                 var portals = FindObjectsByType<Portal>(FindObjectsSortMode.None);
                 foreach (var portal in portals)
                 {
-                    if (portal.PortalId == request.PortalId)
+                    if (portal.PortalId == request.Id)
                     {
                         await NavigateAsync(portal.NavigationUri, ct);
                         return;
                     }
                 }
-                Debug.Assert(false, $"[GamePlayDirector] PortalId '{request.PortalId}'에 해당하는 Portal을 찾지 못했습니다.");
+                Debug.Assert(false, $"[GamePlayDirector] PortalId '{request.Id}'에 해당하는 Portal을 찾지 못했습니다.");
                 return;
             }
 
-            switch (request.SwitchType)
+            if (request.Scheme == NavigationHost.Pop)
             {
-                case ModeSwitchType.Pop:
-                    await PopAsync(ct);
-                    break;
-                case ModeSwitchType.Stack:
+                await PopAsync(ct);
+                return;
+            }
+
+            switch (request.Switch)
+            {
+                case ModeSwitch.Stack:
                     await StackAsync(CreateMode(request), ct);
                     break;
                 default:
@@ -117,25 +120,25 @@ namespace ZoneFlow
             {
                 ZoneAssets.TryGetZone(request.ZoneId, out zoneAsset);
             }
-            else if (!string.IsNullOrEmpty(request.SpawnPointId))
+            else if (!string.IsNullOrEmpty(request.Id))
             {
-                if (SpawnPoints.TryGetZoneId(request.SpawnPointId, out var zoneId))
+                if (SpawnPoints.TryGetZoneId(request.Id, out var zoneId))
                     ZoneAssets.TryGetZone(zoneId, out zoneAsset);
             }
 
-            switch (request.ModeType)
+            switch (request.Scheme)
             {
-                case ModeType.Exploration:
-                    return new ExplorationMode(zoneAsset, request.SpawnPointId);
-                case ModeType.Battle:
-                    return new BattleMode(zoneAsset, request.SpawnPointId);
-                case ModeType.Story:
-                    return new StoryMode(zoneAsset, request.SpawnPointId);
-                case ModeType.Shell:
-                    return new ShellMode(request.PanelId, zoneAsset, request.SpawnPointId);
+                case NavigationHost.Exploration:
+                    return new ExplorationMode(zoneAsset, request.Id);
+                case NavigationHost.Battle:
+                    return new BattleMode(zoneAsset, request.Id);
+                case NavigationHost.Story:
+                    return new StoryMode(zoneAsset, request.Id);
+                case NavigationHost.Shell:
+                    return new ShellMode(request.Id, zoneAsset, spawnPointId: null);
                 default:
-                    Debug.Assert(false, $"[GamePlayDirector] 알 수 없는 ModeType: {request.ModeType}");
-                    return new ExplorationMode(zoneAsset, request.SpawnPointId);
+                    Debug.Assert(false, $"[GamePlayDirector] 알 수 없는 Scheme: {request.Scheme}");
+                    return new ExplorationMode(zoneAsset, request.Id);
             }
         }
     }
