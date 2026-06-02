@@ -310,6 +310,7 @@ MonoBehaviour:
   <ZoneAssets>k__BackingField: {fileID: 11400000, guid: 26fbe400189c9f745b6f33bf25b0c89f, type: 2}
   <SpawnPoints>k__BackingField: {fileID: 11400000, guid: f72ca061ebd223d4692b9990e68a09dd, type: 2}
   <Interactables>k__BackingField: {fileID: 11400000, guid: 28621cc8b0ca49cb9d6c32fd3c489871, type: 2}
+  <ZonePrefabRoot>k__BackingField: {fileID: 1796441338}
 --- !u!4 &131728368
 Transform:
   m_ObjectHideFlags: 0
@@ -961,6 +962,37 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 500
   m_TargetDisplay: 0
+--- !u!1 &1796441337
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1796441338}
+  m_Layer: 0
+  m_Name: ZonePrefabRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1796441338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1796441337}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -5000, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1851937749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,3 +1345,4 @@ SceneRoots:
   - {fileID: 1583747994}
   - {fileID: 80146885}
   - {fileID: 1191147773}
+  - {fileID: 1796441338}
