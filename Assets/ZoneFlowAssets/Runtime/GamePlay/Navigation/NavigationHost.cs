@@ -9,8 +9,10 @@ namespace ZoneFlow
         Battle      = 1,
         /// <summary>스토리 모드. gameplay://story</summary>
         Story       = 2,
-        /// <summary>셸(UI 전용) 모드. gameplay://shell</summary>
+        /// <summary>셸 모드. Zone을 로드하고 플레이어를 배치한다. gameplay://shell</summary>
         Shell       = 3,
+        /// <summary>패널 모드. Overlay에 UI 패널만 표시한다. gameplay://panel</summary>
+        Panel       = 4,
 
         /// <summary>이전 모드로 복귀. gameplay://pop</summary>
         Pop    = 100,

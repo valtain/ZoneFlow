@@ -135,7 +135,8 @@ namespace ZoneFlow
                 case "battle":      modeScheme = NavigationHost.Battle;      return true;
                 case "story":       modeScheme = NavigationHost.Story;       return true;
                 case "shell":       modeScheme = NavigationHost.Shell;       return true;
-                default:            modeScheme = default;                      return false;
+                case "panel":       modeScheme = NavigationHost.Panel;       return true;
+                default:            modeScheme = default;                    return false;
             }
         }
     }

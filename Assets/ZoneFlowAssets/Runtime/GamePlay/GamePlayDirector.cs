@@ -161,6 +161,9 @@ namespace ZoneFlow
 
         private GamePlayMode CreateMode(NavigationRequest request)
         {
+            if (request.Host == NavigationHost.Panel)
+                return new PanelMode(request.Id);
+
             ZoneAsset zoneAsset = null;
 
             if (!string.IsNullOrEmpty(request.ZoneId))
@@ -182,7 +185,8 @@ namespace ZoneFlow
                 case NavigationHost.Story:
                     return new StoryMode(zoneAsset, request.Id);
                 case NavigationHost.Shell:
-                    return new ShellMode(request.Id, zoneAsset, spawnPointId: null);
+                    Debug.Assert(zoneAsset != null, $"[GamePlayDirector] ShellMode는 ZoneId가 필요합니다. URI: {request}");
+                    return new ShellMode(zoneAsset, request.Id);
                 default:
                     Debug.Assert(false, $"[GamePlayDirector] 알 수 없는 Scheme: {request.Host}");
                     return new ExplorationMode(zoneAsset, request.Id);

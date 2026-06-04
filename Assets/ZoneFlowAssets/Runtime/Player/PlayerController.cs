@@ -24,7 +24,7 @@ namespace ZoneFlow.Player
         private void Awake()
         {
             if (MainCamera == null)
-                MainCamera = Camera.main;
+                MainCamera = CameraService.Instance.MainCamera;
 
             Debug.Assert(MainCamera != null, "[PlayerController] MainCamera를 찾을 수 없습니다.");
 

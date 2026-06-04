@@ -38,15 +38,14 @@ namespace ZoneFlow.Tests.Runtime
                 var d = GamePlayDirector.Instance;
                 var ct = CancellationToken.None;
 
-                // Intro: ShellMode, Zone=intro, id=null, Replace → Stack=1
+                // Intro: ShellMode, Zone=intro, Replace → Stack=1
                 await d.NavigateAsync("gameplay://shell/intro", ct);
                 AssertMode<ShellMode>("Intro", d, expectedStack: 1);
-                Assert.IsNull(((ShellMode)d.ActiveMode).PanelId, "[Intro] PanelId null 기대");
 
-                // Menu: ShellMode, no zone, Stack → Stack=2
-                await d.NavigateAsync("gameplay://shell?id=menu&switch=stack", ct);
-                AssertMode<ShellMode>("Menu", d, expectedStack: 2);
-                Assert.AreEqual("menu", ((ShellMode)d.ActiveMode).PanelId, "[Menu] PanelId");
+                // Menu: PanelMode, no zone, Stack → Stack=2
+                await d.NavigateAsync("gameplay://panel?id=menu&switch=stack", ct);
+                AssertMode<PanelMode>("Menu", d, expectedStack: 2);
+                Assert.AreEqual("menu", ((PanelMode)d.ActiveMode).PanelId, "[Menu] PanelId");
 
                 // World1: ExplorationMode, ReplaceAll → Stack=1 (Intro+Menu 모두 해제)
                 await d.NavigateAsync("gameplay://exploration/world1?switch=replaceall", ct);

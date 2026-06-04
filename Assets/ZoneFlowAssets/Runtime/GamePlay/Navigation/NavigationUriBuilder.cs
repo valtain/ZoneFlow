@@ -15,9 +15,13 @@ namespace ZoneFlow
         public static string Story(string zoneId, string id = null, ModeSwitch switchMode = ModeSwitch.Replace)
             => Build("story", zoneId, id, switchMode);
 
-        /// <summary>셸 모드 URI를 생성한다.</summary>
-        public static string Shell(string id, string zoneId = null, ModeSwitch switchMode = ModeSwitch.Replace)
-            => Build("shell", zoneId, id, switchMode);
+        /// <summary>셸 모드 URI를 생성한다. Zone이 Shell 환경 자체가 된다.</summary>
+        public static string Shell(string zoneId, string spawnPointId = null, ModeSwitch switchMode = ModeSwitch.Replace)
+            => Build("shell", zoneId, spawnPointId, switchMode);
+
+        /// <summary>패널 모드 URI를 생성한다. Overlay에 UI 패널만 표시한다.</summary>
+        public static string Panel(string panelId, ModeSwitch switchMode = ModeSwitch.Replace)
+            => Build("panel", null, panelId, switchMode);
 
         /// <summary>이전 모드로 돌아가는 Pop URI를 반환한다.</summary>
         public static string Pop() => "gameplay://pop";

@@ -15,7 +15,7 @@ namespace ZoneFlow
     /// </summary>
     public class IntroScreen : MonoBehaviour
     {
-        private const string MenuUri = "gameplay://shell?id=menu&switch=stack";
+        private const string MenuUri = "gameplay://panel?id=menu&switch=stack";
 
         [field: SerializeField] public float TitleFadeInDuration { get; private set; } = 0.6f;
         [field: SerializeField] public float LoadingDuration     { get; private set; } = 2.0f;
