@@ -256,6 +256,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 95715796}
+  - component: {fileID: 95715797}
   m_Layer: 0
   m_Name: SceneService
   m_TagString: Untagged
@@ -272,12 +273,24 @@ Transform:
   m_GameObject: {fileID: 95715795}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.44539, y: 0, z: 0.1772}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &95715797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95715795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bde5c3189c7c2e04eb150616aae9b8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.SceneService
 --- !u!1 &131728366
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,6 +759,7 @@ GameObject:
   - component: {fileID: 1583747992}
   - component: {fileID: 1583747991}
   - component: {fileID: 1583747990}
+  - component: {fileID: 1583747995}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -903,6 +917,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1583747995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583747989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19c73cf40e3f05043a99ff8ee023c7ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.CameraService
+  <CinemachineBrain>k__BackingField: {fileID: 1583747990}
+  <MainCamera>k__BackingField: {fileID: 1583747993}
 --- !u!1 &1777155106
 GameObject:
   m_ObjectHideFlags: 0
