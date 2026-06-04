@@ -18,21 +18,19 @@ namespace ZoneFlow
             PanelId = panelId;
         }
 
-        /// <summary>모드 진입 시 존이 있으면 플레이어를 스폰 포인트로 텔레포트하고, 등록된 패널을 표시한다.</summary>
-        protected override UniTask OnModeInAsync(CancellationToken ct)
+        /// <summary>모드 진입 시 존이 있으면 플레이어를 스폰 포인트로 텔레포트하고, 패널을 Overlay 레이어에 표시한다.</summary>
+        protected override async UniTask OnModeInAsync(CancellationToken ct)
         {
             if (Zone != null)
                 TeleportPlayer(Zone.GetSpawnPoint(SpawnPointId));
-            ShellPanelRegistry.Show(PanelId);
-            return UniTask.CompletedTask;
+
+            if (ShellPanelRegistry.TryGetPrefab(PanelId, out var prefab))
+                await UiService.Instance.SetOverlayAsync(prefab, ct);
         }
 
-        /// <summary>모드 퇴장 시 등록된 패널을 숨긴다.</summary>
+        /// <summary>모드 퇴장 시 Overlay 레이어를 비운다.</summary>
         protected override UniTask OnModeOutAsync(CancellationToken ct)
-        {
-            ShellPanelRegistry.Hide(PanelId);
-            return UniTask.CompletedTask;
-        }
+            => UiService.Instance.ClearOverlayAsync(ct);
 
         private static void TeleportPlayer(SpawnPoint sp)
         {

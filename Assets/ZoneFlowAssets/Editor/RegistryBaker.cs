@@ -206,7 +206,7 @@ namespace ZoneFlow.Editor
                 entries.Add(new PanelRegistry.Entry
                 {
                     PanelId = MenuPanel.PanelId,
-                    Prefab  = prefab,
+                    Prefab  = panel,
                 });
             }
 

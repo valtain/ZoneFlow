@@ -18,6 +18,13 @@ namespace ZoneFlow
         /// <summary>현재 스택에 있는 팝업의 개수.</summary>
         public int Count => _stack.Count;
 
+        private void Update()
+        {
+            if (_isBusy || _stack.Count == 0) return;
+            if (Input.GetKeyDown(KeyCode.Escape))
+                PopAsync(destroyCancellationToken).Forget();
+        }
+
         /// <summary>팝업을 스택에 push한다. 기존 top은 SubLayer로 이동하고 새 팝업이 TopLayer에 생성된다.</summary>
         public async UniTask<T> PushAsync<T>(T prefab, CancellationToken ct) where T : UiPopup
         {
@@ -77,5 +84,6 @@ namespace ZoneFlow
             while (_stack.Count > 0)
                 await PopAsync(ct);
         }
+
     }
 }

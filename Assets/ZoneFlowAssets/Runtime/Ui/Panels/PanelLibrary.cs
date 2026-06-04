@@ -14,7 +14,8 @@ namespace ZoneFlow
         {
             if (Registry == null) return;
             foreach (var entry in Registry.Panels)
-                ShellPanelRegistry.RegisterPrefab(entry.PanelId, entry.Prefab);
+                if (entry.Prefab != null)
+                    ShellPanelRegistry.RegisterPrefab(entry.PanelId, entry.Prefab);
         }
     }
 }

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.PanelRegistry
   _panels:
   - PanelId: menu
-    Prefab: {fileID: 4689722195991533621, guid: 4cc54ccaebe695a48a3bc63f7ea67a3a, type: 3}
+    Prefab: {fileID: 7440968753012972485, guid: 4cc54ccaebe695a48a3bc63f7ea67a3a, type: 3}

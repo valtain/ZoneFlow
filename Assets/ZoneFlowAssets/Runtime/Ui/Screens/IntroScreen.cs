@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
@@ -20,15 +21,15 @@ namespace ZoneFlow
         [field: SerializeField] public float LoadingDuration     { get; private set; } = 2.0f;
         [field: SerializeField] public float HoldAfterLoad       { get; private set; } = 0.4f;
 
-        private Image  _fillImage;
-        private bool   _navigated;
+        [SerializeField] private Image _fillImage;
+        private bool _navigated;
 
-        private void Awake()
+        private void Start()
         {
-            BuildDefaultUi();
+            IntroAsync().Forget();
         }
 
-        private async UniTaskVoid Start()
+        private async UniTaskVoid IntroAsync()
         {
             if (_navigated) return;
 
@@ -43,11 +44,11 @@ namespace ZoneFlow
             }
 
             // 로딩 바 진행
-            if (_fillImage != null)
-                await Tween.Custom(
-                    startValue: 0f, endValue: 1f, duration: LoadingDuration,
-                    onValueChange: val => _fillImage.fillAmount = val
-                ).ToUniTask(cancellationToken: ct);
+            Debug.Assert(_fillImage != null);
+            await Tween.Custom(
+                startValue: 0f, endValue: 1f, duration: LoadingDuration,
+                onValueChange: val => _fillImage.fillAmount = val
+            ).ToUniTask(cancellationToken: ct);
 
             await UniTask.Delay(TimeSpan.FromSeconds(HoldAfterLoad), cancellationToken: ct);
 
@@ -55,6 +56,7 @@ namespace ZoneFlow
             await GamePlayDirector.Instance.NavigateAsync(MenuUri, CancellationToken.None);
         }
 
+        [ContextMenu("Build UI")]
         private void BuildDefaultUi()
         {
             var canvasGo = new GameObject("IntroCanvas");

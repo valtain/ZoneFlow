@@ -14,8 +14,8 @@ namespace ZoneFlow
         [Serializable]
         public struct Entry
         {
-            public string     PanelId;
-            public GameObject Prefab;
+            public string   PanelId;
+            public UiPanel  Prefab;
         }
 
         [SerializeField] private Entry[] _panels = Array.Empty<Entry>();

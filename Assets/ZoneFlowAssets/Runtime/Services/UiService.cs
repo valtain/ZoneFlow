@@ -21,6 +21,14 @@ namespace ZoneFlow
         /// <summary>현재 스택에 있는 팝업의 개수.</summary>
         public int PopupCount => Popup.Count;
 
+        /// <summary>지정한 패널을 Overlay 레이어에 표시한다. 기존 패널은 제거된다.</summary>
+        public UniTask<T> SetOverlayAsync<T>(T prefab, CancellationToken ct = default) where T : UiPanel
+            => Overlay.SetAsync(prefab, ct);
+
+        /// <summary>Overlay 레이어의 현재 패널을 제거한다.</summary>
+        public UniTask ClearOverlayAsync(CancellationToken ct = default)
+            => Overlay.ClearAsync(ct);
+
         /// <summary>지정된 팝업을 스택에 push하고 반환한다.</summary>
         public UniTask<T> PushPopupAsync<T>(T prefab, CancellationToken ct = default) where T : UiPopup
             => Popup.PushAsync(prefab, ct);

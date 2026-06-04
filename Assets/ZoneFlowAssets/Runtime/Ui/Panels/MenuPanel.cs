@@ -7,23 +7,17 @@ using UnityEngine.UI;
 namespace ZoneFlow
 {
     /// <summary>
-    /// 메인 메뉴 패널. ShellPanelRegistry에 "menu" ID로 등록되어 ShellMode("menu") 진입 시 표시된다.
-    /// SceneSetupTool이 이 컴포넌트를 포함한 MenuPanel 프리팹을 생성한다.
+    /// 메인 메뉴 패널. ShellMode("menu") 진입 시 UiOverlayLayer에 표시된다.
     /// </summary>
-    public class MenuPanel : MonoBehaviour
+    public class MenuPanel : UiPanel
     {
-        // RegistryBaker가 이 값을 읽어 PanelRegistry에 등록한다.
         public const string PanelId = "menu";
         private const string NewGameUri = "gameplay://exploration/world1?switch=replaceall";
 
-        private void OnEnable()  => ShellPanelRegistry.RegisterInstance(PanelId, gameObject);
-        private void OnDisable() => ShellPanelRegistry.UnregisterInstance(PanelId);
-
         private void Awake()
         {
-            if (GetComponentInChildren<Canvas>() == null)
+            if (transform.childCount == 0)
                 BuildDefaultUi();
-            gameObject.SetActive(false); // ShellPanelRegistry.Show()가 활성화
         }
 
         // ──────────────────────────────────────────
@@ -60,20 +54,17 @@ namespace ZoneFlow
 
         private void BuildDefaultUi()
         {
-            var canvasGo = new GameObject("MenuCanvas");
-            canvasGo.transform.SetParent(transform, false);
+            // PopupLayer의 Canvas 아래에 배치되므로 자체 Canvas 불필요.
+            // MenuPanel RectTransform을 전체화면으로 확장한다.
+            var selfRect = transform as RectTransform;
+            if (selfRect == null) selfRect = gameObject.AddComponent<RectTransform>();
+            selfRect.anchorMin = Vector2.zero;
+            selfRect.anchorMax = Vector2.one;
+            selfRect.sizeDelta = Vector2.zero;
 
-            var canvas = canvasGo.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 50;
-            var scaler = canvasGo.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            canvasGo.AddComponent<GraphicRaycaster>();
-
-            // Background panel
+            // Center panel
             var panelGo = new GameObject("Panel");
-            panelGo.transform.SetParent(canvasGo.transform, false);
+            panelGo.transform.SetParent(transform, false);
             var panelRect = panelGo.AddComponent<RectTransform>();
             panelRect.anchorMin = new Vector2(0.5f, 0.5f);
             panelRect.anchorMax = new Vector2(0.5f, 0.5f);
