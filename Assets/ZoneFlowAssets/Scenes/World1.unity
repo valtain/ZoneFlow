@@ -201,6 +201,7 @@ Transform:
   - {fileID: 200021}
   - {fileID: 1276697488}
   - {fileID: 1559575281}
+  - {fileID: 1329558433}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &200012
@@ -575,7 +576,7 @@ GameObject:
   - component: {fileID: 1276697490}
   - component: {fileID: 1276697489}
   m_Layer: 0
-  m_Name: SpawnPoint_world1_default
+  m_Name: SpawnPoint_w1_default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -608,7 +609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4c4520b6260464ab6f1791837c8c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.SpawnPoint
-  <SpawnPointId>k__BackingField: world1_default
+  <SpawnPointId>k__BackingField: w1_default
   <IsDefault>k__BackingField: 1
 --- !u!23 &1276697490
 MeshRenderer:
@@ -769,7 +770,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.8
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -789,13 +790,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1329558428}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8, y: 1.5, z: 16}
   m_LocalScale: {x: 2, y: 3, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1386435688}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 200011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1386435687
 GameObject:
@@ -953,7 +954,7 @@ GameObject:
   - component: {fileID: 1559575283}
   - component: {fileID: 1559575282}
   m_Layer: 0
-  m_Name: SpawnPoint_world1_entrance
+  m_Name: SpawnPoint_w1_entrance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -986,7 +987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4c4520b6260464ab6f1791837c8c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.SpawnPoint
-  <SpawnPointId>k__BackingField: world1_entrance
+  <SpawnPointId>k__BackingField: w1_entrance
   <IsDefault>k__BackingField: 0
 --- !u!23 &1559575283
 MeshRenderer:
@@ -1669,5 +1670,4 @@ SceneRoots:
   - {fileID: 205423480}
   - {fileID: 1550144887}
   - {fileID: 1779318977}
-  - {fileID: 1329558433}
   - {fileID: 281403166}

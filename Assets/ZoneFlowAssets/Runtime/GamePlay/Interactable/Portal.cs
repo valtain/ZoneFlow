@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using ZoneFlow.Player;
 
 namespace ZoneFlow
 {
@@ -21,6 +22,7 @@ namespace ZoneFlow
         {
             if (!other.CompareTag("Player")) return;
             if (!GamePlayDirector.IsReady) return;
+            if (PlayerService.IsReady && PlayerService.Instance.IsSpawnCooldown) return;
 
             OnInteractAsync(GamePlayDirector.Instance, GamePlayDirector.Instance.destroyCancellationToken).Forget();
         }

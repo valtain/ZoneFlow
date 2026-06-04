@@ -17,13 +17,13 @@ MonoBehaviour:
     zoneId: intro
   - spawnPointId: default
     zoneId: world1
-  - spawnPointId: world1_default
+  - spawnPointId: w1_default
     zoneId: world1
-  - spawnPointId: world1_entrance
+  - spawnPointId: w1_entrance
     zoneId: world1
   - spawnPointId: default
     zoneId: world2
-  - spawnPointId: world2_default
+  - spawnPointId: w2_default
     zoneId: world2
-  - spawnPointId: world2_entrance
+  - spawnPointId: w2_entrance
     zoneId: world2

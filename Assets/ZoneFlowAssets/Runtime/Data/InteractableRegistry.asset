@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907c785e1d624fa496f8a52d990d68c2, type: 3}
   m_Name: InteractableRegistry
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.InteractableRegistry
-  _interactables: []
+  _interactables:
+  - InteractableId: portal_w1
+    ZoneId: world1
+    NavigationUri: gameplay://exploration/world2?switch=replaceall&id=w2_entrance
+  - InteractableId: portal_w2
+    ZoneId: world2
+    NavigationUri: gameplay://exploration/world1?switch=replaceall&id=w1_entrance
