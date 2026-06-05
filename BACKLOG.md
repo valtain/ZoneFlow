@@ -11,6 +11,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | scene_service | features/scene_service/ |
 | bootstrap | features/bootstrap/ |
 | exploration-hud | features/exploration-hud/ |
+| mode-transitionfx | features/mode-transitionfx/ |
 
 ## Explorations
 
@@ -18,3 +19,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | --- | --- | --- |
 | milestone1-impl | closed | service_locator, scene_service, bootstrap |
 | exploration-hud | active | exploration-hud |
+| mode-transitionfx | closed | mode-transitionfx |

@@ -62,101 +62,148 @@ namespace ZoneFlow
         {
             if (request.Host == NavigationHost.Portal)
             {
-                // InteractableRegistry 우선 조회 — Zone 씬 로드 여부와 무관
-                if (Interactables != null && Interactables.TryGetNavigationUri(request.Id, out var registeredUri))
-                {
-                    await NavigateAsync(registeredUri, ct);
-                    return;
-                }
-
-                // Fallback: 현재 로드된 씬에서 Portal 검색 (Registry 미설정 시)
-                var portals = FindObjectsByType<Portal>(FindObjectsSortMode.None);
-                foreach (var portal in portals)
-                {
-                    if (portal.PortalId == request.Id)
-                    {
-                        await NavigateAsync(portal.NavigationUri, ct);
-                        return;
-                    }
-                }
-                Debug.Assert(false, $"[GamePlayDirector] PortalId '{request.Id}'에 해당하는 Portal을 찾지 못했습니다.");
+                await ResolvePortalAsync(request.Id, ct);
                 return;
             }
 
             if (request.Host == NavigationHost.Pop)
             {
+                Debug.Assert(ActiveMode != null, "[GamePlayDirector] Pop: 모드 스택이 비어 있습니다.");
+                if (ActiveMode == null) return;
                 await PopAsync(ct);
+                return;
+            }
+
+            var next = CreateMode(request);
+            if (ActiveMode == null)
+            {
+                await LaunchModeAsync(next, ct);
                 return;
             }
 
             switch (request.Switch)
             {
                 case ModeSwitch.Stack:
-                    await StackAsync(CreateMode(request), ct);
+                    await StackAsync(next, ct);
                     break;
                 case ModeSwitch.ReplaceAll:
-                    await ReplaceAllAsync(CreateMode(request), ct);
+                    await ReplaceAllAsync(next, ct);
                     break;
                 default:
-                    await ReplaceAsync(CreateMode(request), ct);
+                    await ReplaceAsync(next, ct);
                     break;
             }
         }
 
         private async UniTask ReplaceAsync(GamePlayMode next, CancellationToken ct)
         {
-            if (ActiveMode != null)
-            {
-                var current = ActiveMode;
-                _stack.RemoveAt(_stack.Count - 1);
-                await current.StopAndDestroyAsync(ct);
-            }
+            Debug.Assert(ActiveMode != null, "[GamePlayDirector] ReplaceAsync: 모드 스택이 비어 있습니다.");
+            if (ActiveMode == null) return;
+            var current = ActiveMode;
+            await current.ModeOutAsync(ct);
 
-            _stack.Add(next);
-            await next.PlayAsync(this, ct);
+            await using (var _ = await UiService.Transition<FadeScreen>(ct))
+            {
+                _stack.RemoveAt(_stack.Count - 1);
+                await current.StoppedAsync(ct);
+                await current.DestroyedAsync(ct);
+                _stack.Add(next);
+                await next.CreatedAsync(this, ct);
+                await next.PlayedAsync(ct);
+            }
+            await next.ModeInAsync(ct);
         }
 
         private async UniTask StackAsync(GamePlayMode next, CancellationToken ct)
         {
-            if (ActiveMode != null)
-                await ActiveMode.SleepAsync(ct);
+            Debug.Assert(ActiveMode != null, "[GamePlayDirector] StackAsync: 모드 스택이 비어 있습니다.");
+            if (ActiveMode == null) return;
+            var current = ActiveMode;
+            await current.ModeOutAsync(ct);
 
-            _stack.Add(next);
-            await next.PlayAsync(this, ct);
+            await using (var _ = await UiService.Transition<FadeScreen>(ct))
+            {
+                await current.SleptAsync(ct);
+                _stack.Add(next);
+                await next.CreatedAsync(this, ct);
+                await next.PlayedAsync(ct);
+            }
+            await next.ModeInAsync(ct);
         }
 
         private async UniTask ReplaceAllAsync(GamePlayMode next, CancellationToken ct)
         {
-            // ① Active 모드 ModeOut 포함 정리
-            if (ActiveMode != null)
-            {
-                var current = ActiveMode;
-                _stack.RemoveAt(_stack.Count - 1);
-                await current.StopAndDestroyAsync(ct);
-            }
+            Debug.Assert(ActiveMode != null, "[GamePlayDirector] ReplaceAllAsync: 모드 스택이 비어 있습니다.");
+            if (ActiveMode == null) return;
+            var active = ActiveMode;
+            await active.ModeOutAsync(ct);
 
-            // ② Slept 모드들 ModeOut 없이 정리 (이미 sleep 시 ModeOut 완료)
-            for (int i = _stack.Count - 1; i >= 0; i--)
+            await using (var _ = await UiService.Transition<FadeScreen>(ct))
             {
-                await _stack[i].DestroySleptAsync(ct);
+                for (int i = _stack.Count - 1; i >= 0; i--)
+                {
+                    await _stack[i].StoppedAsync(ct);
+                    await _stack[i].DestroyedAsync(ct);
+                }
+                _stack.Clear();
+                _stack.Add(next);
+                await next.CreatedAsync(this, ct);
+                await next.PlayedAsync(ct);
             }
-            _stack.Clear();
-
-            _stack.Add(next);
-            await next.PlayAsync(this, ct);
+            await next.ModeInAsync(ct);
         }
 
         private async UniTask PopAsync(CancellationToken ct)
         {
-            Debug.Assert(_stack.Count > 0, "[GamePlayDirector] PopAsync: 모드 스택이 비어 있습니다.");
-            if (_stack.Count == 0) return;
-
+            Debug.Assert(ActiveMode != null, "[GamePlayDirector] PopAsync: 모드 스택이 비어 있습니다.");
+            if (ActiveMode == null) return;
             var current = ActiveMode;
-            _stack.RemoveAt(_stack.Count - 1);
-            await current.StopAndDestroyAsync(ct);
+            await current.ModeOutAsync(ct);
 
+            await using (var _ = await UiService.Transition<FadeScreen>(ct))
+            {
+                _stack.RemoveAt(_stack.Count - 1);
+                await current.StoppedAsync(ct);
+                await current.DestroyedAsync(ct);
+                var previous = ActiveMode;
+                if (previous != null)
+                    await previous.ResumedAsync(ct);
+            }
             if (ActiveMode != null)
-                await ActiveMode.ResumeAsync(ct);
+                await ActiveMode.ModeInAsync(ct);
+        }
+
+        private async UniTask ResolvePortalAsync(string portalId, CancellationToken ct)
+        {
+            // InteractableRegistry 우선 조회 — Zone 씬 로드 여부와 무관
+            if (Interactables != null && Interactables.TryGetNavigationUri(portalId, out var registeredUri))
+            {
+                await NavigateAsync(registeredUri, ct);
+                return;
+            }
+
+            // Fallback: 현재 로드된 씬에서 Portal 검색 (Registry 미설정 시)
+            var portals = FindObjectsByType<Portal>(FindObjectsSortMode.None);
+            foreach (var portal in portals)
+            {
+                if (portal.PortalId == portalId)
+                {
+                    await NavigateAsync(portal.NavigationUri, ct);
+                    return;
+                }
+            }
+            Debug.Assert(false, $"[GamePlayDirector] PortalId '{portalId}'에 해당하는 Portal을 찾지 못했습니다.");
+        }
+
+        private async UniTask LaunchModeAsync(GamePlayMode next, CancellationToken ct)
+        {
+            await using (var _ = await UiService.Transition<FadeScreen>(ct))
+            {
+                _stack.Add(next);
+                await next.CreatedAsync(this, ct);
+                await next.PlayedAsync(ct);
+            }
+            await next.ModeInAsync(ct);
         }
 
         private GamePlayMode CreateMode(NavigationRequest request)

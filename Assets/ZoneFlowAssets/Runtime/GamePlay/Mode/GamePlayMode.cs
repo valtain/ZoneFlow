@@ -18,7 +18,7 @@ namespace ZoneFlow
         /// <summary>이 모드의 초기 스폰 포인트 ID.</summary>
         protected string SpawnPointId { get; }
 
-        /// <summary>로드된 Zone 인스턴스. PlayAsync 이후에 유효하다.</summary>
+        /// <summary>로드된 Zone 인스턴스. PlayedAsync 이후에 유효하다.</summary>
         protected Zone Zone { get; private set; }
 
         /// <summary>ZoneAsset과 초기 스폰 포인트 ID를 주입하여 모드를 생성한다.</summary>
@@ -29,76 +29,71 @@ namespace ZoneFlow
             State = ModeState.Created;
         }
 
-        /// <summary>모드를 시작한다. Created → Played → ModeIn → Active 순으로 전이한다.</summary>
-        internal async UniTask PlayAsync(GamePlayDirector director, CancellationToken ct)
+        // ── 상태 전이 메서드 (Director가 호출, 상태 하나당 함수 하나) ─────────────────
+
+        /// <summary>Created 상태. Director와 모드를 초기화한다.</summary>
+        internal async UniTask CreatedAsync(GamePlayDirector director, CancellationToken ct)
         {
             Director = director;
-
             State = ModeState.Created;
             await OnCreatedAsync(ct);
+        }
 
+        /// <summary>Played 상태. Zone을 로드하고 플레이어를 배치한다.</summary>
+        internal async UniTask PlayedAsync(CancellationToken ct)
+        {
             State = ModeState.Played;
             if (ZoneAsset != null)
-                Zone = await director.ZoneRegistry.AcquireAsync(ZoneAsset, ct);
+                Zone = await Director.ZoneRegistry.AcquireAsync(ZoneAsset, ct);
             await OnPlayedAsync(ct);
+        }
 
-            await UniTask.Yield();
+        /// <summary>ModeIn 상태. 진입 연출 후 Active로 전이한다.</summary>
+        internal async UniTask ModeInAsync(CancellationToken ct)
+        {
             State = ModeState.ModeIn;
             await OnModeInAsync(ct);
-
             State = ModeState.Active;
         }
 
-        /// <summary>모드를 슬립 상태로 전환한다. Active → ModeOut → Slept 순으로 전이한다.</summary>
-        internal async UniTask SleepAsync(CancellationToken ct)
+        /// <summary>ModeOut 상태. 퇴장 연출을 수행한다.</summary>
+        internal async UniTask ModeOutAsync(CancellationToken ct)
         {
             State = ModeState.ModeOut;
             await OnModeOutAsync(ct);
+        }
 
+        /// <summary>Slept 상태. 슬립 처리를 수행한다.</summary>
+        internal async UniTask SleptAsync(CancellationToken ct)
+        {
             State = ModeState.Slept;
             await OnSleptAsync(ct);
         }
 
-        /// <summary>슬립 상태의 모드를 재개한다. Slept → Resumed → ModeIn → Active 순으로 전이한다.</summary>
-        internal async UniTask ResumeAsync(CancellationToken ct)
+        /// <summary>Resumed 상태. 재개 처리를 수행한다.</summary>
+        internal async UniTask ResumedAsync(CancellationToken ct)
         {
             State = ModeState.Resumed;
             await OnResumedAsync(ct);
-
-            State = ModeState.ModeIn;
-            await OnModeInAsync(ct);
-
-            State = ModeState.Active;
         }
 
-        /// <summary>슬립 상태의 모드를 ModeOut 없이 소멸시킨다. ReplaceAll에서 슬립 모드 정리에 사용한다.</summary>
-        internal async UniTask DestroySleptAsync(CancellationToken ct)
+        /// <summary>Stopped 상태. Zone을 언로드하고 정리한다.</summary>
+        internal async UniTask StoppedAsync(CancellationToken ct)
         {
             State = ModeState.Stopped;
             await OnStoppedAsync(ct);
-
             if (ZoneAsset != null)
                 await Director.ZoneRegistry.ReleaseAsync(ZoneAsset.ZoneId);
+        }
 
+        /// <summary>Destroyed 상태. 모드를 소멸시킨다.</summary>
+        internal async UniTask DestroyedAsync(CancellationToken ct)
+        {
             State = ModeState.Destroyed;
             await OnDestroyedAsync(ct);
         }
 
-        /// <summary>모드를 중지하고 소멸시킨다. Active → ModeOut → Stopped → Destroyed 순으로 전이한다.</summary>
-        internal async UniTask StopAndDestroyAsync(CancellationToken ct)
-        {
-            State = ModeState.ModeOut;
-            await OnModeOutAsync(ct);
-
-            State = ModeState.Stopped;
-            await OnStoppedAsync(ct);
-
-            if (ZoneAsset != null)
-                await Director.ZoneRegistry.ReleaseAsync(ZoneAsset.ZoneId);
-
-            State = ModeState.Destroyed;
-            await OnDestroyedAsync(ct);
-        }
+        // ── 훅 ────────────────────────────────────────────────────────────────────────
 
         /// <summary>Created 상태 진입 시 호출되는 훅.</summary>
         protected virtual UniTask OnCreatedAsync(CancellationToken ct) => UniTask.CompletedTask;
