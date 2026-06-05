@@ -24,7 +24,7 @@ commit message가 아닌 실제 코드 변경 기반으로 설계 의도 해석.
 
 [포맷] 코드 블록 출력, 날짜 없음, 설계 의도 중심, 명사형 종결, 총 문서량 = 7~8줄
 
-- 최상위: * ZoneFlow Framework 작업 중
+- 최상위: * AI Native Development workspace 구축 작업 중
 - 구조 예
 
 ```text
