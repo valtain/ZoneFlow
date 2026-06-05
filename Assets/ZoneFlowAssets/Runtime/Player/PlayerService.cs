@@ -25,9 +25,13 @@ namespace ZoneFlow.Player
             Debug.Assert(_playerPrefab != null, "[PlayerService] _playerPrefab이 할당되지 않았습니다.");
 
             if (Player == null)
+            {
                 Player = Instantiate(_playerPrefab, sp.SpawnTransform.position, sp.SpawnTransform.rotation);
+            }
             else
-                Player.transform.SetPositionAndRotation(sp.SpawnTransform.position, sp.SpawnTransform.rotation);
+            {
+                Player.Teleport(sp.SpawnTransform.position, sp.SpawnTransform.rotation);
+            }
 
             _spawnCooldownUntil = Time.time + _spawnCooldown;
         }

@@ -61,6 +61,8 @@ namespace ZoneFlow.Player
         {
             _inTopHemisphere  = true;
             _timeInHemisphere = 100f;
+            _lastRawInput     = Vector3.zero;
+            MoveDirection     = Vector3.zero;
         }
 
         /// <summary>

@@ -21,6 +21,16 @@ namespace ZoneFlow.Player
         private PlayerContext      _ctx;
         private PlayerStateMachine _stateMachine;
 
+        public void Teleport(Vector3 position, Quaternion rotation)
+        {
+            var cc = GetComponent<CharacterController>();
+            cc.enabled = false;
+            transform.SetPositionAndRotation(position, rotation);
+            cc.enabled = true;
+            _ctx.Resolver.Reset();
+            _ctx.Rotation.LockOneFrame();
+        }
+
         private void Awake()
         {
             if (MainCamera == null)

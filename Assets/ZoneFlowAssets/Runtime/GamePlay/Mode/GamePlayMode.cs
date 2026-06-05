@@ -42,6 +42,7 @@ namespace ZoneFlow
                 Zone = await director.ZoneRegistry.AcquireAsync(ZoneAsset, ct);
             await OnPlayedAsync(ct);
 
+            await UniTask.Yield();
             State = ModeState.ModeIn;
             await OnModeInAsync(ct);
 

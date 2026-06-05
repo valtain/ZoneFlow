@@ -18,7 +18,7 @@ namespace ZoneFlow
         /// <summary>모드 진입 시 패널을 Overlay 레이어에 표시한다.</summary>
         protected override async UniTask OnModeInAsync(CancellationToken ct)
         {
-            if (ShellPanelRegistry.TryGetPrefab(PanelId, out var prefab))
+            if (UiService.Instance.Panels != null && UiService.Instance.Panels.TryGetPanel(PanelId, out var prefab))
                 await UiService.Instance.SetOverlayAsync(prefab, ct);
         }
 

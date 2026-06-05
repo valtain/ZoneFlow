@@ -10,6 +10,8 @@ namespace ZoneFlow
     /// </summary>
     public sealed class UiService : MonoService<UiService>
     {
+        [field: SerializeField] public PanelCatalog Panels { get; private set; } = default;
+
         [field: SerializeField] public UiNormalLayer Normal { get; private set; } = default;
         [field: SerializeField] public UiMainViewLayer MainView { get; private set; } = default;
         [field: SerializeField] public UiOverlayLayer Overlay { get; private set; } = default;
