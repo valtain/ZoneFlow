@@ -102,15 +102,15 @@ namespace ZoneFlow
             var current = ActiveMode;
             await current.ModeOutAsync(ct);
 
-            await using (var _ = await UiService.Transition<FadeScreen>(ct))
-            {
-                _stack.RemoveAt(_stack.Count - 1);
-                await current.StoppedAsync(ct);
-                await current.DestroyedAsync(ct);
-                _stack.Add(next);
-                await next.CreatedAsync(this, ct);
-                await next.PlayedAsync(ct);
-            }
+            var scope = await SelectTransitionAsync(current, next, ct);
+            _stack.RemoveAt(_stack.Count - 1);
+            await current.StoppedAsync(ct);
+            await current.DestroyedAsync(ct);
+            _stack.Add(next);
+            await next.CreatedAsync(this, ct);
+            await next.PlayedAsync(ct);
+            if (scope != null) await scope.DisposeAsync();
+
             await next.ModeInAsync(ct);
         }
 
@@ -121,13 +121,13 @@ namespace ZoneFlow
             var current = ActiveMode;
             await current.ModeOutAsync(ct);
 
-            await using (var _ = await UiService.Transition<FadeScreen>(ct))
-            {
-                await current.SleptAsync(ct);
-                _stack.Add(next);
-                await next.CreatedAsync(this, ct);
-                await next.PlayedAsync(ct);
-            }
+            var scope = await SelectTransitionAsync(current, next, ct);
+            await current.SleptAsync(ct);
+            _stack.Add(next);
+            await next.CreatedAsync(this, ct);
+            await next.PlayedAsync(ct);
+            if (scope != null) await scope.DisposeAsync();
+
             await next.ModeInAsync(ct);
         }
 
@@ -138,18 +138,18 @@ namespace ZoneFlow
             var active = ActiveMode;
             await active.ModeOutAsync(ct);
 
-            await using (var _ = await UiService.Transition<FadeScreen>(ct))
+            var scope = await SelectTransitionAsync(active, next, ct);
+            for (int i = _stack.Count - 1; i >= 0; i--)
             {
-                for (int i = _stack.Count - 1; i >= 0; i--)
-                {
-                    await _stack[i].StoppedAsync(ct);
-                    await _stack[i].DestroyedAsync(ct);
-                }
-                _stack.Clear();
-                _stack.Add(next);
-                await next.CreatedAsync(this, ct);
-                await next.PlayedAsync(ct);
+                await _stack[i].StoppedAsync(ct);
+                await _stack[i].DestroyedAsync(ct);
             }
+            _stack.Clear();
+            _stack.Add(next);
+            await next.CreatedAsync(this, ct);
+            await next.PlayedAsync(ct);
+            if (scope != null) await scope.DisposeAsync();
+
             await next.ModeInAsync(ct);
         }
 
@@ -160,15 +160,16 @@ namespace ZoneFlow
             var current = ActiveMode;
             await current.ModeOutAsync(ct);
 
-            await using (var _ = await UiService.Transition<FadeScreen>(ct))
-            {
-                _stack.RemoveAt(_stack.Count - 1);
-                await current.StoppedAsync(ct);
-                await current.DestroyedAsync(ct);
-                var previous = ActiveMode;
-                if (previous != null)
-                    await previous.ResumedAsync(ct);
-            }
+            var resumeTarget = _stack.Count >= 2 ? _stack[^2] : null;
+            var scope = await SelectTransitionAsync(current, resumeTarget, ct);
+            _stack.RemoveAt(_stack.Count - 1);
+            await current.StoppedAsync(ct);
+            await current.DestroyedAsync(ct);
+            var previous = ActiveMode;
+            if (previous != null)
+                await previous.ResumedAsync(ct);
+            if (scope != null) await scope.DisposeAsync();
+
             if (ActiveMode != null)
                 await ActiveMode.ModeInAsync(ct);
         }
@@ -197,13 +198,25 @@ namespace ZoneFlow
 
         private async UniTask LaunchModeAsync(GamePlayMode next, CancellationToken ct)
         {
-            await using (var _ = await UiService.Transition<FadeScreen>(ct))
-            {
-                _stack.Add(next);
-                await next.CreatedAsync(this, ct);
-                await next.PlayedAsync(ct);
-            }
+            var scope = await SelectTransitionAsync(null, next, ct);
+            _stack.Add(next);
+            await next.CreatedAsync(this, ct);
+            await next.PlayedAsync(ct);
+            if (scope != null) await scope.DisposeAsync();
+
             await next.ModeInAsync(ct);
+        }
+
+        /// <summary>
+        /// prevMode/nextMode를 보고 전환 효과를 선택한다.
+        /// 어느 쪽이든 PanelMode면 전환 없음(null). 그 외에는 InstantBlackScreen.
+        /// </summary>
+        private static async UniTask<TransitionFxScope> SelectTransitionAsync(
+            GamePlayMode prevMode, GamePlayMode nextMode, CancellationToken ct)
+        {
+            if (prevMode is PanelMode || nextMode is PanelMode)
+                return null;
+            return await UiService.Transition<InstantBlackScreen>(ct);
         }
 
         private GamePlayMode CreateMode(NavigationRequest request)

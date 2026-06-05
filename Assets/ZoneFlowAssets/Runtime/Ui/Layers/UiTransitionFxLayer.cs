@@ -15,6 +15,8 @@ namespace ZoneFlow
         [SerializeField] private UiBgCover _bgCover = default;
         [Header("FadeScreen")]
         [SerializeField] private FadeScreen _fadeScreen = new();
+        [Header("InstantBlackScreen")]
+        [SerializeField] private InstantBlackScreen _instantBlackScreen = new();
 
         private int _count;
         private IUiTransitionEffect _activeEffect;
@@ -24,6 +26,7 @@ namespace ZoneFlow
         {
             _effects = new Dictionary<Type, IUiTransitionEffect>();
             Register(_fadeScreen);
+            Register(_instantBlackScreen);
         }
 
         /// <summary>효과를 등록하고 초기화한다.</summary>
