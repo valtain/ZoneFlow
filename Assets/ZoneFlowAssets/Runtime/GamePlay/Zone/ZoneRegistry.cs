@@ -40,7 +40,7 @@ namespace ZoneFlow
 
             if (asset.IsSceneBased)
             {
-                await SceneService.Instance.LoadSceneAdditiveAsync(asset.SceneName);
+                await SceneService.Instance.LoadSceneAdditiveAsync(asset.SceneName, ct);
                 zone = FindZoneInScene(asset.SceneName);
                 Debug.Assert(zone != null, $"[ZoneRegistry] 씬 '{asset.SceneName}'에서 Zone 컴포넌트를 찾지 못했습니다.");
                 isPrefabBased = false;
@@ -81,7 +81,7 @@ namespace ZoneFlow
             else
             {
                 var sceneName = handle.Zone != null ? handle.Zone.gameObject.scene.name : zoneId;
-                await SceneService.Instance.UnloadSceneAsync(sceneName);
+                await SceneService.Instance.UnloadSceneAsync(sceneName, CancellationToken.None);
             }
         }
 

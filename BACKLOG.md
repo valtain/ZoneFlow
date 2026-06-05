@@ -20,3 +20,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | milestone1-impl | closed | service_locator, scene_service, bootstrap |
 | exploration-hud | active | exploration-hud |
 | mode-transitionfx | closed | mode-transitionfx |
+| menu-world1-sky-gap | closed | #18, #19, #20 |

@@ -1,3 +1,4 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
@@ -16,14 +17,11 @@ namespace ZoneFlow
         }
 
         /// <summary>지정된 씬을 Additive 모드로 로드한다.</summary>
-        public UniTask LoadSceneAdditiveAsync(string sceneName) =>
-            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive).ToUniTask();
+        internal UniTask LoadSceneAdditiveAsync(string sceneName, CancellationToken ct) =>
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive).ToUniTask(cancellationToken: ct);
 
         /// <summary>지정된 씬을 언로드한다.</summary>
-        public UniTask UnloadSceneAsync(string sceneName) =>
-            SceneManager.UnloadSceneAsync(sceneName).ToUniTask();
-
-        /// <summary>SceneType에 따른 Prerequisites 로드. 현재는 EnsureCoreServicesLoaded로 위임한다.</summary>
-        internal UniTask BootstrapAsync(SceneType _) => EnsureCoreServicesLoaded();
+        internal UniTask UnloadSceneAsync(string sceneName, CancellationToken ct) =>
+            SceneManager.UnloadSceneAsync(sceneName).ToUniTask(cancellationToken: ct);
     }
 }

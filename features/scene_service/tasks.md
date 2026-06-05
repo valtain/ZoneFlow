@@ -2,13 +2,16 @@
 
 | # | 태스크 | 상태 |
 | --- | --- | --- |
-| 1 | `SceneSo` ScriptableObject 생성 — `so.name` = 빌드 씬 이름 | todo |
-| 2 | `SceneType` enum 확장 — `Standalone / Shell / Zone` | todo |
-| 3 | `SceneService` API 업그레이드 — `SceneSo` + `CancellationToken` 파라미터 적용 | todo |
-| 4 | `SceneService.LoadSceneAdditiveAsync / UnloadSceneAsync` 구현 — SceneManager 래핑 | todo |
-| 5 | `ZoneAsset.SceneName(string)` → `SceneSo` 필드로 교체 | todo |
-| 6 | `ZoneRegistry` — SceneSo API 호출로 업데이트 | todo |
-| 7 | 테스트 씬 파일 생성 — Splash / Intro / World1 / World2 (Zone + SpawnPoint 포함) | todo |
-| 8 | SceneSo 에셋 생성 (4개) + ZoneAssetRegistry 에셋 업데이트 | todo |
-| 9 | Build Settings에 CoreServices / 4개 씬 등록 | todo |
-| 10 | Runtime 테스트 — 씬 기반 로딩으로 전면 업데이트 | todo |
+| 1 | `SceneSo` ScriptableObject 생성 | #21 closed |
+| 2 | `SceneType` enum 확장 — `Standalone / Shell / Zone` | #22 closed |
+| 3 | `SceneService` API — `internal` 접근자 + `CancellationToken` 적용 | #23 |
+| 4 | `SceneService.LoadSceneAdditiveAsync / UnloadSceneAsync` — CT 파라미터 추가 | #24 |
+| 5 | SceneSo 에셋 생성 (CoreServicesSo) | #25 closed |
+| 6 | 테스트 씬 파일 생성 — Splash / Intro / World1 / World2 (Zone + SpawnPoint 포함) | #26 closed |
+| 7 | Build Settings에 CoreServices / 4개 씬 등록 | #27 closed |
+| 8 | Runtime 테스트 — Bootstrap 흐름 및 씬 기반 로딩 검증 | #28 |
+
+> **SceneSo 폐기 결정**: SceneAsset은 Editor-only. CoreServices bootstrap은 static 경로여서
+> 인스턴스 SerializeField 사용 불가. const string 유지가 적절.
+>
+> **SceneType 확장 폐기**: Zone만 의미 있으며 Standalone/Shell 분기 없음.

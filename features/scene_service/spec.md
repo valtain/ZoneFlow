@@ -8,12 +8,14 @@ CoreServices·GamePlayServices Auto-managed 씬 로드 흐름의 진입점.
 ## 주요 컴포넌트
 
 - `SceneType` (enum) — `Standalone` / `Shell` / `Zone`
-- `SceneSo` (ScriptableObject) — 씬 메타데이터; `so.name` = 빌드 씬 이름
+- `SceneSo` (ScriptableObject) — Bootstrap 씬 메타데이터; `so.name` = 빌드 씬 이름
+  - 적용 대상: CoreServices (Bootstrap 씬 전용)
+  - Zone 씬은 ZoneAsset.SceneName(string)이 계속 담당
 - `SceneService : MonoService<SceneService>` — CoreServices 씬에 배치
   - `BootstrapAsync(SceneType, CancellationToken)` — Prerequisites 로드
-  - `LoadSceneAdditiveAsync(SceneSo, CancellationToken)`
-  - `UnloadSceneAsync(SceneSo, CancellationToken)`
-  - `[field: SerializeField]` — CoreServicesSo, GamePlayServicesSo Inspector 연결
+  - `LoadSceneAdditiveAsync(string, CancellationToken)` — internal; ZoneRegistry 호출 경로 유지
+  - `UnloadSceneAsync(string, CancellationToken)` — internal; ZoneRegistry 호출 경로 유지
+  - `[field: SerializeField]` — CoreServicesSo Inspector 연결
 
 ## 데이터 흐름
 
