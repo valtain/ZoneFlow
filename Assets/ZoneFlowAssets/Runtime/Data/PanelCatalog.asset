@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: PanelCatalog
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.PanelCatalog
   _panels:
+  - PanelId: exploration-hud
+    Prefab: {fileID: 3248424465265054513, guid: f6cfbc127cfa8a8458479d238279d3a6, type: 3}
   - PanelId: menu
     Prefab: {fileID: 7440968753012972485, guid: 4cc54ccaebe695a48a3bc63f7ea67a3a, type: 3}

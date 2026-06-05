@@ -28,7 +28,6 @@ namespace ZoneFlow.Player
             transform.SetPositionAndRotation(position, rotation);
             cc.enabled = true;
             _ctx.Resolver.Reset();
-            _ctx.Rotation.LockOneFrame();
         }
 
         private void Awake()

@@ -162,10 +162,10 @@ namespace ZoneFlow.Editor
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 if (prefab == null) continue;
 
-                var panel = prefab.GetComponent<MenuPanel>();
-                if (panel == null) continue;
-
-                entries.Add(new PanelCatalog.Entry { PanelId = MenuPanel.PanelId, Prefab = panel });
+                if (prefab.TryGetComponent<MenuPanel>(out var menuPanel))
+                    entries.Add(new PanelCatalog.Entry { PanelId = MenuPanel.PanelId, Prefab = menuPanel });
+                else if (prefab.TryGetComponent<HudPanel>(out var hudPanel))
+                    entries.Add(new PanelCatalog.Entry { PanelId = HudPanel.PanelId, Prefab = hudPanel });
             }
 
             catalog.SetPanels(entries.ToArray());

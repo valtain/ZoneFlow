@@ -10,8 +10,13 @@ namespace ZoneFlow.Player
 
         [SerializeField] private float _spawnCooldown = 1f;
 
+        [SerializeField] private int _maxHp = 100;
+
         /// <summary>현재 씬에 존재하는 Player 인스턴스. 없으면 null.</summary>
         public PlayerController Player { get; private set; }
+
+        /// <summary>플레이어 수치 스탯. SpawnAt 이후 유효하다.</summary>
+        public PlayerStats Stats { get; private set; }
 
         /// <summary>SpawnAt 이후 스폰 쿨다운이 활성 중이면 true. 이 동안 인터랙션이 차단된다.</summary>
         public bool IsSpawnCooldown => Time.time < _spawnCooldownUntil;
@@ -27,6 +32,7 @@ namespace ZoneFlow.Player
             if (Player == null)
             {
                 Player = Instantiate(_playerPrefab, sp.SpawnTransform.position, sp.SpawnTransform.rotation);
+                Stats = new PlayerStats(_maxHp);
             }
             else
             {

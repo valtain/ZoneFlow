@@ -23,6 +23,22 @@ namespace ZoneFlow
         /// <summary>현재 스택에 있는 팝업의 개수.</summary>
         public int PopupCount => Popup.Count;
 
+        /// <summary>지정한 패널을 MainView 레이어에 인스턴스화한다. 패널은 숨김 상태로 생성된다.</summary>
+        public UniTask<T> SetMainViewAsync<T>(T prefab, CancellationToken ct = default) where T : UiPanel
+            => MainView.SetAsync(prefab, ct);
+
+        /// <summary>MainView 레이어의 현재 패널을 표시한다.</summary>
+        public UniTask ShowMainViewAsync(CancellationToken ct = default)
+            => MainView.ShowAsync(ct);
+
+        /// <summary>MainView 레이어의 현재 패널을 숨긴다.</summary>
+        public UniTask HideMainViewAsync(CancellationToken ct = default)
+            => MainView.HideAsync(ct);
+
+        /// <summary>MainView 레이어의 현재 패널을 파괴한다. 호출 전에 HideMainViewAsync로 퇴장 연출을 완료해야 한다.</summary>
+        public void ClearMainView()
+            => MainView.Clear();
+
         /// <summary>지정한 패널을 Overlay 레이어에 표시한다. 기존 패널은 제거된다.</summary>
         public UniTask<T> SetOverlayAsync<T>(T prefab, CancellationToken ct = default) where T : UiPanel
             => Overlay.SetAsync(prefab, ct);

@@ -2,7 +2,9 @@
     "name": "ZoneFlow.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:c20236a68f036cc4ca9e4460a4e95f4b"
+        "GUID:c20236a68f036cc4ca9e4460a4e95f4b",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:6546d7765b4165b40850b3667f981c26"
     ],
     "includePlatforms": [
         "Editor"

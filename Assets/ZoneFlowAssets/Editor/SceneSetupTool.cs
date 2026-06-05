@@ -1,7 +1,9 @@
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace ZoneFlow.Editor
 {
@@ -28,12 +30,16 @@ namespace ZoneFlow.Editor
         [MenuItem("ZoneFlow/Setup/Create MenuPanel Prefab")]
         public static void CreateMenuPrefab() => BuildMenuPanelPrefab();
 
+        [MenuItem("ZoneFlow/Setup/Create HudPanel Prefab")]
+        public static void CreateHudPrefab() => BuildHudPanelPrefab();
+
         [MenuItem("ZoneFlow/Setup/Setup All")]
         public static void SetupAll()
         {
             SetupWorld1();
             SetupWorld2();
             CreateMenuPrefab();
+            CreateHudPrefab();
         }
 
         // ──────────────────────────────────────────────────────────────────
@@ -185,6 +191,91 @@ namespace ZoneFlow.Editor
                 if (zone != null) return root;
             }
             return null;
+        }
+
+        // ──────────────────────────────────────────────────────────────────
+        // HudPanel Prefab 생성
+        // ──────────────────────────────────────────────────────────────────
+
+        private static void BuildHudPanelPrefab()
+        {
+            if (!AssetDatabase.IsValidFolder(PrefabDir))
+            {
+                AssetDatabase.CreateFolder("Assets/ZoneFlowAssets", "Prefabs");
+                AssetDatabase.Refresh();
+            }
+
+            var prefabPath = $"{PrefabDir}/HudPanel.prefab";
+
+            // ── Root ──────────────────────────────────────────────────────
+            var root = new GameObject("HudPanel");
+            var rootRect = root.AddComponent<RectTransform>();
+            rootRect.anchorMin = Vector2.zero;
+            rootRect.anchorMax = Vector2.one;
+            rootRect.offsetMin = rootRect.offsetMax = Vector2.zero;
+            var hudPanel = root.AddComponent<HudPanel>();
+
+            // ── HealthBarContainer (좌하단) ────────────────────────────────
+            var healthBarContainer = new GameObject("HealthBarContainer");
+            healthBarContainer.transform.SetParent(root.transform, false);
+            var healthBarRect = healthBarContainer.AddComponent<RectTransform>();
+            healthBarRect.anchorMin = healthBarRect.anchorMax = healthBarRect.pivot = Vector2.zero;
+            healthBarRect.anchoredPosition = new Vector2(40f, 40f);
+            healthBarRect.sizeDelta = new Vector2(300f, 40f);
+
+            var healthBg = new GameObject("HealthBg");
+            healthBg.transform.SetParent(healthBarContainer.transform, false);
+            var healthBgRect = healthBg.AddComponent<RectTransform>();
+            healthBgRect.anchorMin = Vector2.zero;
+            healthBgRect.anchorMax = Vector2.one;
+            healthBgRect.offsetMin = healthBgRect.offsetMax = Vector2.zero;
+            healthBg.AddComponent<Image>().color = new Color(0.1f, 0.1f, 0.1f, 0.75f);
+
+            var healthFillGo = new GameObject("HealthFill");
+            healthFillGo.transform.SetParent(healthBarContainer.transform, false);
+            var healthFillRect = healthFillGo.AddComponent<RectTransform>();
+            healthFillRect.anchorMin = Vector2.zero;
+            healthFillRect.anchorMax = Vector2.one;
+            healthFillRect.offsetMin = healthFillRect.offsetMax = Vector2.zero;
+            var healthFill = healthFillGo.AddComponent<Image>();
+            healthFill.color = new Color(0.15f, 0.75f, 0.2f, 1f);
+            healthFill.type = Image.Type.Filled;
+            healthFill.fillMethod = Image.FillMethod.Horizontal;
+            healthFill.fillAmount = 1f;
+
+            // ── ZoneInfoContainer (우상단) ─────────────────────────────────
+            var zoneInfoContainer = new GameObject("ZoneInfoContainer");
+            zoneInfoContainer.transform.SetParent(root.transform, false);
+            var zoneInfoRect = zoneInfoContainer.AddComponent<RectTransform>();
+            zoneInfoRect.anchorMin = zoneInfoRect.anchorMax = zoneInfoRect.pivot = Vector2.one;
+            zoneInfoRect.anchoredPosition = new Vector2(-40f, -40f);
+            zoneInfoRect.sizeDelta = new Vector2(240f, 40f);
+
+            var zoneLabelGo = new GameObject("ZoneNameLabel");
+            zoneLabelGo.transform.SetParent(zoneInfoContainer.transform, false);
+            var zoneLabelRect = zoneLabelGo.AddComponent<RectTransform>();
+            zoneLabelRect.anchorMin = Vector2.zero;
+            zoneLabelRect.anchorMax = Vector2.one;
+            zoneLabelRect.offsetMin = zoneLabelRect.offsetMax = Vector2.zero;
+            var zoneTmp = zoneLabelGo.AddComponent<TextMeshProUGUI>();
+            zoneTmp.text = "Zone";
+            zoneTmp.fontSize = 24;
+            zoneTmp.alignment = TextAlignmentOptions.Right;
+            zoneTmp.color = Color.white;
+
+            // ── SerializeField 연결 ───────────────────────────────────────
+            var so = new SerializedObject(hudPanel);
+            so.FindProperty("_healthBarContainer").objectReferenceValue = healthBarRect;
+            so.FindProperty("_healthFill").objectReferenceValue = healthFill;
+            so.FindProperty("_zoneInfoContainer").objectReferenceValue = zoneInfoRect;
+            so.FindProperty("_zoneNameLabel").objectReferenceValue = zoneTmp;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+            Object.DestroyImmediate(root);
+
+            Debug.Log($"[SceneSetupTool] HudPanel 프리팹 생성: {prefabPath}");
+            Selection.activeObject = prefab;
         }
 
         // ──────────────────────────────────────────────────────────────────
