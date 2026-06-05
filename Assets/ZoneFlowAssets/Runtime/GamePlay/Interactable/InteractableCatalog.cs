@@ -1,20 +1,20 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ZoneFlow
 {
     /// <summary>
-    /// IInteractable 객체를 InteractableId로 조회하는 ScriptableObject 레지스트리.
+    /// IInteractable 객체를 InteractableId로 조회하는 카탈로그 ScriptableObject.
     /// Zone 씬이 로드되어 있지 않아도 상호작용 목적지를 조회할 수 있다.
     ///
     /// 구조 원칙: 등록되는 IInteractable은 반드시 Zone GameObject의 자식이어야 한다.
     /// Zone 밖에 배치된 IInteractable은 Zone 생명주기 관리 대상이 아니므로 등록 불가.
     ///
-    /// RegistryBaker가 Zone 씬을 스캔하여 자동 갱신한다.
+    /// CatalogBaker가 Zone 씬을 스캔하여 자동 갱신한다.
     /// </summary>
-    [CreateAssetMenu(fileName = "InteractableRegistry",
-                     menuName  = "ZoneFlow/GamePlay/InteractableRegistry")]
-    public class InteractableRegistry : ScriptableObject
+    [CreateAssetMenu(fileName = "InteractableCatalog", menuName = "ZoneFlow/GamePlay/InteractableCatalog")]
+    public class InteractableCatalog : ScriptableObject, ISerializationCallbackReceiver
     {
         [Serializable]
         public struct Entry
@@ -28,30 +28,27 @@ namespace ZoneFlow
         }
 
         [SerializeField] private Entry[] _interactables = Array.Empty<Entry>();
+        private Dictionary<string, Entry> _lookup = new();
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            _lookup = new(_interactables?.Length ?? 0);
+            if (_interactables == null) return;
+            foreach (var e in _interactables)
+                if (!string.IsNullOrEmpty(e.InteractableId))
+                    _lookup[e.InteractableId] = e;
+        }
 
         /// <summary>InteractableId로 항목을 조회한다.</summary>
         public bool TryGetEntry(string interactableId, out Entry entry)
-        {
-            if (!string.IsNullOrEmpty(interactableId) && _interactables != null)
-            {
-                foreach (var e in _interactables)
-                {
-                    if (e.InteractableId == interactableId)
-                    {
-                        entry = e;
-                        return true;
-                    }
-                }
-            }
-            entry = default;
-            return false;
-        }
+            => _lookup.TryGetValue(interactableId, out entry);
 
         /// <summary>InteractableId로 NavigationUri를 조회한다 (Portal 전용 편의 메서드).</summary>
         public bool TryGetNavigationUri(string interactableId, out string navigationUri)
         {
-            if (TryGetEntry(interactableId, out var entry) &&
-                !string.IsNullOrEmpty(entry.NavigationUri))
+            if (TryGetEntry(interactableId, out var entry) && !string.IsNullOrEmpty(entry.NavigationUri))
             {
                 navigationUri = entry.NavigationUri;
                 return true;

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec7b55bbdbf0d87498441f6981a7b319, type: 3}
-  m_Name: SpawnPointRegistry
-  m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.SpawnPointRegistry
+  m_Script: {fileID: 11500000, guid: 8d6ec372bf0a98e40939dc8d0d9aa19d, type: 3}
+  m_Name: SpawnPointCatalog
+  m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.SpawnPointCatalog
   _entries:
   - spawnPointId: default
     zoneId: intro
