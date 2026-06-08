@@ -15,7 +15,13 @@ MonoBehaviour:
   _interactables:
   - InteractableId: portal_w1
     ZoneId: world1
-    NavigationUri: gameplay://exploration/world2?switch=replaceall&id=w2_entrance
+    NavigationUri: gameplay://exploration/world_b1?switch=replaceall
+  - InteractableId: portal_w1b
+    ZoneId: world1_b
+    NavigationUri: gameplay://exploration/world2_b?switch=replaceall
   - InteractableId: portal_w2
     ZoneId: world2
     NavigationUri: gameplay://exploration/world1?switch=replaceall&id=w1_entrance
+  - InteractableId: portal_w2b
+    ZoneId: world2_b
+    NavigationUri: gameplay://exploration/world1_b?switch=replaceall

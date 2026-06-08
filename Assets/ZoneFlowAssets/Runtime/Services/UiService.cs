@@ -39,6 +39,13 @@ namespace ZoneFlow
         public void ClearMainView()
             => MainView.Clear();
 
+        /// <summary>
+        /// panel이 현재 MainView 패널이면 Clear한다.
+        /// 이미 다른 패널로 교체된 경우에는 panel만 파괴하고 현재 패널은 유지한다.
+        /// </summary>
+        public void ClearMainViewIfIs(UiPanel panel)
+            => MainView.ClearIfIs(panel);
+
         /// <summary>지정한 패널을 Overlay 레이어에 표시한다. 기존 패널은 제거된다.</summary>
         public UniTask<T> SetOverlayAsync<T>(T prefab, CancellationToken ct = default) where T : UiPanel
             => Overlay.SetAsync(prefab, ct);

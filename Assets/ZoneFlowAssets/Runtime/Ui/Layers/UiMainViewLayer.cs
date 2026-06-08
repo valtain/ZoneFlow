@@ -37,5 +37,23 @@ namespace ZoneFlow
             Destroy(_current.gameObject);
             _current = null;
         }
+
+        /// <summary>
+        /// panel이 현재 패널이면 Clear()와 동일하게 동작한다.
+        /// panel이 이미 다른 패널로 교체된 경우에는 panel만 직접 파괴하고 _current는 건드리지 않는다.
+        /// </summary>
+        public void ClearIfIs(UiPanel panel)
+        {
+            if (panel == null) return;
+            if (_current == panel)
+            {
+                Destroy(_current.gameObject);
+                _current = null;
+            }
+            else
+            {
+                Destroy(panel.gameObject);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
@@ -55,6 +56,50 @@ namespace ZoneFlow.Tests.Runtime
                 await d.NavigateAsync("gameplay://exploration/world2", ct);
                 AssertMode<ExplorationMode>("World2", d, expectedStack: 1);
             });
+
+        /// <summary>
+        /// w1 → w1_b → w2_b → w2 → w1 존 사이클 내비게이션 검증.
+        /// 각 단계에서 올바른 Zone이 활성화되어 있는지 확인한다.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator Navigate_ZoneCycle_W1_W1b_W2b_W2_W1() =>
+            UniTask.ToCoroutine(async () =>
+            {
+                var d = GamePlayDirector.Instance;
+                var ct = CancellationToken.None;
+
+                // world1 진입
+                await d.NavigateAsync("gameplay://exploration/world1?switch=replaceall", ct);
+                AssertMode<ExplorationMode>("World1", d, expectedStack: 1);
+                Assert.AreEqual("world1", FindActiveZone()?.ZoneId, "[World1] ZoneId 불일치");
+
+                // world1_b 진입 (같은 씬 내 다른 Zone)
+                await d.NavigateAsync("gameplay://exploration/world1_b", ct);
+                AssertMode<ExplorationMode>("World1_b", d, expectedStack: 1);
+                Assert.AreEqual("world1_b", FindActiveZone()?.ZoneId, "[World1_b] ZoneId 불일치");
+
+                // world2_b 진입 (다른 씬)
+                await d.NavigateAsync("gameplay://exploration/world2_b", ct);
+                AssertMode<ExplorationMode>("World2_b", d, expectedStack: 1);
+                Assert.AreEqual("world2_b", FindActiveZone()?.ZoneId, "[World2_b] ZoneId 불일치");
+
+                // world2 진입 (같은 씬 내 다른 Zone)
+                await d.NavigateAsync("gameplay://exploration/world2", ct);
+                AssertMode<ExplorationMode>("World2", d, expectedStack: 1);
+                Assert.AreEqual("world2", FindActiveZone()?.ZoneId, "[World2] ZoneId 불일치");
+
+                // world1 복귀
+                await d.NavigateAsync("gameplay://exploration/world1?switch=replaceall", ct);
+                AssertMode<ExplorationMode>("World1 (복귀)", d, expectedStack: 1);
+                Assert.AreEqual("world1", FindActiveZone()?.ZoneId, "[World1 복귀] ZoneId 불일치");
+            });
+
+        /// <summary>현재 씬에서 활성화된 Zone 중 첫 번째를 반환한다.</summary>
+        private static Zone FindActiveZone()
+        {
+            var zones = Object.FindObjectsByType<Zone>(FindObjectsSortMode.None);
+            return zones.Length > 0 ? zones[0] : null;
+        }
 
         private static void AssertMode<T>(string step, GamePlayDirector d, int expectedStack)
             where T : GamePlayMode

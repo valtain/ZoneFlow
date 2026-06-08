@@ -41,6 +41,9 @@ namespace ZoneFlow
 
             Debug.Assert(defaultSp != null, $"[Zone:{ZoneId}] SpawnPoint가 하나도 없습니다.");
             DefaultSpawnPoint = defaultSp;
+
+            ZoneRegistry.Register?.Invoke(this);
+            gameObject.SetActive(false);
         }
 
         /// <summary>ID로 스폰 포인트를 반환한다. 없으면 DefaultSpawnPoint를 반환한다.</summary>

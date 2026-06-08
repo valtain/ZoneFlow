@@ -35,7 +35,9 @@ namespace ZoneFlow
         public void Initialize(ZoneAsset zone)
         {
             if (_zoneNameLabel != null)
-                _zoneNameLabel.text = zone?.ZoneId ?? string.Empty;
+                _zoneNameLabel.text = zone != null
+                    ? $"{zone.ZoneId}@{zone.SceneName}"
+                    : string.Empty;
         }
 
         protected override async UniTask OnShowAsync(CancellationToken ct)

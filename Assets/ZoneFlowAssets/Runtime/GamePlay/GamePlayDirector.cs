@@ -36,6 +36,12 @@ namespace ZoneFlow
             ZoneRegistry = new ZoneRegistry();
         }
 
+        protected override void OnDestroy()
+        {
+            ZoneRegistry.Teardown();
+            base.OnDestroy();
+        }
+
         /// <summary>
         /// Bootstrap 씬에서 진입할 때 호출한다. CoreServices를 로드하고 Bootstrap 씬을 언로드한 뒤 내비게이션을 실행한다.
         /// ColdStartup / Bootstrap / DevBootstrap 에서만 호출한다.
@@ -100,14 +106,17 @@ namespace ZoneFlow
             await current.ModeOutAsync(ct);
 
             var scope = await SelectTransitionAsync(current, next, ct);
-            _stack.RemoveAt(_stack.Count - 1);
-            await current.StoppedAsync(ct);
-            await current.DestroyedAsync(ct);
-            _stack.Add(next);
+
+            // next Zone을 먼저 획득한 뒤 current를 해제한다.
+            // 같은 씬 내 Zone 이동 시 current Release가 씬을 언로드하는 것을 방지한다.
             await next.CreatedAsync(this, ct);
             await next.PlayedAsync(ct);
-            if (scope != null) await scope.DisposeAsync();
 
+            _stack[^1] = next;
+            await current.StoppedAsync(ct);
+            await current.DestroyedAsync(ct);
+
+            if (scope != null) await scope.DisposeAsync();
             await next.ModeInAsync(ct);
         }
 
@@ -136,17 +145,23 @@ namespace ZoneFlow
             await active.ModeOutAsync(ct);
 
             var scope = await SelectTransitionAsync(active, next, ct);
-            for (int i = _stack.Count - 1; i >= 0; i--)
-            {
-                await _stack[i].StoppedAsync(ct);
-                await _stack[i].DestroyedAsync(ct);
-            }
-            _stack.Clear();
-            _stack.Add(next);
+
+            // next Zone을 먼저 획득한 뒤 스택 전체를 해제한다.
+            // 같은 씬 내 Zone 이동 시 current Release가 씬을 언로드하는 것을 방지한다.
             await next.CreatedAsync(this, ct);
             await next.PlayedAsync(ct);
-            if (scope != null) await scope.DisposeAsync();
 
+            var oldStack = new List<GamePlayMode>(_stack);
+            _stack.Clear();
+            _stack.Add(next);
+
+            for (int i = oldStack.Count - 1; i >= 0; i--)
+            {
+                await oldStack[i].StoppedAsync(ct);
+                await oldStack[i].DestroyedAsync(ct);
+            }
+
+            if (scope != null) await scope.DisposeAsync();
             await next.ModeInAsync(ct);
         }
 

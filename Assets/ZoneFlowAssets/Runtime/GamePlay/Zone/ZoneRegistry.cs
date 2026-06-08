@@ -17,65 +17,78 @@ namespace ZoneFlow
 
         private readonly Dictionary<string, ZoneHandle> _handles = new();
 
-        internal ZoneRegistry() { }
+        /// <summary>Zone.Awake()에서 호출한다. ZoneRegistry가 초기화된 뒤에만 유효하다.</summary>
+        internal static System.Action<Zone> Register;
 
-        /// <summary>ZoneAsset을 로드하거나 이미 로드된 Zone의 참조 카운트를 증가시켜 반환한다.</summary>
+        internal ZoneRegistry()
+        {
+            Register = zone =>
+            {
+                if (!_handles.ContainsKey(zone.ZoneId))
+                    _handles[zone.ZoneId] = new ZoneHandle { Zone = zone, RefCount = 0 };
+            };
+        }
+
+        internal void Teardown() => Register = null;
+
+        /// <summary>Zone을 획득한다. 씬이 미로드 상태면 로드하고 Zone을 활성화한 뒤 반환한다. 이미 획득 중이면 참조 카운트만 증가시킨다.</summary>
         public async UniTask<Zone> AcquireAsync(ZoneAsset asset, CancellationToken ct)
         {
-            if (_handles.TryGetValue(asset.ZoneId, out var handle))
+            if (_handles.TryGetValue(asset.ZoneId, out var handle) && handle.RefCount > 0)
             {
                 handle.RefCount++;
                 _handles[asset.ZoneId] = handle;
                 return handle.Zone;
             }
 
-            await SceneService.Instance.LoadSceneAdditiveAsync(asset.SceneName, ct);
-            var zone = FindZoneInScene(asset.SceneName, asset.ZoneId);
-            Debug.Assert(zone != null, $"[ZoneRegistry] 씬 '{asset.SceneName}'에서 ZoneId '{asset.ZoneId}'인 Zone 컴포넌트를 찾지 못했습니다.");
+            // 씬 로드 → Zone.Awake 실행 → Register 호출 → _handles에 자동 등록
+            if (!SceneManager.GetSceneByName(asset.SceneName).isLoaded)
+                await SceneService.Instance.LoadSceneAdditiveAsync(asset.SceneName, ct);
 
-            _handles[asset.ZoneId] = new ZoneHandle { Zone = zone, RefCount = 1 };
-            return zone;
+            Debug.Assert(_handles.ContainsKey(asset.ZoneId),
+                $"[ZoneRegistry] Zone '{asset.ZoneId}'이 씬 '{asset.SceneName}' 로드 후에도 등록되지 않았습니다.");
+
+            handle = _handles[asset.ZoneId];
+            handle.RefCount = 1;
+            _handles[asset.ZoneId] = handle;
+            handle.Zone.gameObject.SetActive(true);
+            return handle.Zone;
         }
 
-        /// <summary>Zone 참조를 해제한다. 참조 카운트가 0이 되고 같은 씬의 다른 Zone이 없으면 씬을 언로드한다.</summary>
+        /// <summary>Zone 참조를 해제하고 비활성화한다. 씬 내 모든 Zone의 참조 카운트가 0이 되면 씬을 언로드한다.</summary>
         public async UniTask ReleaseAsync(string zoneId)
         {
             if (!_handles.TryGetValue(zoneId, out var handle))
                 return;
 
             handle.RefCount--;
+            _handles[zoneId] = handle;
+
             if (handle.RefCount > 0)
-            {
-                _handles[zoneId] = handle;
                 return;
-            }
 
-            _handles.Remove(zoneId);
+            handle.Zone.gameObject.SetActive(false);
 
-            var sceneName = handle.Zone != null ? handle.Zone.gameObject.scene.name : zoneId;
+            var sceneName = handle.Zone.gameObject.scene.name;
 
-            // 같은 씬을 참조하는 다른 Zone이 남아있으면 씬 언로드 생략
-            foreach (var other in _handles.Values)
+            foreach (var h in _handles.Values)
             {
-                if (other.Zone != null && other.Zone.gameObject.scene.name == sceneName)
+                if (h.Zone != null && h.Zone.gameObject.scene.name == sceneName && h.RefCount > 0)
                     return;
             }
+
+            // 씬 내 모든 Zone이 해제됨 → _handles 정리 후 언로드
+            var toRemove = new List<string>();
+            foreach (var kv in _handles)
+                if (kv.Value.Zone != null && kv.Value.Zone.gameObject.scene.name == sceneName)
+                    toRemove.Add(kv.Key);
+            foreach (var key in toRemove)
+                _handles.Remove(key);
 
             await SceneService.Instance.UnloadSceneAsync(sceneName, CancellationToken.None);
         }
 
-        /// <summary>ZoneId에 해당하는 Zone이 현재 로드되어 있는지 반환한다.</summary>
-        public bool IsLoaded(string zoneId) => _handles.ContainsKey(zoneId);
-
-        private static Zone FindZoneInScene(string sceneName, string zoneId)
-        {
-            var scene = SceneManager.GetSceneByName(sceneName);
-            foreach (var root in scene.GetRootGameObjects())
-            {
-                var z = root.GetComponent<Zone>();
-                if (z != null && z.ZoneId == zoneId) return z;
-            }
-            return null;
-        }
+        /// <summary>ZoneId에 해당하는 Zone이 현재 획득(활성화) 상태인지 반환한다.</summary>
+        public bool IsLoaded(string zoneId) => _handles.TryGetValue(zoneId, out var h) && h.RefCount > 0;
     }
 }

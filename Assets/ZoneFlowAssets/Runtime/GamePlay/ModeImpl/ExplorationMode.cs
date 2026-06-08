@@ -40,7 +40,7 @@ namespace ZoneFlow
         /// <summary>모드 종료 시 HUD 인스턴스를 파괴한다.</summary>
         protected override UniTask OnStoppedAsync(CancellationToken ct)
         {
-            UiService.Instance.ClearMainView();
+            UiService.Instance.ClearMainViewIfIs(_hud);
             _hud = null;
             return UniTask.CompletedTask;
         }
