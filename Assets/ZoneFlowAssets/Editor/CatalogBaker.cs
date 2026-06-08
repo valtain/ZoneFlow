@@ -40,15 +40,24 @@ namespace ZoneFlow.Editor
             int idx = 0;
             foreach (var scenePath in GetZoneScenePaths())
             {
-                var zoneId = ExtractZoneIdFromScene(scenePath);
-                if (string.IsNullOrEmpty(zoneId)) continue;
-
+                var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
                 var sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-                zonesArray.InsertArrayElementAtIndex(idx);
-                var elem = zonesArray.GetArrayElementAtIndex(idx);
-                elem.FindPropertyRelative("<ZoneId>k__BackingField").stringValue    = zoneId;
-                elem.FindPropertyRelative("<SceneName>k__BackingField").stringValue = sceneName;
-                idx++;
+
+                try
+                {
+                    foreach (var root in scene.GetRootGameObjects())
+                    {
+                        var zone = root.GetComponent<Zone>();
+                        if (zone == null || string.IsNullOrEmpty(zone.ZoneId)) continue;
+
+                        zonesArray.InsertArrayElementAtIndex(idx);
+                        var elem = zonesArray.GetArrayElementAtIndex(idx);
+                        elem.FindPropertyRelative("<ZoneId>k__BackingField").stringValue    = zone.ZoneId;
+                        elem.FindPropertyRelative("<SceneName>k__BackingField").stringValue = sceneName;
+                        idx++;
+                    }
+                }
+                finally { EditorSceneManager.CloseScene(scene, false); }
             }
 
             so.ApplyModifiedProperties();
@@ -218,17 +227,5 @@ namespace ZoneFlow.Editor
             return found;
         }
 
-        private static string ExtractZoneIdFromScene(string scenePath)
-        {
-            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-            string zoneId = null;
-            foreach (var root in scene.GetRootGameObjects())
-            {
-                var zone = root.GetComponent<Zone>();
-                if (zone != null) { zoneId = zone.ZoneId; break; }
-            }
-            EditorSceneManager.CloseScene(scene, false);
-            return zoneId;
-        }
     }
 }

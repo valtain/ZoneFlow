@@ -30,14 +30,14 @@ namespace ZoneFlow
             }
 
             await SceneService.Instance.LoadSceneAdditiveAsync(asset.SceneName, ct);
-            var zone = FindZoneInScene(asset.SceneName);
-            Debug.Assert(zone != null, $"[ZoneRegistry] 씬 '{asset.SceneName}'에서 Zone 컴포넌트를 찾지 못했습니다.");
+            var zone = FindZoneInScene(asset.SceneName, asset.ZoneId);
+            Debug.Assert(zone != null, $"[ZoneRegistry] 씬 '{asset.SceneName}'에서 ZoneId '{asset.ZoneId}'인 Zone 컴포넌트를 찾지 못했습니다.");
 
             _handles[asset.ZoneId] = new ZoneHandle { Zone = zone, RefCount = 1 };
             return zone;
         }
 
-        /// <summary>Zone 참조를 해제한다. 참조 카운트가 0이 되면 씬을 언로드한다.</summary>
+        /// <summary>Zone 참조를 해제한다. 참조 카운트가 0이 되고 같은 씬의 다른 Zone이 없으면 씬을 언로드한다.</summary>
         public async UniTask ReleaseAsync(string zoneId)
         {
             if (!_handles.TryGetValue(zoneId, out var handle))
@@ -53,19 +53,27 @@ namespace ZoneFlow
             _handles.Remove(zoneId);
 
             var sceneName = handle.Zone != null ? handle.Zone.gameObject.scene.name : zoneId;
+
+            // 같은 씬을 참조하는 다른 Zone이 남아있으면 씬 언로드 생략
+            foreach (var other in _handles.Values)
+            {
+                if (other.Zone != null && other.Zone.gameObject.scene.name == sceneName)
+                    return;
+            }
+
             await SceneService.Instance.UnloadSceneAsync(sceneName, CancellationToken.None);
         }
 
         /// <summary>ZoneId에 해당하는 Zone이 현재 로드되어 있는지 반환한다.</summary>
         public bool IsLoaded(string zoneId) => _handles.ContainsKey(zoneId);
 
-        private static Zone FindZoneInScene(string sceneName)
+        private static Zone FindZoneInScene(string sceneName, string zoneId)
         {
             var scene = SceneManager.GetSceneByName(sceneName);
             foreach (var root in scene.GetRootGameObjects())
             {
-                var z = root.GetComponentInChildren<Zone>(true);
-                if (z != null) return z;
+                var z = root.GetComponent<Zone>();
+                if (z != null && z.ZoneId == zoneId) return z;
             }
             return null;
         }
