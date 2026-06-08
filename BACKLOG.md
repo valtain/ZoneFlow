@@ -12,6 +12,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | bootstrap | features/bootstrap/ |
 | exploration-hud | features/exploration-hud/ |
 | mode-transitionfx | features/mode-transitionfx/ |
+| multi-zone-scene | features/multi-zone-scene/ |
 
 ## Explorations
 
@@ -22,3 +23,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | mode-transitionfx | closed | mode-transitionfx |
 | menu-world1-sky-gap | closed | #18, #19, #20 |
 | zone-prefab-removal | closed | TASK 이슈 |
+| multi-zone-single-scene | active | multi-zone-scene |
