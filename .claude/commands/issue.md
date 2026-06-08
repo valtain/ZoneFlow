@@ -38,6 +38,15 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 2. `gh issue create --title <title> --body <body> --milestone <milestone> --label <label>` 실행
 3. 생성된 issue 번호(`#N`)를 출력
+4. `.claude/github-project.json`에서 project number 읽기 → `gh project item-add <number> --owner valtain --url <issue-url>` 로 Project 추가
+5. `--feature` 플래그가 있을 때 Sub-issue 연결:
+
+   ```bash
+   CHILD_ID=$(gh api repos/valtain/ZoneFlow/issues/<#> --jq .id)
+   PARENT=$(cat .claude/github-project.json | jq -r ".feature_parents[\"<name>\"]")
+   gh api repos/valtain/ZoneFlow/issues/$PARENT/sub_issues \
+     --method POST --field sub_issue_id=$CHILD_ID
+   ```
 
 **버그 리포트**:
 
@@ -85,6 +94,10 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 **동작**:
 
 1. `gh issue view <#> --json title,body,milestone,labels` 로 컨텍스트 수집
+1-a. **Project 상태 → In Progress**: `.claude/github-project.json`에서 project 메타데이터 읽기 →
+     `gh project item-list <number> --owner valtain --format json`으로 해당 이슈의 item-id 조회
+     (없으면 `gh project item-add`로 먼저 추가) →
+     `gh project item-edit --id <item-id> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <In Progress option-id>` 실행
 2. body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기
 2-a. **TodoWrite** 도구로 구현 단계 체크리스트 생성:
    - `[ ] Issue 컨텍스트 수집` (완료)
@@ -121,7 +134,8 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 4. **success** → TodoWrite의 `완료 처리` 항목 체크 → `/issue close <#>` 자동 호출
    - `--worktree` 사용 시 **ExitWorktree** 도구로 격리 환경 종료 후 close
-5. **blocked** → TodoWrite의 `완료 처리` 항목에 blocked 표시 → 중단 이유를 사용자에게 보고 후 STOP
+5. **blocked** → Project 상태를 Blocked로 이동 (`--single-select-option-id <Blocked option-id>`) →
+   TodoWrite의 `완료 처리` 항목에 blocked 표시 → 중단 이유를 사용자에게 보고 후 STOP
 
 ---
 
@@ -172,6 +186,7 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 6. **PASS** → `/issue close <#>` 자동 호출
 7. **FAIL** → 새 issue 생성 (`gh issue create`) 후 재작업 안내:
+
    ```text
    gh issue create --title "재작업: <원본 title>" \
      --body "Review FAIL.\n\n문제점:\n<목록>\n\n원본 Issue: #<number>" \
@@ -202,7 +217,9 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
    - **`Closes #<number>`는 반드시 포함** (GitHub Issue 자동 닫힘)
 7. 사용자 확인 후 `git commit -m "<message>"` 실행
 8. `gh issue close <#>` 실행
-9. 결과 출력: 커밋 해시 + 닫힌 issue 번호
+9. **Project 상태 → Done**: `gh project item-list`로 item-id 조회 →
+   `gh project item-edit ... --single-select-option-id <Done option-id>` 실행
+10. 결과 출력: 커밋 해시 + 닫힌 issue 번호
 
 ---
 
