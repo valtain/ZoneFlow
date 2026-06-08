@@ -19,9 +19,6 @@ namespace ZoneFlow
         /// <summary>IInteractable 조회 카탈로그. Zone 씬 로드 여부와 무관하게 InteractableId로 검색한다.</summary>
         [field: SerializeField] public InteractableCatalog Interactables { get; private set; } = default;
 
-        /// <summary>프리팹 기반 Zone 인스턴스를 생성할 부모 Transform. null이면 월드 루트에 생성된다.</summary>
-        [field: SerializeField] public Transform ZonePrefabRoot { get; private set; } = default;
-
         /// <summary>현재 활성 모드. 스택이 비어 있으면 null.</summary>
         public GamePlayMode ActiveMode => _stack.Count > 0 ? _stack[^1] : null;
 
@@ -36,7 +33,7 @@ namespace ZoneFlow
         protected override void Awake()
         {
             base.Awake();
-            ZoneRegistry = new ZoneRegistry(ZonePrefabRoot);
+            ZoneRegistry = new ZoneRegistry();
         }
 
         /// <summary>

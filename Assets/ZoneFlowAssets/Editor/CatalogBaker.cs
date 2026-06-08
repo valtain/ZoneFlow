@@ -48,7 +48,6 @@ namespace ZoneFlow.Editor
                 var elem = zonesArray.GetArrayElementAtIndex(idx);
                 elem.FindPropertyRelative("<ZoneId>k__BackingField").stringValue    = zoneId;
                 elem.FindPropertyRelative("<SceneName>k__BackingField").stringValue = sceneName;
-                elem.FindPropertyRelative("<ZonePrefab>k__BackingField").objectReferenceValue = null;
                 idx++;
             }
 

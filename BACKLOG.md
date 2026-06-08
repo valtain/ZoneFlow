@@ -21,3 +21,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | exploration-hud | active | exploration-hud |
 | mode-transitionfx | closed | mode-transitionfx |
 | menu-world1-sky-gap | closed | #18, #19, #20 |
+| zone-prefab-removal | closed | TASK 이슈 |
