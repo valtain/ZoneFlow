@@ -29,3 +29,5 @@
 - [2026-06-05 | decision] ExplorationMode 최종 구조 확정. 미결 사항 전부 해소 → promote 준비 완료.
 
 - [2026-06-05 | promote] Candidate A → features/exploration-hud/ 생성
+
+- [2026-06-08 | close] 탐색 완료.

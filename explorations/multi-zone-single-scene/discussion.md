@@ -11,3 +11,5 @@
   Candidate A(현재 유지) / Candidate B(구조 확장) / Candidate C(테스트 한정 대안) 3개 후보 도출.
 
 - [2026-06-08 | promote] Candidate B → features/multi-zone-scene/ 생성
+
+- [2026-06-08 | close] 탐색 완료.
