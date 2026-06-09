@@ -15,6 +15,7 @@
     "scene_service":    33,
     "multi-zone-scene": 34,
     "mode-transitionfx":35,
-    "exploration-hud":  36
+    "exploration-hud":  36,
+    "flexible-spawn":   37
   }
 }

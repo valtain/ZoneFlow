@@ -13,6 +13,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | exploration-hud | features/exploration-hud/ |
 | mode-transitionfx | features/mode-transitionfx/ |
 | multi-zone-scene | features/multi-zone-scene/ |
+| flexible-spawn | features/flexible-spawn/ |
 
 ## Explorations
 
@@ -24,3 +25,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | menu-world1-sky-gap | closed | #18, #19, #20 |
 | zone-prefab-removal | closed | TASK 이슈 |
 | multi-zone-single-scene | closed | multi-zone-scene |
+| story-mode-stack | closed | flexible-spawn |

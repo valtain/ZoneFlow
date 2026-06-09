@@ -38,7 +38,7 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 2. `gh issue create --title <title> --body <body> --milestone <milestone> --label <label>` 실행
 3. 생성된 issue 번호(`#N`)를 출력
-4. `.claude/github-project.json`에서 project number 읽기 → `gh project item-add <number> --owner valtain --url <issue-url>` 로 Project 추가
+4. `.claude/github-project.json`에서 project number 읽기 → `gh project item-add <number> --owner valtain --url <issue-url>` 로 Project 추가 → item-id 조회: `gh project item-list <num> --owner valtain --format json | jq -r '.items[] | select(.content.number == <issue-number>) | .id'` → `gh project item-edit --id <ITEM_ID> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <Todo option-id>` 로 "Todo" 상태 설정
 5. `--feature` 플래그가 있을 때 Sub-issue 연결:
 
    ```bash
@@ -91,21 +91,27 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 `--worktree` 플래그: 다수 파일 변경이 예상되는 대규모 feature에 한해 명시적으로 사용. Unity asset 특성상 브랜치 생성 비용이 크므로 기본값은 비활성.
 
+**Project item-id / 상태 조회 패턴** (이하 단계에서 공통 사용):
+
+```bash
+# item-id 추출 (gh project item-list --format json 은 .content.number 로 이슈 번호 노출)
+ITEM_ID=$(gh project item-list <project-num> --owner valtain --format json \
+  | jq -r '.items[] | select(.content.number == <issue-number>) | .id')
+
+# 현재 Status 값 (.status 는 최상위 필드)
+PARENT_STATUS=$(gh project item-list <project-num> --owner valtain --format json \
+  | jq -r '.items[] | select(.content.number == <parent-number>) | .status')
+```
+
 **동작**:
 
 1. `gh issue view <#> --json title,body,milestone,labels` 로 컨텍스트 수집
-1-a. **Project 상태 → In Progress**: `.claude/github-project.json`에서 project 메타데이터 읽기 →
-     `gh project item-list <number> --owner valtain --format json`으로 해당 이슈의 item-id 조회
-     (없으면 `gh project item-add`로 먼저 추가) →
-     `gh project item-edit --id <item-id> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <In Progress option-id>` 실행
-2. body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기
-2-a. **TodoWrite** 도구로 구현 단계 체크리스트 생성:
-   - `[ ] Issue 컨텍스트 수집` (완료)
-   - `[ ] 설계 스펙 읽기` (완료)
-   - `[ ] Haiku 에이전트 구현`
-   - `[ ] 완료 처리 (close 또는 blocked 보고)`
-2-b. `--worktree` 플래그가 있으면 **EnterWorktree** 도구로 `.claude/worktrees/<#>/` 격리 환경 진입
-3. 아래 프롬프트로 **Agent tool (`model='haiku'`)** 에 위임:
+2. **서브 이슈 → In Progress**: `.claude/github-project.json`에서 project 메타데이터 읽기 → 위 패턴으로 item-id 조회 (없으면 `gh project item-add`로 추가 후 재조회) → `gh project item-edit --id <ITEM_ID> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <In Progress option-id>` 실행
+3. **부모 feature 이슈 → In Progress**: body에서 `Feature: <name>` 파싱 → `feature_parents["<name>"]`으로 부모 이슈 번호 획득 → 위 패턴으로 부모 item-id 및 현재 상태 조회 (없으면 `item-add`) → "Done"이 **아니면** `item-edit`으로 "In Progress" 설정
+4. body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기
+5. **TodoWrite** 도구로 구현 단계 체크리스트 생성: `[ ] Issue 컨텍스트 수집` (완료) / `[ ] 설계 스펙 읽기` (완료) / `[ ] Haiku 에이전트 구현` / `[ ] 완료 처리 (close 또는 blocked 보고)`
+6. `--worktree` 플래그가 있으면 **EnterWorktree** 도구로 `.claude/worktrees/<#>/` 격리 환경 진입
+7. 아래 프롬프트로 **Agent tool (`model='haiku'`)** 에 위임:
 
    ```text
    당신은 ZoneFlow 프로젝트의 개발 에이전트입니다.
@@ -132,9 +138,9 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
    3. blocked인 경우: 중단 이유와 필요한 결정 사항
    ```
 
-4. **success** → TodoWrite의 `완료 처리` 항목 체크 → `/issue close <#>` 자동 호출
+8. **success** → TodoWrite의 `완료 처리` 항목 체크 → `/issue close <#>` 자동 호출
    - `--worktree` 사용 시 **ExitWorktree** 도구로 격리 환경 종료 후 close
-5. **blocked** → Project 상태를 Blocked로 이동 (`--single-select-option-id <Blocked option-id>`) →
+9. **blocked** → Project 상태를 Blocked로 이동 (`--single-select-option-id <Blocked option-id>`) →
    TodoWrite의 `완료 처리` 항목에 blocked 표시 → 중단 이유를 사용자에게 보고 후 STOP
 
 ---
@@ -217,9 +223,13 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
    - **`Closes #<number>`는 반드시 포함** (GitHub Issue 자동 닫힘)
 7. 사용자 확인 후 `git commit -m "<message>"` 실행
 8. `gh issue close <#>` 실행
-9. **Project 상태 → Done**: `gh project item-list`로 item-id 조회 →
-   `gh project item-edit ... --single-select-option-id <Done option-id>` 실행
-10. 결과 출력: 커밋 해시 + 닫힌 issue 번호
+9. **서브 이슈 → Done**: `.claude/github-project.json` 읽기 → item-id 조회:
+   `gh project item-list <num> --owner valtain --format json | jq -r '.items[] | select(.content.number == <issue-number>) | .id'`
+   → `gh project item-edit --id <ITEM_ID> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <Done option-id>` 실행
+10. **부모 feature 이슈 완료 체크**: body에서 `Feature: <name>` 파싱 → `feature_parents["<name>"]`으로 부모 이슈 번호 획득 →
+    `gh api repos/valtain/ZoneFlow/issues/<parent-num>/sub_issues --jq '[.[].state]'` 로 모든 서브 이슈 상태 확인 →
+    전부 `"closed"` 이면 부모 item도 "Done"으로 `item-edit`; 하나라도 open이면 변경 없음
+11. 결과 출력: 커밋 해시 + 닫힌 issue 번호
 
 ---
 
