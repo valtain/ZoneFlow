@@ -4,8 +4,8 @@
 | --- | --- | --- |
 | 1 | `SceneSo` ScriptableObject 생성 | #21 closed |
 | 2 | `SceneType` enum 확장 — `Standalone / Shell / Zone` | #22 closed |
-| 3 | `SceneService` API — `internal` 접근자 + `CancellationToken` 적용 | #23 |
-| 4 | `SceneService.LoadSceneAdditiveAsync / UnloadSceneAsync` — CT 파라미터 추가 | #24 |
+| 3 | `SceneService` API — `internal` 접근자 + `CancellationToken` 적용 | #23 closed |
+| 4 | `SceneService.LoadSceneAdditiveAsync / UnloadSceneAsync` — CT 파라미터 추가 | #24 closed |
 | 5 | SceneSo 에셋 생성 (CoreServicesSo) | #25 closed |
 | 6 | 테스트 씬 파일 생성 — Splash / Intro / World1 / World2 (Zone + SpawnPoint 포함) | #26 closed |
 | 7 | Build Settings에 CoreServices / 4개 씬 등록 | #27 closed |
