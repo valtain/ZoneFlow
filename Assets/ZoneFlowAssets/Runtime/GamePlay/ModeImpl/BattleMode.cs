@@ -1,6 +1,5 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using ZoneFlow.Player;
 
 namespace ZoneFlow
 {
@@ -11,11 +10,10 @@ namespace ZoneFlow
         public BattleMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
             : base(zoneAsset, spawnPointId) { }
 
-        /// <summary>모드 진입 시 플레이어를 SpawnPoint에 배치한다. Player가 없으면 생성한다.</summary>
+        /// <summary>모드 진입 시 플레이어를 배치한다.</summary>
         protected override UniTask OnModeInAsync(CancellationToken ct)
         {
-            if (Zone != null)
-                PlayerService.Instance.SpawnAt(Zone.GetSpawnPoint(SpawnPointId));
+            SpawnPlayer();
             return UniTask.CompletedTask;
         }
     }

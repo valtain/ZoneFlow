@@ -42,6 +42,24 @@ namespace ZoneFlow.Player
             _spawnCooldownUntil = Time.time + _spawnCooldown;
         }
 
+        /// <summary>Player가 없으면 position/rotation에 생성하고, 있으면 텔레포트한다.</summary>
+        public void SpawnAt(Vector3 position, Quaternion rotation)
+        {
+            Debug.Assert(_playerPrefab != null, "[PlayerService] _playerPrefab이 할당되지 않았습니다.");
+
+            if (Player == null)
+            {
+                Player = Instantiate(_playerPrefab, position, rotation);
+                Stats = new PlayerStats(_maxHp);
+            }
+            else
+            {
+                Player.Teleport(position, rotation);
+            }
+
+            _spawnCooldownUntil = Time.time + _spawnCooldown;
+        }
+
         /// <summary>현재 Player 인스턴스를 제거한다.</summary>
         public void Despawn()
         {

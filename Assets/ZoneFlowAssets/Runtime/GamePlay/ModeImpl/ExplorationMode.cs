@@ -1,6 +1,5 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using ZoneFlow.Player;
 
 namespace ZoneFlow
 {
@@ -27,9 +26,7 @@ namespace ZoneFlow
         /// <summary>모드 진입 시 플레이어를 배치하고 HUD를 슬라이드인한다.</summary>
         protected override async UniTask OnModeInAsync(CancellationToken ct)
         {
-            if (Zone != null)
-                PlayerService.Instance.SpawnAt(Zone.GetSpawnPoint(SpawnPointId));
-
+            SpawnPlayer();
             await UiService.Instance.ShowMainViewAsync(ct);
         }
 

@@ -1,5 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
+using ZoneFlow.Player;
 
 namespace ZoneFlow
 {
@@ -21,12 +23,22 @@ namespace ZoneFlow
         /// <summary>로드된 Zone 인스턴스. PlayedAsync 이후에 유효하다.</summary>
         protected Zone Zone { get; private set; }
 
+        private Vector3 _spawnPosition;
+        private Quaternion _spawnRotation;
+
         /// <summary>ZoneAsset과 초기 스폰 포인트 ID를 주입하여 모드를 생성한다.</summary>
         protected GamePlayMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
         {
             ZoneAsset = zoneAsset;
             SpawnPointId = spawnPointId;
             State = ModeState.Created;
+        }
+
+        /// <summary>OnModeInAsync에서 명시적으로 호출해 플레이어를 배치한다.</summary>
+        protected void SpawnPlayer()
+        {
+            if (Zone != null)
+                PlayerService.Instance.SpawnAt(_spawnPosition, _spawnRotation);
         }
 
         // ── 상태 전이 메서드 (Director가 호출, 상태 하나당 함수 하나) ─────────────────
@@ -39,12 +51,20 @@ namespace ZoneFlow
             await OnCreatedAsync(ct);
         }
 
-        /// <summary>Played 상태. Zone을 로드하고 플레이어를 배치한다.</summary>
+        /// <summary>Played 상태. Zone을 로드하고 스폰 위치를 해석한다.</summary>
         internal async UniTask PlayedAsync(CancellationToken ct)
         {
             State = ModeState.Played;
             if (ZoneAsset != null)
                 Zone = await Director.ZoneRegistry.AcquireAsync(ZoneAsset, ct);
+
+            if (Zone != null)
+            {
+                var sp = Zone.GetSpawnPoint(SpawnPointId);
+                _spawnPosition = sp.SpawnTransform.position;
+                _spawnRotation = sp.SpawnTransform.rotation;
+            }
+
             await OnPlayedAsync(ct);
         }
 
