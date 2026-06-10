@@ -38,8 +38,7 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
 
 2. `gh issue create --title <title> --body <body> --milestone <milestone> --label <label>` 실행
 3. 생성된 issue 번호(`#N`)를 출력
-4. `.claude/github-project.json`에서 project number 읽기 → `gh project item-add <number> --owner valtain --url <issue-url>` 로 Project 추가 → item-id 조회: `gh project item-list <num> --owner valtain --format json | jq -r '.items[] | select(.content.number == <issue-number>) | .id'` → `gh project item-edit --id <ITEM_ID> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <Todo option-id>` 로 "Todo" 상태 설정
-5. `--feature` 플래그가 있을 때 Sub-issue 연결:
+4. `--feature` 플래그가 있을 때 Sub-issue 연결 (실패 시 이후 단계 중단):
 
    ```bash
    CHILD_ID=$(gh api repos/valtain/ZoneFlow/issues/<#> --jq .id)
@@ -47,6 +46,9 @@ GitHub Issue 생명주기 커맨드. Task 추적의 단일 소스는 GitHub Issu
    gh api repos/valtain/ZoneFlow/issues/$PARENT/sub_issues \
      --method POST --field sub_issue_id=$CHILD_ID
    ```
+
+5. Sub-issue 연결 성공 후 (또는 `--feature` 없을 때) GitHub Project 추가:
+   `.claude/github-project.json`에서 project number 읽기 → `gh project item-add <number> --owner valtain --url <issue-url>` 로 Project 추가 → item-id 조회: `gh project item-list <num> --owner valtain --format json | jq -r '.items[] | select(.content.number == <issue-number>) | .id'` → `gh project item-edit --id <ITEM_ID> --project-id <node_id> --field-id <status_field_id> --single-select-option-id <Todo option-id>` 로 "Todo" 상태 설정
 
 **버그 리포트**:
 
