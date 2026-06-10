@@ -172,8 +172,8 @@ namespace ZoneFlow.Editor
 
                 if (prefab.TryGetComponent<MenuPanel>(out var menuPanel))
                     entries.Add(new PanelCatalog.Entry { PanelId = MenuPanel.PanelId, Prefab = menuPanel });
-                else if (prefab.TryGetComponent<HudPanel>(out var hudPanel))
-                    entries.Add(new PanelCatalog.Entry { PanelId = HudPanel.PanelId, Prefab = hudPanel });
+                else if (prefab.TryGetComponent<ExplorationHudPanel>(out var hudPanel))
+                    entries.Add(new PanelCatalog.Entry { PanelId = ExplorationHudPanel.PanelId, Prefab = hudPanel });
             }
 
             catalog.SetPanels(entries.ToArray());

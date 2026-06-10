@@ -26,3 +26,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | zone-prefab-removal | closed | TASK 이슈 |
 | multi-zone-single-scene | closed | multi-zone-scene |
 | story-mode-stack | closed | flexible-spawn |
+| story-mode-test-verify | closed | TASK 이슈 |

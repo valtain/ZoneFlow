@@ -30,7 +30,7 @@ namespace ZoneFlow.Editor
         [MenuItem("ZoneFlow/Setup/Create MenuPanel Prefab")]
         public static void CreateMenuPrefab() => BuildMenuPanelPrefab();
 
-        [MenuItem("ZoneFlow/Setup/Create HudPanel Prefab")]
+        [MenuItem("ZoneFlow/Setup/Create ExplorationHudPanel Prefab")]
         public static void CreateHudPrefab() => BuildHudPanelPrefab();
 
         [MenuItem("ZoneFlow/Setup/Add Zone B to World1")]
@@ -279,7 +279,7 @@ namespace ZoneFlow.Editor
         }
 
         // ──────────────────────────────────────────────────────────────────
-        // HudPanel Prefab 생성
+        // ExplorationHudPanel Prefab 생성
         // ──────────────────────────────────────────────────────────────────
 
         private static void BuildHudPanelPrefab()
@@ -290,15 +290,15 @@ namespace ZoneFlow.Editor
                 AssetDatabase.Refresh();
             }
 
-            var prefabPath = $"{PrefabDir}/HudPanel.prefab";
+            var prefabPath = $"{PrefabDir}/ExplorationHudPanel.prefab";
 
             // ── Root ──────────────────────────────────────────────────────
-            var root = new GameObject("HudPanel");
+            var root = new GameObject("ExplorationHudPanel");
             var rootRect = root.AddComponent<RectTransform>();
             rootRect.anchorMin = Vector2.zero;
             rootRect.anchorMax = Vector2.one;
             rootRect.offsetMin = rootRect.offsetMax = Vector2.zero;
-            var hudPanel = root.AddComponent<HudPanel>();
+            var hudPanel = root.AddComponent<ExplorationHudPanel>();
 
             // ── HealthBarContainer (좌하단) ────────────────────────────────
             var healthBarContainer = new GameObject("HealthBarContainer");
@@ -359,7 +359,7 @@ namespace ZoneFlow.Editor
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             Object.DestroyImmediate(root);
 
-            Debug.Log($"[SceneSetupTool] HudPanel 프리팹 생성: {prefabPath}");
+            Debug.Log($"[SceneSetupTool] ExplorationHudPanel 프리팹 생성: {prefabPath}");
             Selection.activeObject = prefab;
         }
 

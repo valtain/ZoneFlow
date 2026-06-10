@@ -6,7 +6,7 @@ namespace ZoneFlow
     /// <summary>자유 탐색 모드. SpawnPoint에 플레이어를 배치하고 HUD를 표시한다.</summary>
     public sealed class ExplorationMode : GamePlayMode
     {
-        private HudPanel _hud;
+        private ExplorationHudPanel _hud;
 
         /// <summary>ZoneAsset과 스폰 포인트 ID로 탐색 모드를 생성한다.</summary>
         public ExplorationMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
@@ -16,8 +16,8 @@ namespace ZoneFlow
         protected override async UniTask OnPlayedAsync(CancellationToken ct)
         {
             if (UiService.Instance.Panels == null) return;
-            if (!UiService.Instance.Panels.TryGetPanel(HudPanel.PanelId, out var prefab)) return;
-            if (prefab is not HudPanel hudPrefab) return;
+            if (!UiService.Instance.Panels.TryGetPanel(ExplorationHudPanel.PanelId, out var prefab)) return;
+            if (prefab is not ExplorationHudPanel hudPrefab) return;
 
             _hud = await UiService.Instance.SetMainViewAsync(hudPrefab, ct);
             _hud.Initialize(ZoneAsset);

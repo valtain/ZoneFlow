@@ -9,7 +9,7 @@ using ZoneFlow.Player;
 namespace ZoneFlow
 {
     /// <summary>ExplorationMode 인게임 HUD. 체력바와 존 정보를 표시한다.</summary>
-    public sealed class HudPanel : UiPanel
+    public sealed class ExplorationHudPanel : UiPanel
     {
         public const string PanelId = "exploration-hud";
         [SerializeField] private RectTransform _healthBarContainer;
