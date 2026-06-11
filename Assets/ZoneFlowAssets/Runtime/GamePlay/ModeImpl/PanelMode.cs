@@ -23,7 +23,7 @@ namespace ZoneFlow
         {
             if (UiService.Instance.Panels == null ||
                 !UiService.Instance.Panels.TryGetPanel(PanelId, out var prefab)) return;
-            _panel = Object.Instantiate(prefab, UiService.Instance.Overlay.transform);
+            _panel = Object.Instantiate(prefab.asset, UiService.Instance.Overlay.transform);
             await _panel.ShowInAsync(ct);
         }
 

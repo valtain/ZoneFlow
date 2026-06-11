@@ -12,11 +12,11 @@ namespace ZoneFlow
         public struct Entry
         {
             public string  PanelId;
-            public UiPanel Prefab;
+            public LazyLoadReference<UiPanel> Prefab;
         }
 
         [SerializeField] private Entry[] _panels = Array.Empty<Entry>();
-        private Dictionary<string, UiPanel> _lookup = new();
+        private Dictionary<string, LazyLoadReference<UiPanel>> _lookup = new();
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
@@ -25,13 +25,13 @@ namespace ZoneFlow
             _lookup = new(_panels?.Length ?? 0);
             if (_panels == null) return;
             foreach (var e in _panels)
-                if (!string.IsNullOrEmpty(e.PanelId) && e.Prefab != null)
+                if (!string.IsNullOrEmpty(e.PanelId) && e.Prefab.isSet)
                     _lookup[e.PanelId] = e.Prefab;
         }
 
         /// <summary>PanelId에 해당하는 UiPanel 프리팹을 반환한다. 없으면 false를 반환한다.</summary>
-        public bool TryGetPanel(string panelId, out UiPanel prefab)
-            => _lookup.TryGetValue(panelId, out prefab);
+        public bool TryGetPanel(string panelId, out LazyLoadReference<UiPanel> prefabRef)
+            => _lookup.TryGetValue(panelId, out prefabRef);
 
 #if UNITY_EDITOR
         public void SetPanels(Entry[] panels)

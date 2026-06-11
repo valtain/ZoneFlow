@@ -27,3 +27,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | multi-zone-single-scene | closed | multi-zone-scene |
 | story-mode-stack | closed | flexible-spawn |
 | story-mode-test-verify | closed | TASK 이슈 |
+| lazyload-catalog | closed | TASK 이슈 |

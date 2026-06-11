@@ -47,4 +47,4 @@ Sleep은 ModeOut을 거쳐 발생하고 Resume은 ModeIn을 거치므로 별도 
 
 ## Out of Scope
 
-BattleMode/StoryMode HUD, 미니맵, 인벤토리 UI
+BattleMode HUD, 미니맵, 인벤토리 UI

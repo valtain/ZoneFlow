@@ -17,7 +17,7 @@ namespace ZoneFlow
         {
             if (UiService.Instance.Panels == null) return;
             if (!UiService.Instance.Panels.TryGetPanel(StoryHudPanel.PanelId, out var prefab)) return;
-            if (prefab is not StoryHudPanel hudPrefab) return;
+            if (prefab.asset is not StoryHudPanel hudPrefab) return;
 
             _hud = await UiService.Instance.SetMainViewAsync(hudPrefab, ct);
             _hud.Initialize(ZoneAsset);
