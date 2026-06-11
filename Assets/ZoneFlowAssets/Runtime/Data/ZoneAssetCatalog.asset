@@ -19,6 +19,8 @@ MonoBehaviour:
     <SceneName>k__BackingField: World1
   - <ZoneId>k__BackingField: world1_b
     <SceneName>k__BackingField: World1
+  - <ZoneId>k__BackingField: story_w1
+    <SceneName>k__BackingField: World1
   - <ZoneId>k__BackingField: world2
     <SceneName>k__BackingField: World2
   - <ZoneId>k__BackingField: world2_b

@@ -33,6 +33,9 @@ namespace ZoneFlow.Editor
         [MenuItem("ZoneFlow/Setup/Create ExplorationHudPanel Prefab")]
         public static void CreateHudPrefab() => BuildHudPanelPrefab();
 
+        [MenuItem("ZoneFlow/Setup/Create StoryHudPanel Prefab")]
+        public static void CreateStoryHudPrefab() => BuildStoryHudPanelPrefab();
+
         [MenuItem("ZoneFlow/Setup/Add Zone B to World1")]
         public static void AddZoneBToWorld1() =>
             AddZoneToScene("World1", zoneId: "world1_b", offset: new Vector3(40, 0, 0),
@@ -50,6 +53,7 @@ namespace ZoneFlow.Editor
             SetupWorld2();
             CreateMenuPrefab();
             CreateHudPrefab();
+            CreateStoryHudPrefab();
         }
 
         // ──────────────────────────────────────────────────────────────────
@@ -360,6 +364,80 @@ namespace ZoneFlow.Editor
             Object.DestroyImmediate(root);
 
             Debug.Log($"[SceneSetupTool] ExplorationHudPanel 프리팹 생성: {prefabPath}");
+            Selection.activeObject = prefab;
+        }
+
+        // ──────────────────────────────────────────────────────────────────
+        // StoryHudPanel Prefab 생성
+        // ──────────────────────────────────────────────────────────────────
+
+        private static void BuildStoryHudPanelPrefab()
+        {
+            if (!AssetDatabase.IsValidFolder(PrefabDir))
+            {
+                AssetDatabase.CreateFolder("Assets/ZoneFlowAssets", "Prefabs");
+                AssetDatabase.Refresh();
+            }
+
+            var prefabPath = $"{PrefabDir}/StoryHudPanel.prefab";
+
+            // ── Root ──────────────────────────────────────────────────────
+            var root     = new GameObject("StoryHudPanel");
+            var rootRect = root.AddComponent<RectTransform>();
+            rootRect.anchorMin = Vector2.zero;
+            rootRect.anchorMax = Vector2.one;
+            rootRect.offsetMin = rootRect.offsetMax = Vector2.zero;
+            var hudPanel = root.AddComponent<StoryHudPanel>();
+
+            // ── BannerContainer (상단 full-width strip with background) ───
+            var bannerGo   = new GameObject("BannerContainer");
+            bannerGo.transform.SetParent(root.transform, false);
+            var bannerRect = bannerGo.AddComponent<RectTransform>();
+            bannerRect.anchorMin        = new Vector2(0f, 1f);
+            bannerRect.anchorMax        = new Vector2(1f, 1f);
+            bannerRect.pivot            = new Vector2(0.5f, 1f);
+            bannerRect.anchoredPosition = Vector2.zero;
+            bannerRect.sizeDelta        = new Vector2(0f, 70f);
+            var bannerBg   = bannerGo.AddComponent<Image>();
+            bannerBg.color = new Color(0.06f, 0.04f, 0.12f, 0.88f);
+
+            // ── ModeLabel ─────────────────────────────────────────────────
+            var modeLabelGo   = new GameObject("ModeLabel");
+            modeLabelGo.transform.SetParent(bannerGo.transform, false);
+            var modeLabelRect = modeLabelGo.AddComponent<RectTransform>();
+            modeLabelRect.anchorMin = new Vector2(0f,   0f);
+            modeLabelRect.anchorMax = new Vector2(0.5f, 1f);
+            modeLabelRect.offsetMin = modeLabelRect.offsetMax = Vector2.zero;
+            var modeTmp   = modeLabelGo.AddComponent<TextMeshProUGUI>();
+            modeTmp.text      = "◆ STORY";
+            modeTmp.fontSize  = 28;
+            modeTmp.alignment = TextAlignmentOptions.Left;
+            modeTmp.color     = new Color(0.7f, 0.5f, 1f);
+
+            // ── ZoneNameLabel ─────────────────────────────────────────────
+            var zoneLabelGo   = new GameObject("ZoneNameLabel");
+            zoneLabelGo.transform.SetParent(bannerGo.transform, false);
+            var zoneLabelRect = zoneLabelGo.AddComponent<RectTransform>();
+            zoneLabelRect.anchorMin = new Vector2(0.5f, 0f);
+            zoneLabelRect.anchorMax = new Vector2(1f,   1f);
+            zoneLabelRect.offsetMin = zoneLabelRect.offsetMax = Vector2.zero;
+            var zoneTmp   = zoneLabelGo.AddComponent<TextMeshProUGUI>();
+            zoneTmp.text      = "zone@Scene";
+            zoneTmp.fontSize  = 24;
+            zoneTmp.alignment = TextAlignmentOptions.Right;
+            zoneTmp.color     = new Color(0.85f, 0.75f, 1f);
+
+            // ── SerializedField 연결 ──────────────────────────────────────
+            var so = new SerializedObject(hudPanel);
+            so.FindProperty("_bannerContainer").objectReferenceValue = bannerRect;
+            so.FindProperty("_modeLabel").objectReferenceValue       = modeTmp;
+            so.FindProperty("_zoneNameLabel").objectReferenceValue   = zoneTmp;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+            Object.DestroyImmediate(root);
+
+            Debug.Log($"[SceneSetupTool] StoryHudPanel 프리팹 생성: {prefabPath}");
             Selection.activeObject = prefab;
         }
 

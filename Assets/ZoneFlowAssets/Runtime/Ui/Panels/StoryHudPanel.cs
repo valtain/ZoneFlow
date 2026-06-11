@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ZoneFlow
 {
@@ -10,18 +11,21 @@ namespace ZoneFlow
     public sealed class StoryHudPanel : UiPanel
     {
         public const string PanelId = "story-hud";
-        [SerializeField] private RectTransform _bannerContainer;
-        [SerializeField] private TextMeshProUGUI _modeLabel;
-        [SerializeField] private TextMeshProUGUI _zoneNameLabel;
+        [SerializeField] private RectTransform    _bannerContainer;
+        [SerializeField] private TextMeshProUGUI  _modeLabel;
+        [SerializeField] private TextMeshProUGUI  _zoneNameLabel;
 
         private const float SlideDuration = 0.35f;
-        private const float SlideOffset = 200f;
+        private const float StaggerDelay  = 0.08f;
+        private const float SlideOffset   = 400f;
 
-        private Vector2 _bannerRestPos;
+        private Vector2 _modeLabelRestPos;
+        private Vector2 _zoneNameLabelRestPos;
 
         private void Awake()
         {
-            _bannerRestPos = _bannerContainer.anchoredPosition;
+            _modeLabelRestPos     = _modeLabel.rectTransform.anchoredPosition;
+            _zoneNameLabelRestPos = _zoneNameLabel.rectTransform.anchoredPosition;
         }
 
         /// <summary>Zone 정보를 초기화한다. OnPlayedAsync에서 생성 직후 호출한다.</summary>
@@ -35,16 +39,22 @@ namespace ZoneFlow
 
         protected override async UniTask OnShowAsync(CancellationToken ct)
         {
-            _bannerContainer.anchoredPosition = _bannerRestPos + new Vector2(0f, SlideOffset);
-            await Tween.UIAnchoredPosition(_bannerContainer, _bannerRestPos, SlideDuration, Ease.OutBack)
-                .ToUniTask(cancellationToken: ct);
+            _modeLabel.rectTransform.anchoredPosition     = _modeLabelRestPos     + new Vector2(-SlideOffset, 0f);
+            _zoneNameLabel.rectTransform.anchoredPosition = _zoneNameLabelRestPos + new Vector2( SlideOffset, 0f);
+
+            _ = Tween.UIAnchoredPosition(_modeLabel.rectTransform, _modeLabelRestPos, SlideDuration, Ease.OutBack);
+            await UniTask.Delay((int)(StaggerDelay * 1000), cancellationToken: ct);
+            await Tween.UIAnchoredPosition(_zoneNameLabel.rectTransform, _zoneNameLabelRestPos,
+                SlideDuration, Ease.OutBack).ToUniTask(cancellationToken: ct);
         }
 
         protected override async UniTask OnHideAsync(CancellationToken ct)
         {
-            await Tween.UIAnchoredPosition(_bannerContainer, _bannerRestPos + new Vector2(0f, SlideOffset),
-                SlideDuration, Ease.InBack)
-                .ToUniTask(cancellationToken: ct);
+            _ = Tween.UIAnchoredPosition(_modeLabel.rectTransform,
+                _modeLabelRestPos + new Vector2(-SlideOffset, 0f), SlideDuration, Ease.InBack);
+            await Tween.UIAnchoredPosition(_zoneNameLabel.rectTransform,
+                _zoneNameLabelRestPos + new Vector2(SlideOffset, 0f),
+                SlideDuration, Ease.InBack).ToUniTask(cancellationToken: ct);
         }
 
 #if UNITY_EDITOR
@@ -58,43 +68,45 @@ namespace ZoneFlow
             var bannerGo = new GameObject("BannerContainer");
             bannerGo.transform.SetParent(transform, false);
             var bannerRect = bannerGo.AddComponent<RectTransform>();
-            bannerRect.anchorMin = new Vector2(0f, 1f);
-            bannerRect.anchorMax = new Vector2(1f, 1f);
-            bannerRect.pivot = new Vector2(0.5f, 1f);
+            bannerRect.anchorMin        = new Vector2(0f, 1f);
+            bannerRect.anchorMax        = new Vector2(1f, 1f);
+            bannerRect.pivot            = new Vector2(0.5f, 1f);
             bannerRect.anchoredPosition = Vector2.zero;
-            bannerRect.sizeDelta = new Vector2(0f, 70f);
+            bannerRect.sizeDelta        = new Vector2(0f, 70f);
+            var bannerBg = bannerGo.AddComponent<Image>();
+            bannerBg.color = new Color(0.06f, 0.04f, 0.12f, 0.88f);
 
             // ── ModeLabel (좌측) ──────────────────────────────────────────
             var modeLabelGo = new GameObject("ModeLabel");
             modeLabelGo.transform.SetParent(bannerGo.transform, false);
             var modeLabelRect = modeLabelGo.AddComponent<RectTransform>();
-            modeLabelRect.anchorMin = new Vector2(0f, 0f);
+            modeLabelRect.anchorMin = new Vector2(0f,   0f);
             modeLabelRect.anchorMax = new Vector2(0.5f, 1f);
             modeLabelRect.offsetMin = modeLabelRect.offsetMax = Vector2.zero;
             var modeTmp = modeLabelGo.AddComponent<TextMeshProUGUI>();
-            modeTmp.text = "◆ STORY";
-            modeTmp.fontSize = 28;
+            modeTmp.text      = "◆ STORY";
+            modeTmp.fontSize  = 28;
             modeTmp.alignment = TextAlignmentOptions.Left;
-            modeTmp.color = new Color(1f, 0.85f, 0.3f);
+            modeTmp.color     = new Color(0.7f, 0.5f, 1f);
 
             // ── ZoneNameLabel (우측) ──────────────────────────────────────
             var zoneLabelGo = new GameObject("ZoneNameLabel");
             zoneLabelGo.transform.SetParent(bannerGo.transform, false);
             var zoneLabelRect = zoneLabelGo.AddComponent<RectTransform>();
             zoneLabelRect.anchorMin = new Vector2(0.5f, 0f);
-            zoneLabelRect.anchorMax = new Vector2(1f, 1f);
+            zoneLabelRect.anchorMax = new Vector2(1f,   1f);
             zoneLabelRect.offsetMin = zoneLabelRect.offsetMax = Vector2.zero;
             var zoneTmp = zoneLabelGo.AddComponent<TextMeshProUGUI>();
-            zoneTmp.text = "zone@Scene";
-            zoneTmp.fontSize = 24;
+            zoneTmp.text      = "zone@Scene";
+            zoneTmp.fontSize  = 24;
             zoneTmp.alignment = TextAlignmentOptions.Right;
-            zoneTmp.color = Color.white;
+            zoneTmp.color     = new Color(0.85f, 0.75f, 1f);
 
             // ── SerializedField 연결 ──────────────────────────────────────
             var so = new UnityEditor.SerializedObject(this);
             so.FindProperty("_bannerContainer").objectReferenceValue = bannerRect;
-            so.FindProperty("_modeLabel").objectReferenceValue = modeTmp;
-            so.FindProperty("_zoneNameLabel").objectReferenceValue = zoneTmp;
+            so.FindProperty("_modeLabel").objectReferenceValue       = modeTmp;
+            so.FindProperty("_zoneNameLabel").objectReferenceValue   = zoneTmp;
             so.ApplyModifiedProperties();
 
             UnityEditor.EditorUtility.SetDirty(gameObject);

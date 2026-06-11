@@ -25,6 +25,8 @@ MonoBehaviour:
     zoneId: world1_b
   - spawnPointId: world1_b_entrance
     zoneId: world1_b
+  - spawnPointId: story_w1_default
+    zoneId: story_w1
   - spawnPointId: default
     zoneId: world2
   - spawnPointId: w2_default

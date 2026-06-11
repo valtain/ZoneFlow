@@ -133,7 +133,6 @@ namespace ZoneFlow
             await next.CreatedAsync(this, ct);
             await next.PlayedAsync(ct);
             if (scope != null) await scope.DisposeAsync();
-
             await next.ModeInAsync(ct);
         }
 

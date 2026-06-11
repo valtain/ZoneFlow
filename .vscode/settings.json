@@ -67,5 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "ZoneFlow.slnx"
+    "dotnet.defaultSolution": "ZoneFlow.slnx",
+    "dotnet.backgroundAnalysis.compilerDiagnosticsScope": "openFiles"
 }

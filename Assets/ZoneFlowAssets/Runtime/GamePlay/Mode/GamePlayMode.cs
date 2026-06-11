@@ -23,8 +23,9 @@ namespace ZoneFlow
         /// <summary>로드된 Zone 인스턴스. PlayedAsync 이후에 유효하다.</summary>
         protected Zone Zone { get; private set; }
 
-        private Vector3 _spawnPosition;
-        private Quaternion _spawnRotation;
+        // SpawnPoint로 초기화되고 SleptAsync 등 주요 이벤트마다 갱신되는 플레이어 위치.
+        private Vector3 _savedPosition;
+        private Quaternion _savedRotation;
 
         /// <summary>ZoneAsset과 초기 스폰 포인트 ID를 주입하여 모드를 생성한다.</summary>
         protected GamePlayMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
@@ -38,7 +39,7 @@ namespace ZoneFlow
         protected void SpawnPlayer()
         {
             if (Zone != null)
-                PlayerService.Instance.SpawnAt(_spawnPosition, _spawnRotation);
+                PlayerService.Instance.SpawnAt(_savedPosition, _savedRotation);
         }
 
         // ── 상태 전이 메서드 (Director가 호출, 상태 하나당 함수 하나) ─────────────────
@@ -61,8 +62,8 @@ namespace ZoneFlow
             if (Zone != null)
             {
                 var sp = Zone.GetSpawnPoint(SpawnPointId);
-                _spawnPosition = sp.SpawnTransform.position;
-                _spawnRotation = sp.SpawnTransform.rotation;
+                _savedPosition = sp.SpawnTransform.position;
+                _savedRotation = sp.SpawnTransform.rotation;
             }
 
             await OnPlayedAsync(ct);
@@ -83,17 +84,29 @@ namespace ZoneFlow
             await OnModeOutAsync(ct);
         }
 
-        /// <summary>Slept 상태. 슬립 처리를 수행한다.</summary>
+        /// <summary>Slept 상태. 플레이어 위치를 저장하고 Zone을 비활성화한다.</summary>
         internal async UniTask SleptAsync(CancellationToken ct)
         {
             State = ModeState.Slept;
+            if (Zone != null)
+            {
+                var player = PlayerService.Instance.Player;
+                if (player != null)
+                {
+                    _savedPosition = player.transform.position;
+                    _savedRotation = player.transform.rotation;
+                }
+                Zone.gameObject.SetActive(false);
+            }
             await OnSleptAsync(ct);
         }
 
-        /// <summary>Resumed 상태. 재개 처리를 수행한다.</summary>
+        /// <summary>Resumed 상태. 비활성화된 Zone을 복구하고 재개 처리를 수행한다.</summary>
         internal async UniTask ResumedAsync(CancellationToken ct)
         {
             State = ModeState.Resumed;
+            if (Zone != null && !Zone.gameObject.activeSelf)
+                Zone.gameObject.SetActive(true);
             await OnResumedAsync(ct);
         }
 
