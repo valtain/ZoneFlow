@@ -1,4 +1,6 @@
-# Decisions: mode-transitionfx
+# mode-transitionfx — 설계 결정
+
+Source: [explorations/mode-transitionfx/findings.md](../../explorations/mode-transitionfx/findings.md)
 
 ## D1. 네이밍: ModeOutAsync / ModeInAsync
 

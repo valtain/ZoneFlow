@@ -1,3 +1,3 @@
-# flexible-spawn — Decisions
+# flexible-spawn — 설계 결정
 
-(결정 사항 기록)
+Source: [explorations/story-mode-stack/findings.md](../../explorations/story-mode-stack/findings.md)

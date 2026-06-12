@@ -1,31 +1,80 @@
 # /next
 <!-- Complexity Hint: Medium → Sonnet 4.6 -->
 
-현재 상태를 읽고 다음 단계를 자동으로 결정하는 통합 진입점. 단계 사이를 멈추지 않고 흘러간다.
+현재 상태를 읽고 다음 단계를 자동으로 결정하는 통합 진입점. explore와 feature 양쪽 상태를 넘나들며 멈추지 않고 흘러간다.
 
 ## 사용법
 
 ```text
-/next                   전체 진행 현황 + 추천 다음 액션 출력
-/next <feature_name>    feature 현재 상태 → 다음 단계 자동 실행
-/next <#>               issue 번호 → 상태 확인 후 구현 시작
+/next                     전체 진행 현황 + 추천 다음 액션 출력
+/next <name>              exploration 또는 feature → 상태 감지 후 다음 단계 자동 실행
+/next <#>                 issue 번호 → 상태 확인 후 구현 시작
 ```
 
 인자 타입 자동 감지:
 
 - 숫자 → issue 번호로 처리
-- `features/` 폴더에 존재하는 이름 → feature로 처리
+- `explorations/<name>/` 존재 → exploration 상태 기계
+- `features/<name>/` 존재 → feature 상태 기계
+- 양쪽 모두 존재 → feature 상태 기계 우선 (exploration은 이미 closed)
 - 인자 없음 → 전체 현황 모드
 
 ---
 
-## `/next <feature_name>` — 상태 기계
+## `/next <exploration_name>` — exploration 상태 기계
+
+`BACKLOG.md` Explorations 테이블에서 해당 exploration의 Status를 확인한다.
+
+### 상태: active
+
+**출력 형식**:
+
+```text
+탐색 중: <name>
+핵심 질문: <question.md 핵심 질문 한 줄>
+후보: N개 (active M개, eliminated K개)
+마지막 논의: <discussion.md 마지막 항목 날짜>
+```
+
+**동작**:
+
+1. `explorations/<name>/question.md`, `candidates.md` 전체 읽기
+2. `discussion.md` 마지막 10개 항목 읽기
+3. 위 형식으로 현재 상태 출력
+4. **AskUserQuestion**으로 확인:
+   - 질문: `<name> 탐색을 어떻게 진행할까요?`
+   - 선택지: `계속 탐색`, `탐색 완료 (close)`
+   - `계속 탐색` → exploration 대화 재개 (`/explore <name>` 동작)
+   - `탐색 완료` → `/explore close <name>` 동작 실행
+
+### 상태: closed + feature 미생성
+
+BACKLOG.md Explorations 테이블의 `Promoted To` 열이 비어 있으면:
+
+```text
+탐색 완료: <name>
+findings.md에 결론이 기록되어 있습니다.
+아직 이 탐색에서 Feature가 생성되지 않았습니다.
+
+다음 단계:
+  /feature new <candidate-label> --from <name>
+```
+
+위 형식으로 출력하고 종료한다.
+
+### 상태: closed + feature 생성됨
+
+`Promoted To` 열에 feature 이름이 있으면 해당 feature 이름으로 **feature 상태 기계**를 바로 실행한다.
+
+---
+
+## `/next <feature_name>` — feature 상태 기계
 
 ### Step 1: tasks.md 확인
 
 `features/<name>/tasks.md` 를 읽는다.
 
-- 파일이 없거나 태스크가 없으면 → `features/<name>/spec.md` + `decisions.md` 를 읽어 task 목록을 생성하고 `tasks.md`에 저장한다 (feature plan 동작). → Step 2로 계속.
+- 파일이 없거나 태스크가 없으면 → `features/<name>/spec.md` + `decisions.md`를 읽는다. decisions.md에 `Source:` 링크가 있으면 해당 findings.md도 읽는다. task 목록을 생성하고 `tasks.md`에 저장한다. → Step 2로 계속.
 
 ### Step 2: todo 태스크 → GitHub Issue 일괄 생성
 
@@ -90,32 +139,37 @@ Feature: <name> 진행 현황
 2. `closed` → "이미 완료된 이슈입니다 (#N 닫힘)" 출력 후 종료
 3. `open` → `issue.md`의 `do` 동작과 동일하게 실행:
    - `gh issue view <#> --json title,body,milestone,labels` 로 컨텍스트 수집
-   - body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기
+   - body에서 `Feature: <name>` 파싱 → `features/<name>/spec.md`, `decisions.md` 읽기. decisions.md에 `Source:` 링크가 있으면 해당 findings.md도 읽기.
    - Agent tool (`model='haiku'`)에 구현 위임
 
 ---
 
 ## `/next` — 전체 현황 모드
 
-1. `features/` 하위 디렉토리 목록 수집
-2. 각 feature의 tasks.md를 읽어 완료율 계산 (`#N` 상태 = 이슈 생성됨, `todo` = 미생성)
-3. `gh issue list --state open --json number,title` 로 열린 이슈 확인
-4. 현황 출력:
+1. `BACKLOG.md`에서 active exploration 목록 수집
+2. `features/` 하위 디렉토리 목록 수집
+3. 각 feature의 tasks.md를 읽어 완료율 계산 (`#N` 상태 = 이슈 생성됨, `todo` = 미생성)
+4. `gh issue list --state open --json number,title` 로 열린 이슈 확인
+5. 현황 출력:
 
 ```text
 전체 현황
 ─────────────────────────────────────────
+탐색 중:
+  → story-mode-stack  (active)
+
+Features:
 service_locator  ████████░░  4/5 완료
 zone_system      ░░░░░░░░░░  0/6 (이슈 미생성)
 bootstrap        ██████████  6/6 완료
 
-추천: /next zone_system  (이슈 일괄 생성부터 시작)
+추천: /next story-mode-stack  (탐색 재개)
 ```
 
 ---
 
 ## 주의사항
 
-- explore는 탐색 방향이 대화를 통해 정해지므로 자동화 범위 밖. `/explore <name>` 으로 직접 재개.
 - `issue do` 구현 로직은 `issue.md`에 정의된 것을 그대로 따른다.
 - tasks.md에 `#N` 상태인 이슈가 GitHub에서 `closed`면 완료로 집계한다.
+- exploration과 feature 이름이 동일한 경우 feature 상태 기계가 우선한다.

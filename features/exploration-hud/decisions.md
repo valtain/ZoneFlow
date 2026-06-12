@@ -1,4 +1,6 @@
-# Decisions
+# exploration-hud — 설계 결정
+
+Source: [explorations/exploration-hud/findings.md](../../explorations/exploration-hud/findings.md)
 
 - HUD 생명주기: Played 생성 / Stopped 파괴. ModeIn/Out에서 Show/Hide. (Sleep/Resume은 ModeOut/ModeIn 경유로 자동 처리)
 - 레이어: UiMainViewLayer (Floating은 알림 예약)
