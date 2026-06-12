@@ -36,12 +36,12 @@
 
 ## Architectural Principles
 
-→ [memory/architecture-principles.md](memory/architecture-principles.md)
+→ [docs/architecture/constraints.md](docs/architecture/constraints.md)
 
 ## Architecture & Coding Style
 
 → 씬 계층·시스템 계층: [docs/architecture/](docs/architecture/)
-→ 코딩 스타일·네이밍: [memory/naming-conventions.md](memory/naming-conventions.md) · [docs/conventions/coding-style.md](docs/conventions/coding-style.md)
+→ 코딩 스타일·네이밍: [docs/conventions/coding-style.md](docs/conventions/coding-style.md)
 → 프로젝트 구조: [docs/architecture/project-structure.md](docs/architecture/project-structure.md)
 
 ## Custom Commands

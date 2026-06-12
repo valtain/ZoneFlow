@@ -17,6 +17,6 @@
 
 ## 관련 문서
 
-- 씬 계층 상세: [docs/architecture/scene-hierarchy.md](../docs/architecture/scene-hierarchy.md)
-- 시스템 계층 상세: [docs/architecture/system-layers.md](../docs/architecture/system-layers.md)
-- 설계 결정 근거: [docs/decisions/](../docs/decisions/)
+- 씬 계층 상세: [scene-hierarchy.md](scene-hierarchy.md)
+- 시스템 계층 상세: [system-layers.md](system-layers.md)
+- 설계 결정 근거: [../decisions/](../decisions/)
