@@ -146,11 +146,12 @@ Feature: <name> 진행 현황
 
 ## `/next` — 전체 현황 모드
 
-1. `BACKLOG.md`에서 active exploration 목록 수집
-2. `features/` 하위 디렉토리 목록 수집
-3. 각 feature의 tasks.md를 읽어 완료율 계산 (`#N` 상태 = 이슈 생성됨, `todo` = 미생성)
-4. `gh issue list --state open --json number,title` 로 열린 이슈 확인
-5. 현황 출력:
+1. `docs/project-goals.md` 읽기 (north star + Open Questions 목록)
+1. `BACKLOG.md` 읽기 — active exploration 목록 + Architectural Questions 테이블
+1. `features/` 하위 디렉토리 목록 수집
+1. 각 feature의 tasks.md를 읽어 완료율 계산 (`#N` 상태 = 이슈 생성됨, `todo` = 미생성)
+1. `gh issue list --state open --json number,title` 로 열린 이슈 확인
+1. 현황 출력:
 
 ```text
 전체 현황
@@ -162,9 +163,31 @@ Features:
 service_locator  ████████░░  4/5 완료
 zone_system      ░░░░░░░░░░  0/6 (이슈 미생성)
 bootstrap        ██████████  6/6 완료
-
-추천: /next story-mode-stack  (탐색 재개)
 ```
+
+1. **아키텍처 제안** 생성:
+
+   BACKLOG.md의 Architectural Questions 테이블에서 Status가 `❓ Open`이고 `Linked Exploration/Feature`가 `—`인 항목을 식별한다.  
+   현재 진행 중인 exploration/feature 맥락과 가장 관련성 높은 미답 질문 1개를 선택해 아래 형식으로 출력한다:
+
+   ```text
+   ## 아키텍처 제안
+
+   **발견한 gap**: [AQ-N] 질문 내용
+   **왜 지금**: 현재 개발 상황(진행 중 feature/exploration)과의 연결 이유
+   **제안하는 탐색**: /explore new <name> 또는 /feature plan <name>
+
+   진행할까요?
+   ```
+
+   **AskUserQuestion** 도구로 확인:
+   - 질문: `제안된 탐색을 시작할까요?`
+   - 선택지: `시작`, `다른 질문 선택`, `현황만 확인`
+   - `시작` → 제안된 커맨드(`/explore new` 또는 `/feature plan`) 즉시 실행
+   - `다른 질문 선택` → AQ 번호를 입력받아 해당 질문으로 탐색 시작
+   - `현황만 확인` → 종료
+
+   단, active exploration이 있거나 열린 이슈가 있는 경우에는 제안 대신 기존 흐름(탐색 재개 / 이슈 추천)을 우선한다.
 
 ---
 

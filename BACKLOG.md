@@ -28,3 +28,16 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | story-mode-stack | closed | flexible-spawn |
 | story-mode-test-verify | closed | TASK 이슈 |
 | lazyload-catalog | closed | TASK 이슈 |
+
+## Architectural Questions
+
+`docs/project-goals.md`의 Open Questions 답변 상태를 추적한다.  
+`/next`가 이 테이블을 읽어 미답 항목을 발견하고 다음 탐색을 제안한다.
+
+| ID | Question | Status | Linked Exploration/Feature |
+| --- | --- | --- | --- |
+| AQ-1 | Story 진행 중 Zone 강제 전환 시 Mode 스택 상태 | ❓ Open | — |
+| AQ-2 | Story 진행 상태의 Zone 전환 후 지속성 | ❓ Open | — |
+| AQ-3 | Mode 스택(stack switch)과 Story 내러티브 공존 | ❓ Open | — |
+| AQ-4 | Addressable 전환 시 Zone 생명주기 인터페이스 변화 | ❓ Open | — |
+| AQ-5 | Save/Load과 Zone-Mode 상태 상호작용 | ❓ Open | — |
