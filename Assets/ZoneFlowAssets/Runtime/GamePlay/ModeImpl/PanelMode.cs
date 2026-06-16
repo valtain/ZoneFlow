@@ -10,6 +10,9 @@ namespace ZoneFlow
         /// <summary>표시할 UI 패널 ID.</summary>
         public string PanelId { get; }
 
+        /// <summary>Zone이 없는 개념적 오버레이 모드 — 아래 Zone을 배경으로 유지한다.</summary>
+        internal override bool IsOverlay => true;
+
         private UiPanel _panel;
 
         /// <summary>패널 ID로 패널 모드를 생성한다.</summary>

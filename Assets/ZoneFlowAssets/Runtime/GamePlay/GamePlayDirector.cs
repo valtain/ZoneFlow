@@ -27,6 +27,9 @@ namespace ZoneFlow
 
         private readonly List<GamePlayMode> _stack = new();
 
+        // 전환 진행 중 여부. 한 번에 하나의 전환만 수행하도록 재진입을 막는다.
+        private bool _isNavigating;
+
         /// <summary>Zone 인스턴스 생명주기를 관리하는 런타임 레지스트리.</summary>
         internal ZoneRegistry ZoneRegistry { get; private set; }
 
@@ -60,8 +63,33 @@ namespace ZoneFlow
             return NavigateAsync(request, ct);
         }
 
-        /// <summary>NavigationRequest로 내비게이션 요청을 처리한다.</summary>
+        /// <summary>
+        /// NavigationRequest로 내비게이션 요청을 처리한다.
+        /// 전환이 진행 중이면 재진입을 드롭한다(한 번에 하나의 전환만 수행).
+        /// </summary>
         public async UniTask NavigateAsync(NavigationRequest request, CancellationToken ct)
+        {
+            if (_isNavigating)
+            {
+                Debug.Log($"[GamePlayDirector] 전환 진행 중 — 내비게이션 드롭: {request}");
+                return;
+            }
+
+            _isNavigating = true;
+            try
+            {
+                await ExecuteNavigationAsync(request, ct);
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
+        }
+
+        /// <summary>
+        /// 실제 전환 로직. 재진입 가드를 거치지 않으므로, 포털 해석 같은 내부 재귀에서 직접 호출한다.
+        /// </summary>
+        private async UniTask ExecuteNavigationAsync(NavigationRequest request, CancellationToken ct)
         {
             if (request.Host == NavigationHost.Portal)
             {
@@ -128,7 +156,8 @@ namespace ZoneFlow
             await current.ModeOutAsync(ct);
 
             var scope = await SelectTransitionAsync(current, next, ct);
-            await current.SleptAsync(ct);
+            // 오버레이 모드(PanelMode)가 위에 쌓이면 아래 Zone을 배경으로 유지한다.
+            await current.SleptAsync(ct, keepZoneActive: next.IsOverlay);
             _stack.Add(next);
             await next.CreatedAsync(this, ct);
             await next.PlayedAsync(ct);
@@ -190,7 +219,7 @@ namespace ZoneFlow
             // InteractableRegistry 우선 조회 — Zone 씬 로드 여부와 무관
             if (Interactables != null && Interactables.TryGetNavigationUri(portalId, out var registeredUri))
             {
-                await NavigateAsync(registeredUri, ct);
+                await ExecuteNavigationAsync(NavigationRequest.Parse(registeredUri), ct);
                 return;
             }
 
@@ -200,7 +229,7 @@ namespace ZoneFlow
             {
                 if (portal.PortalId == portalId)
                 {
-                    await NavigateAsync(portal.NavigationUri, ct);
+                    await ExecuteNavigationAsync(NavigationRequest.Parse(portal.NavigationUri), ct);
                     return;
                 }
             }

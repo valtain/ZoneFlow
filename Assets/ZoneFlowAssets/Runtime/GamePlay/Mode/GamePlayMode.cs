@@ -23,6 +23,12 @@ namespace ZoneFlow
         /// <summary>로드된 Zone 인스턴스. PlayedAsync 이후에 유효하다.</summary>
         protected Zone Zone { get; private set; }
 
+        /// <summary>
+        /// 이 모드가 다른 모드 위에 쌓일 때, 아래 모드의 Zone을 배경으로 활성 유지할지 여부.
+        /// PanelMode처럼 자체 Zone이 없는 개념적 오버레이는 아래 Zone을 끄지 않는다.
+        /// </summary>
+        internal virtual bool IsOverlay => false;
+
         // SpawnPoint로 초기화되고 SleptAsync 등 주요 이벤트마다 갱신되는 플레이어 위치.
         private Vector3 _savedPosition;
         private Quaternion _savedRotation;
@@ -61,6 +67,7 @@ namespace ZoneFlow
 
             if (Zone != null)
             {
+                // SpawnPointId가 비면 GetSpawnPoint가 해당 Zone의 DefaultSpawnPoint를 반환한다.
                 var sp = Zone.GetSpawnPoint(SpawnPointId);
                 _savedPosition = sp.SpawnTransform.position;
                 _savedRotation = sp.SpawnTransform.rotation;
@@ -84,8 +91,11 @@ namespace ZoneFlow
             await OnModeOutAsync(ct);
         }
 
-        /// <summary>Slept 상태. 플레이어 위치를 저장하고 Zone을 비활성화한다.</summary>
-        internal async UniTask SleptAsync(CancellationToken ct)
+        /// <summary>
+        /// Slept 상태. 플레이어 위치를 저장하고 Zone을 비활성화한다.
+        /// keepZoneActive면 위치만 저장하고 Zone은 배경으로 활성 유지한다(오버레이 모드가 위에 쌓일 때).
+        /// </summary>
+        internal async UniTask SleptAsync(CancellationToken ct, bool keepZoneActive = false)
         {
             State = ModeState.Slept;
             if (Zone != null)
@@ -96,7 +106,8 @@ namespace ZoneFlow
                     _savedPosition = player.transform.position;
                     _savedRotation = player.transform.rotation;
                 }
-                Zone.gameObject.SetActive(false);
+                if (!keepZoneActive)
+                    Zone.gameObject.SetActive(false);
             }
             await OnSleptAsync(ct);
         }
