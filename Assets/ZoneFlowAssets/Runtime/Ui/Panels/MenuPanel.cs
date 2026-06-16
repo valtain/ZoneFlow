@@ -12,7 +12,7 @@ namespace ZoneFlow
     public class MenuPanel : UiPanel
     {
         public const string PanelId = "menu";
-        private const string NewGameUri = "gameplay://exploration/world1?switch=replaceall";
+        private const string NewGameUri = "gameplay://exploration/village?switch=replaceall";
 
         private void Awake()
         {
