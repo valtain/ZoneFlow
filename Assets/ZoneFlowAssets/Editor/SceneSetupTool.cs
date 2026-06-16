@@ -56,6 +56,16 @@ namespace ZoneFlow.Editor
             CreateStoryHudPrefab();
         }
 
+        /// <summary>Demo MVP: village (World1) + dungeon (World2) zones with cross-portal navigation.</summary>
+        [MenuItem("ZoneFlow/Setup/Setup Demo MVP")]
+        public static void SetupDemoMvp()
+        {
+            AddZoneToScene("World1", zoneId: "village", offset: new Vector3(0, 0, 80),
+                portalId: "portal_to_dungeon", portalTargetUri: "gameplay://exploration/dungeon?id=dungeon_entrance");
+            AddZoneToScene("World2", zoneId: "dungeon", offset: new Vector3(0, 0, 80),
+                portalId: "portal_to_village", portalTargetUri: "gameplay://exploration/village?id=village_entrance");
+        }
+
         // ──────────────────────────────────────────────────────────────────
         // World Scene Setup
         // ──────────────────────────────────────────────────────────────────

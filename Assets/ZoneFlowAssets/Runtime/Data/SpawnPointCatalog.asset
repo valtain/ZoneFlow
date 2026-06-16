@@ -21,12 +21,20 @@ MonoBehaviour:
     zoneId: world1
   - spawnPointId: w1_entrance
     zoneId: world1
+  - spawnPointId: story_w1_entrance
+    zoneId: world1
   - spawnPointId: world1_b_default
     zoneId: world1_b
   - spawnPointId: world1_b_entrance
     zoneId: world1_b
   - spawnPointId: story_w1_default
     zoneId: story_w1
+  - spawnPointId: story_w1_entrance
+    zoneId: story_w1
+  - spawnPointId: village_default
+    zoneId: village
+  - spawnPointId: village_entrance
+    zoneId: village
   - spawnPointId: default
     zoneId: world2
   - spawnPointId: w2_default
@@ -37,3 +45,7 @@ MonoBehaviour:
     zoneId: world2_b
   - spawnPointId: world2_b_entrance
     zoneId: world2_b
+  - spawnPointId: dungeon_default
+    zoneId: dungeon
+  - spawnPointId: dungeon_entrance
+    zoneId: dungeon

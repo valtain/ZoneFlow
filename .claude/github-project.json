@@ -16,6 +16,7 @@
     "multi-zone-scene": 34,
     "mode-transitionfx":35,
     "exploration-hud":  36,
-    "flexible-spawn":   37
+    "flexible-spawn":   37,
+    "demo-mvp":         50
   }
 }
