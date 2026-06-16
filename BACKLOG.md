@@ -31,6 +31,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | lazyload-catalog | closed | TASK 이슈 |
 | portfolio-demo | closed | demo-mvp |
 | story-yarnspinner | closed | #49 |
+| zone-entry-guard | active | — |
 
 ## Architectural Questions
 
