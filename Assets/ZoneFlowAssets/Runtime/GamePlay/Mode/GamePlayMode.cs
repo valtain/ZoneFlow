@@ -9,7 +9,20 @@ namespace ZoneFlow
     public abstract class GamePlayMode
     {
         /// <summary>현재 모드 생명주기 상태.</summary>
-        public ModeState State { get; private set; }
+        public ModeState State
+        {
+            get => _state;
+            private set
+            {
+                _state = value;
+#if UNITY_EDITOR
+                // 에디터 디버그 윈도우 갱신용. 발행 호출만 게이팅하여 빌드 비용을 차단한다.
+                GamePlayDebug.NotifyStateChanged();
+#endif
+            }
+        }
+
+        private ModeState _state;
 
         /// <summary>이 모드를 소유하는 GamePlayDirector.</summary>
         protected GamePlayDirector Director { get; private set; }
@@ -22,6 +35,11 @@ namespace ZoneFlow
 
         /// <summary>로드된 Zone 인스턴스. PlayedAsync 이후에 유효하다.</summary>
         protected Zone Zone { get; private set; }
+
+#if UNITY_EDITOR
+        /// <summary>디버그 윈도우 전용 — 이 모드에 연결된 Zone ID. 로드된 Zone 우선, 없으면 대상 ZoneAsset, 둘 다 없으면 null.</summary>
+        public string DebugLinkedZoneId => Zone != null ? Zone.ZoneId : ZoneAsset?.ZoneId;
+#endif
 
         /// <summary>
         /// 이 모드가 다른 모드 위에 쌓일 때, 아래 모드의 Zone을 배경으로 활성 유지할지 여부.

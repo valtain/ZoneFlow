@@ -52,6 +52,9 @@ namespace ZoneFlow
             handle.RefCount = 1;
             _handles[asset.ZoneId] = handle;
             handle.Zone.gameObject.SetActive(true);
+#if UNITY_EDITOR
+            GamePlayDebug.NotifyStateChanged();
+#endif
             return handle.Zone;
         }
 
@@ -68,6 +71,9 @@ namespace ZoneFlow
                 return;
 
             handle.Zone.gameObject.SetActive(false);
+#if UNITY_EDITOR
+            GamePlayDebug.NotifyStateChanged();
+#endif
 
             var sceneName = handle.Zone.gameObject.scene.name;
 
@@ -86,6 +92,9 @@ namespace ZoneFlow
                 _handles.Remove(key);
 
             await SceneService.Instance.UnloadSceneAsync(sceneName, CancellationToken.None);
+#if UNITY_EDITOR
+            GamePlayDebug.NotifyStateChanged();
+#endif
         }
 
         /// <summary>ZoneId에 해당하는 Zone이 현재 획득(활성화) 상태인지 반환한다.</summary>
