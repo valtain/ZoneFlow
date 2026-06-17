@@ -6,4 +6,4 @@
 | #39 | PlayerService.SpawnAt(Vector3, Quaternion) 오버로드 추가 | #39 done |
 | #40 | GamePlayMode base에 SpawnPlayer() 헬퍼 및 PlayedAsync 스폰 해석 추가 | #40 done |
 | #41 | 모드별 OnModeInAsync 정리 — SpawnPlayer() 활용 | #41 done |
-| #42 | GamePlayDirector.NavigateAsync SpawnConfig 오버로드 추가 | #42 (취소) |
+| #42 | GamePlayDirector.NavigateAsync SpawnConfig 오버로드 추가 | #42 blocked |
