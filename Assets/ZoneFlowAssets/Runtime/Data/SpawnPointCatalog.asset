@@ -45,7 +45,5 @@ MonoBehaviour:
     zoneId: world2_b
   - spawnPointId: world2_b_entrance
     zoneId: world2_b
-  - spawnPointId: dungeon_default
-    zoneId: dungeon
   - spawnPointId: dungeon_entrance
     zoneId: dungeon
