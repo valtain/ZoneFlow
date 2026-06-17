@@ -22,14 +22,14 @@
 
 ## 기본 흐름 (명제 A)
 
-- [ ] village 진입 시 ExplorationMode가 Active 상태, 플레이어 조종 가능
-- [ ] `portal_to_dungeon` 진입 → dungeon Zone 로드 + village Zone 언로드 (로그 또는 씬 전환 관찰)
-- [ ] Zone 전환 전후 ExplorationMode 스택이 Push/Pop/Replace 없이 그대로 유지 (**명제 A**)
-- [ ] 전환 후 플레이어가 `dungeon_entrance`에 배치됨 (Dungeon 입구 위치)
-- [ ] 역방향: `portal_to_village` 진입 → village 복귀, `village_entrance` 배치, ExplorationMode 유지 (**명제 A 확인**)
+- [x] village 진입 시 ExplorationMode가 Active 상태, 플레이어 조종 가능
+- [x] `portal_to_dungeon` 진입 → dungeon Zone 로드 + village Zone 언로드 (로그 또는 씬 전환 관찰)
+- [x] Zone 전환 전후 ExplorationMode 스택이 Push/Pop/Replace 없이 그대로 유지 (**명제 A**)
+- [x] 전환 후 플레이어가 `dungeon_entrance`에 배치됨 (Dungeon 입구 위치)
+- [x] 역방향: `portal_to_village` 진입 → village 복귀, `village_entrance` 배치, ExplorationMode 유지 (**명제 A 확인**)
 
 ## 추가 검증
 
-- [ ] NavigationUri 파싱 성공 여부 확인 (로그: `Navigation: gameplay://exploration/dungeon`)
-- [ ] Zone 언로드 시 village 오브젝트 정리됨 (Hierarchy 또는 메모리 관찰)
-- [ ] 양방향 이동 반복 시 ExplorationMode가 계속 유지 (스택 손상 X)
+- [x] NavigationUri 파싱 성공 여부 확인 (로그: `Navigation: gameplay://exploration/dungeon`)
+- [x] Zone 언로드 시 village 오브젝트 정리됨 (Hierarchy 또는 메모리 관찰)
+- [x] 양방향 이동 반복 시 ExplorationMode가 계속 유지 (스택 손상 X)
