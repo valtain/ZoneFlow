@@ -11,6 +11,18 @@ GitHub와 로컬 파일 간 동기화를 수행한다.
 /gh-sync board        features/*/tasks.md 를 GitHub Project 보드 Status에 맞춤 (역방향)
 ```
 
+## tasks.md 스키마 규칙 (중요)
+
+- 이슈 토큰은 반드시 **표의 마지막 컬럼**에 `#N` 또는 `#N <token>` 형식으로 둔다.
+  `<token>`은 `closed` / `todo` / `in-progress` / `blocked` / `done` 중 하나.
+  예: `| 1 | 태스크 설명 | #21 done |`
+- 첫 컬럼에 `#N`만 두고 마지막 컬럼에 상태를 **단어**(`closed` 등)로 적으면
+  두 sync 스크립트 모두 해당 행을 인식하지 못해 영원히 동기화되지 않는다. 금지.
+- **권위 모델**: 상태 컬럼의 단일 권위 소스는 **보드 Status**다.
+  - `board` = 수동 주기 실행으로 보드 Status에 수렴(권위 소스).
+  - `issues`(야간 워크플로우 포함) = 중간 open/closed 자동 반영. `closed`만 인식하므로
+    보드 토큰(`done` 등)이 적힌 행은 건드리지 않는다.
+
 ---
 
 ## 서브커맨드: issues (기본값)
