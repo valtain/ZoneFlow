@@ -15,6 +15,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | multi-zone-scene | features/multi-zone-scene/ |
 | flexible-spawn | features/flexible-spawn/ |
 | demo-mvp | features/demo-mvp/ |
+| interaction-prompt | features/interaction-prompt/ |
 
 ## Explorations
 
@@ -32,6 +33,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | portfolio-demo | closed | demo-mvp |
 | story-yarnspinner | closed | #49 |
 | zone-entry-guard | active | — |
+| portal-interaction-label | closed | interaction-prompt |
 
 ## Architectural Questions
 

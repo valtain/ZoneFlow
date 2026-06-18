@@ -17,6 +17,7 @@
     "mode-transitionfx":35,
     "exploration-hud":  36,
     "flexible-spawn":   37,
-    "demo-mvp":         50
+    "demo-mvp":         50,
+    "interaction-prompt": 56
   }
 }
