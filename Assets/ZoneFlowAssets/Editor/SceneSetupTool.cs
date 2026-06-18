@@ -67,6 +67,71 @@ namespace ZoneFlow.Editor
         }
 
         // ──────────────────────────────────────────────────────────────────
+        // Interaction: 기존 Portal 마이그레이션
+        // ──────────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// 현재 열려 있는 모든 씬의 Portal을 interaction-prompt 방식으로 정리한다.
+        /// 옛 월드 라벨(Label 자식) 제거 · 콜라이더 Trigger 보장 · DisplayLabel이 비면 PortalId로 시드한다.
+        /// 변경된 씬은 dirty로 표시만 하므로 직접 저장(Ctrl+S)해야 한다.
+        /// </summary>
+        [MenuItem("ZoneFlow/Interaction/Migrate Portals (Open Scenes)")]
+        public static void MigratePortalsInOpenScenes()
+        {
+            int processed = 0, labelsRemoved = 0, labelsSeeded = 0, triggersFixed = 0;
+
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (!scene.isLoaded) continue;
+
+                foreach (var root in scene.GetRootGameObjects())
+                {
+                    foreach (var portal in root.GetComponentsInChildren<Portal>(includeInactive: true))
+                    {
+                        processed++;
+
+                        // 1) 옛 월드 라벨 제거 (스크린 프롬프트로 대체됨)
+                        var label = portal.transform.Find("Label");
+                        if (label != null)
+                        {
+                            Undo.DestroyObjectImmediate(label.gameObject);
+                            labelsRemoved++;
+                        }
+
+                        // 2) 콜라이더 Trigger 보장 (디텍터 OverlapSphere 감지 조건)
+                        if (portal.TryGetComponent<Collider>(out var col) && !col.isTrigger)
+                        {
+                            Undo.RecordObject(col, "Migrate Portal Collider");
+                            col.isTrigger = true;
+                            triggersFixed++;
+                        }
+
+                        // 3) DisplayLabel이 비면 PortalId로 시드 (이후 친화 명칭으로 수동 편집)
+                        if (string.IsNullOrWhiteSpace(portal.DisplayLabel))
+                        {
+                            var so = new SerializedObject(portal);
+                            so.FindProperty("<DisplayLabel>k__BackingField").stringValue = portal.PortalId;
+                            so.ApplyModifiedProperties();
+                            labelsSeeded++;
+                        }
+
+                        EditorUtility.SetDirty(portal);
+                    }
+                }
+
+                EditorSceneManager.MarkSceneDirty(scene);
+            }
+
+            if (processed == 0)
+                Debug.LogWarning("[SceneSetupTool] 열린 씬에서 Portal을 찾지 못했습니다.");
+            else
+                Debug.Log($"[SceneSetupTool] Portal 마이그레이션 완료: {processed}개 처리 " +
+                    $"(월드라벨 {labelsRemoved} 제거, Trigger {triggersFixed} 보정, DisplayLabel {labelsSeeded} 시드). " +
+                    "씬을 저장(Ctrl+S)하세요.");
+        }
+
+        // ──────────────────────────────────────────────────────────────────
         // World Scene Setup
         // ──────────────────────────────────────────────────────────────────
 
@@ -136,7 +201,8 @@ namespace ZoneFlow.Editor
             return go;
         }
 
-        private static GameObject CreatePortalObject(string portalId, string navUri, Vector3 pos)
+        private static GameObject CreatePortalObject(string portalId, string navUri, Vector3 pos,
+            string displayLabel = null)
         {
             // 시각적 표시용 Cylinder
             var visual = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -154,18 +220,12 @@ namespace ZoneFlow.Editor
             var so = new SerializedObject(portal);
             so.FindProperty("<NavigationUri>k__BackingField").stringValue = navUri;
             so.FindProperty("<PortalId>k__BackingField").stringValue = portalId;
+            so.FindProperty("<DisplayLabel>k__BackingField").stringValue =
+                string.IsNullOrEmpty(displayLabel) ? portalId : displayLabel;
             so.ApplyModifiedProperties();
 
-            // 레이블
-            var label = new GameObject("Label");
-            label.transform.SetParent(visual.transform, false);
-            label.transform.localPosition = new Vector3(0, 1.5f, 0);
-            label.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            var tmp = label.AddComponent<TextMeshPro>();
-            tmp.text = portalId;
-            tmp.fontSize = 8;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.color = Color.white;
+            // 월드 라벨(TextMeshPro)은 더 이상 생성하지 않는다.
+            // interaction-prompt의 스크린 공간 프롬프트(InteractionPromptPanel)가 DisplayLabel을 표시한다. (#61)
 
             return visual;
         }
