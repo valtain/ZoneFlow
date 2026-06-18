@@ -32,6 +32,9 @@ namespace ZoneFlow
             _healthBarRestPos     = _healthBarContainer.anchoredPosition;
             _modeLabelRestPos     = _modeLabel.rectTransform.anchoredPosition;
             _zoneNameLabelRestPos = _zoneNameLabel.rectTransform.anchoredPosition;
+
+            _healthBarContainer.gameObject.SetActive(false);
+            _bannerContainer.gameObject.SetActive(false);
         }
 
         /// <summary>Zone 정보를 초기화한다. OnPlayedAsync에서 생성 직후 호출한다.</summary>
@@ -55,6 +58,9 @@ namespace ZoneFlow
             _healthBarContainer.anchoredPosition          = _healthBarRestPos     + new Vector2(-SlideOffset, 0f);
             _modeLabel.rectTransform.anchoredPosition     = _modeLabelRestPos     + new Vector2(-SlideOffset, 0f);
             _zoneNameLabel.rectTransform.anchoredPosition = _zoneNameLabelRestPos + new Vector2( SlideOffset, 0f);
+
+            _healthBarContainer.gameObject.SetActive(true);
+            _bannerContainer.gameObject.SetActive(true);
 
             _ = Tween.UIAnchoredPosition(_healthBarContainer, _healthBarRestPos, SlideDuration, Ease.OutBack);
 

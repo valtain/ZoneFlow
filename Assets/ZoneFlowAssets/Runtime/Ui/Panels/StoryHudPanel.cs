@@ -26,6 +26,7 @@ namespace ZoneFlow
         {
             _modeLabelRestPos     = _modeLabel.rectTransform.anchoredPosition;
             _zoneNameLabelRestPos = _zoneNameLabel.rectTransform.anchoredPosition;
+            _bannerContainer.gameObject.SetActive(false);
         }
 
         /// <summary>Zone 정보를 초기화한다. OnPlayedAsync에서 생성 직후 호출한다.</summary>
@@ -41,7 +42,7 @@ namespace ZoneFlow
         {
             _modeLabel.rectTransform.anchoredPosition     = _modeLabelRestPos     + new Vector2(-SlideOffset, 0f);
             _zoneNameLabel.rectTransform.anchoredPosition = _zoneNameLabelRestPos + new Vector2( SlideOffset, 0f);
-
+            _bannerContainer.gameObject.SetActive(true);
             _ = Tween.UIAnchoredPosition(_modeLabel.rectTransform, _modeLabelRestPos, SlideDuration, Ease.OutBack);
             await UniTask.Delay((int)(StaggerDelay * 1000), cancellationToken: ct);
             await Tween.UIAnchoredPosition(_zoneNameLabel.rectTransform, _zoneNameLabelRestPos,
