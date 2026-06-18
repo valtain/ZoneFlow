@@ -15,6 +15,9 @@ namespace ZoneFlow
         /// <summary>gameplay://portal?id= 참조용 포털 고유 ID. Zone 자식에 배치해야 Zone 관리 대상이 된다.</summary>
         [field: SerializeField] public string PortalId { get; private set; } = default;
 
+        /// <summary>플레이어에게 표시되는 포털의 친화 명칭. 미설정 시 표시기가 InteractableId로 폴백.</summary>
+        [field: SerializeField] public string DisplayLabel { get; private set; } = default;
+
         /// <summary>IInteractable 인터페이스 구현. PortalId를 반환한다.</summary>
         public string InteractableId => PortalId;
 
