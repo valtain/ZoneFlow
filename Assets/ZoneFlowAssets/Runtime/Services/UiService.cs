@@ -46,6 +46,17 @@ namespace ZoneFlow
         public void ClearMainViewIfIs(UiPanel panel)
             => MainView.ClearIfIs(panel);
 
+        /// <summary>지정한 패널을 Floating 레이어에 인스턴스화한다. 패널은 숨김 상태로 생성된다.</summary>
+        public UniTask<T> SetFloatingAsync<T>(T prefab, CancellationToken ct = default) where T : UiPanel
+            => Floating.SetAsync(prefab, ct);
+
+        /// <summary>
+        /// panel이 현재 Floating 패널이면 파괴한다.
+        /// 이미 다른 패널로 교체된 경우에는 panel만 파괴한다.
+        /// </summary>
+        public void ClearFloatingIfIs(UiPanel panel)
+            => Floating.ClearIfIs(panel);
+
         /// <summary>지정한 패널을 Overlay 레이어에 표시한다. 기존 패널은 제거된다.</summary>
         public UniTask<T> SetOverlayAsync<T>(T prefab, CancellationToken ct = default) where T : UiPanel
             => Overlay.SetAsync(prefab, ct);

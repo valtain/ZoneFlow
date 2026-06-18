@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 5410905355291024626}
   - component: {fileID: 5194625799870076608}
   - component: {fileID: 8546876273070169666}
+  - component: {fileID: 6933779132078180460}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -395,6 +396,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Player.PlayerController
   <MainCamera>k__BackingField: {fileID: 0}
+--- !u!114 &6933779132078180460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710256753708309846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a85366002df2ecb4c8f1e474c35422de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.InteractionDetector
+  _detectionRadius: 4
+  _interactableMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _scanInterval: 0.1
 --- !u!1 &761145489503546291
 GameObject:
   m_ObjectHideFlags: 0

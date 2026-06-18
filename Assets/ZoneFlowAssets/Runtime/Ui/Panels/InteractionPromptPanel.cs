@@ -4,6 +4,7 @@ using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ZoneFlow.Player;
 
 namespace ZoneFlow
 {
@@ -16,9 +17,72 @@ namespace ZoneFlow
 
         private const float FadeDuration = 0.2f;
 
+        private InteractionDetector _detector;
+        private CancellationTokenSource _fadeCts;
+        private bool _visible;
+
         private void Awake()
         {
             _canvasGroup.alpha = 0f;
+        }
+
+        /// <summary>
+        /// 플레이어의 InteractionDetector를 찾아 구독하고, 현재 상태를 즉시 반영한다.
+        /// 모드 진입(플레이어 스폰 이후)에 호출한다.
+        /// </summary>
+        public void Bind()
+        {
+            var player = PlayerService.Instance.Player;
+            _detector = player != null ? player.GetComponent<InteractionDetector>() : null;
+            Debug.Assert(_detector != null, "[InteractionPromptPanel] Player에 InteractionDetector가 없습니다.");
+            if (_detector == null) return;
+
+            _detector.NearestChanged += OnNearestChanged;
+            OnNearestChanged(_detector.Current);
+        }
+
+        /// <summary>디텍터 구독을 해제하고 진행 중인 페이드를 취소한다. 모드 퇴장에 호출한다.</summary>
+        public void Unbind()
+        {
+            if (_detector != null)
+            {
+                _detector.NearestChanged -= OnNearestChanged;
+                _detector = null;
+            }
+            CancelFade();
+        }
+
+        private void OnNearestChanged(IInteractable nearest)
+        {
+            if (nearest != null)
+            {
+                SetContent(nearest.DisplayLabel, nearest.InteractableId);
+                if (!_visible)
+                {
+                    _visible = true;
+                    Fade(ShowAsync);
+                }
+            }
+            else if (_visible)
+            {
+                _visible = false;
+                Fade(HideAsync);
+            }
+        }
+
+        private void Fade(System.Func<CancellationToken, UniTask> body)
+        {
+            CancelFade();
+            _fadeCts = new CancellationTokenSource();
+            body(_fadeCts.Token).Forget();
+        }
+
+        private void CancelFade()
+        {
+            if (_fadeCts == null) return;
+            _fadeCts.Cancel();
+            _fadeCts.Dispose();
+            _fadeCts = null;
         }
 
         /// <summary>표시할 친화 명칭과 선택적 행동 힌트를 설정한다. DisplayLabel이 비면 fallbackId로 폴백한다.</summary>
