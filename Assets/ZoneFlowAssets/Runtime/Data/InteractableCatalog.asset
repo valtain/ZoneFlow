@@ -13,27 +13,9 @@ MonoBehaviour:
   m_Name: InteractableCatalog
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.InteractableCatalog
   _interactables:
-  - InteractableId: portal_w1
-    ZoneId: world1
-    NavigationUri: gameplay://exploration/world1_b?switch=replaceall
-  - InteractableId: portal_story_w1
-    ZoneId: world1
-    NavigationUri: gameplay://story/story_w1?switch=stack
-  - InteractableId: portal_w1b
-    ZoneId: world1_b
-    NavigationUri: gameplay://exploration/world2_b?switch=replaceall
-  - InteractableId: portal_story_w1_pop
-    ZoneId: story_w1
-    NavigationUri: gameplay://pop
   - InteractableId: portal_to_dungeon
     ZoneId: village
     NavigationUri: gameplay://exploration/dungeon?id=dungeon_entrance
-  - InteractableId: portal_w2
-    ZoneId: world2
-    NavigationUri: gameplay://exploration/world1?switch=replaceall&id=w1_entrance
-  - InteractableId: portal_w2b
-    ZoneId: world2_b
-    NavigationUri: gameplay://exploration/world2?switch=replaceall
   - InteractableId: portal_to_village
     ZoneId: dungeon
     NavigationUri: gameplay://exploration/village?id=village_entrance

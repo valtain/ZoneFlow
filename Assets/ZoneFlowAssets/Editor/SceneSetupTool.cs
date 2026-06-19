@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 namespace ZoneFlow.Editor
 {
-    /// <summary>World1 / World2 씬에 기본 3D 콘텐츠(지면, 장애물, 포털, 스폰포인트)를 생성하고
-    /// MenuPanel 프리팹을 만드는 에디터 도구.</summary>
+    /// <summary>demo-mvp(Village / Dungeon) 씬에 Zone·포털·스폰포인트를 추가하고
+    /// MenuPanel·HUD 프리팹을 만드는 에디터 도구.</summary>
     public static class SceneSetupTool
     {
         private const string PrefabDir = "Assets/ZoneFlowAssets/Prefabs";
@@ -16,16 +16,6 @@ namespace ZoneFlow.Editor
         // ──────────────────────────────────────────────────────────────────
         // Menu Item
         // ──────────────────────────────────────────────────────────────────
-
-        [MenuItem("ZoneFlow/Setup/Setup World1")]
-        public static void SetupWorld1() => SetupWorldScene("World1", "world1",
-            portalTargetUri: "gameplay://exploration/world1_b",
-            portalTargetId:  "portal_w1");
-
-        [MenuItem("ZoneFlow/Setup/Setup World2")]
-        public static void SetupWorld2() => SetupWorldScene("World2", "world2",
-            portalTargetUri: "gameplay://exploration/world1?switch=replaceall&id=w1_entrance",
-            portalTargetId:  "portal_w2");
 
         [MenuItem("ZoneFlow/Setup/Create MenuPanel Prefab")]
         public static void CreateMenuPrefab() => BuildMenuPanelPrefab();
@@ -36,33 +26,13 @@ namespace ZoneFlow.Editor
         [MenuItem("ZoneFlow/Setup/Create StoryHudPanel Prefab")]
         public static void CreateStoryHudPrefab() => BuildStoryHudPanelPrefab();
 
-        [MenuItem("ZoneFlow/Setup/Add Zone B to World1")]
-        public static void AddZoneBToWorld1() =>
-            AddZoneToScene("World1", zoneId: "world1_b", offset: new Vector3(40, 0, 0),
-                portalId: "portal_w1b", portalTargetUri: "gameplay://exploration/world2_b?switch=replaceall");
-
-        [MenuItem("ZoneFlow/Setup/Add Zone B to World2")]
-        public static void AddZoneBToWorld2() =>
-            AddZoneToScene("World2", zoneId: "world2_b", offset: new Vector3(-40, 0, 0),
-                portalId: "portal_w2b", portalTargetUri: "gameplay://exploration/world2");
-
-        [MenuItem("ZoneFlow/Setup/Setup All")]
-        public static void SetupAll()
-        {
-            SetupWorld1();
-            SetupWorld2();
-            CreateMenuPrefab();
-            CreateHudPrefab();
-            CreateStoryHudPrefab();
-        }
-
-        /// <summary>Demo MVP: village (World1) + dungeon (World2) zones with cross-portal navigation.</summary>
+        /// <summary>Demo MVP: village (Village 씬) + dungeon (Dungeon 씬) zones with cross-portal navigation.</summary>
         [MenuItem("ZoneFlow/Setup/Setup Demo MVP")]
         public static void SetupDemoMvp()
         {
-            AddZoneToScene("World1", zoneId: "village", offset: new Vector3(0, 0, 80),
+            AddZoneToScene("Village", zoneId: "village", offset: new Vector3(0, 0, 80),
                 portalId: "portal_to_dungeon", portalTargetUri: "gameplay://exploration/dungeon?id=dungeon_entrance");
-            AddZoneToScene("World2", zoneId: "dungeon", offset: new Vector3(0, 0, 80),
+            AddZoneToScene("Dungeon", zoneId: "dungeon", offset: new Vector3(0, 0, 80),
                 portalId: "portal_to_village", portalTargetUri: "gameplay://exploration/village?id=village_entrance");
         }
 
@@ -132,74 +102,8 @@ namespace ZoneFlow.Editor
         }
 
         // ──────────────────────────────────────────────────────────────────
-        // World Scene Setup
-        // ──────────────────────────────────────────────────────────────────
-
-        private static void SetupWorldScene(string sceneName, string zoneId,
-            string portalTargetUri, string portalTargetId)
-        {
-            var scenePath = $"Assets/ZoneFlowAssets/Scenes/{sceneName}.unity";
-            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-
-            var zoneRoot = FindZoneRoot(scene);
-            if (zoneRoot == null)
-            {
-                Debug.LogError($"[SceneSetupTool] {sceneName}: Zone 루트를 찾지 못했습니다.");
-                EditorSceneManager.CloseScene(scene, false);
-                return;
-            }
-
-            // 이미 Ground가 Zone 하위에 있으면 스킵
-            if (zoneRoot.transform.Find("Ground") != null)
-            {
-                Debug.Log($"[SceneSetupTool] {sceneName}: 이미 설정되어 있습니다. 스킵.");
-                EditorSceneManager.CloseScene(scene, false);
-                return;
-            }
-
-            EditorSceneManager.SetActiveScene(scene);
-
-            // ── Ground (Zone 루트 하위 — Zone Disable 시 함께 숨겨짐) ────
-            var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            ground.name = "Ground";
-            ground.transform.localScale = new Vector3(5, 1, 5);
-            SetColor(ground, new Color(0.25f, 0.35f, 0.25f));
-            ground.transform.SetParent(zoneRoot.transform);
-
-            // ── Obstacles ────────────────────────────────────────────────
-            CreateObstacle("Obstacle_A", new Vector3(-6,  1,   -4), new Vector3(2, 2, 2),       new Color(0.4f,  0.3f,  0.2f )).transform.SetParent(zoneRoot.transform);
-            CreateObstacle("Obstacle_B", new Vector3( 6,  1,    3), new Vector3(1.5f, 2, 3),    new Color(0.35f, 0.3f,  0.25f)).transform.SetParent(zoneRoot.transform);
-            CreateObstacle("Obstacle_C", new Vector3(-4,  1,    7), new Vector3(3, 2, 1.5f),    new Color(0.3f,  0.35f, 0.3f )).transform.SetParent(zoneRoot.transform);
-            CreateObstacle("Obstacle_D", new Vector3( 8,  0.75f,-7), new Vector3(2, 1.5f, 2),   new Color(0.4f,  0.35f, 0.25f)).transform.SetParent(zoneRoot.transform);
-
-            // ── SpawnPoints ───────────────────────────────────────────────
-            CreateSpawnPointMarker($"{zoneId}_default",  isDefault: true,  pos: new Vector3(0, 0.1f, -10), color: Color.green)
-                .transform.SetParent(zoneRoot.transform);
-            CreateSpawnPointMarker($"{zoneId}_entrance", isDefault: false, pos: new Vector3(8, 0.1f,  14), color: Color.cyan)
-                .transform.SetParent(zoneRoot.transform);
-
-            // ── Portal ────────────────────────────────────────────────────
-            CreatePortalObject(portalTargetId, portalTargetUri, new Vector3(8, 1.5f, 16))
-                .transform.SetParent(zoneRoot.transform);
-
-            EditorSceneManager.SaveScene(scene);
-            EditorSceneManager.CloseScene(scene, false);
-            Debug.Log($"[SceneSetupTool] {sceneName} 설정 완료.");
-        }
-
-        // ──────────────────────────────────────────────────────────────────
         // Helper: Primitives
         // ──────────────────────────────────────────────────────────────────
-
-        private static GameObject CreateObstacle(string name, Vector3 pos, Vector3 scale, Color color)
-        {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            go.name = name;
-            go.transform.position = pos;
-            go.transform.localScale = scale;
-            SetColor(go, color);
-            return go;
-        }
 
         private static GameObject CreatePortalObject(string portalId, string navUri, Vector3 pos,
             string displayLabel = null)
@@ -340,16 +244,6 @@ namespace ZoneFlow.Editor
             go.transform.localScale = scale;
             SetColor(go, color);
             return go;
-        }
-
-        private static GameObject FindZoneRoot(Scene scene)
-        {
-            foreach (var root in scene.GetRootGameObjects())
-            {
-                var zone = root.GetComponent<Zone>();
-                if (zone != null) return root;
-            }
-            return null;
         }
 
         // ──────────────────────────────────────────────────────────────────

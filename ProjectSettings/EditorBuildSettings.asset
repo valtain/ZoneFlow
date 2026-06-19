@@ -15,10 +15,10 @@ EditorBuildSettings:
     path: Assets/ZoneFlowAssets/Scenes/Intro.unity
     guid: cf561ab74e304807af72c54342121fdc
   - enabled: 1
-    path: Assets/ZoneFlowAssets/Scenes/World1.unity
+    path: Assets/ZoneFlowAssets/Scenes/Village.unity
     guid: b07a75d9f0cf4b599ab4452c3df96ade
   - enabled: 1
-    path: Assets/ZoneFlowAssets/Scenes/World2.unity
+    path: Assets/ZoneFlowAssets/Scenes/Dungeon.unity
     guid: fa9cc508bb7040d4834af195e1e3901e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: eb2927aa8d07f7046b9f3b88d5e5874c, type: 2}

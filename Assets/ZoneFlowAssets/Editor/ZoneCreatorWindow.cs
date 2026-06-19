@@ -8,7 +8,7 @@ namespace ZoneFlow.Editor
     /// <summary>ZoneId와 씬을 지정해 Zone + SpawnPoint를 빠르게 생성하는 에디터 윈도우.</summary>
     public class ZoneCreatorWindow : EditorWindow
     {
-        private static readonly string[] SceneOptions = { "World1", "World2", "Intro" };
+        private static readonly string[] SceneOptions = { "Village", "Dungeon", "Intro" };
 
         private string  _zoneId    = "story_";
         private int     _sceneIdx  = 0;

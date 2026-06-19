@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 
 namespace ZoneFlow.Tests.Runtime
 {
-    /// <summary>Intro → Menu → World1 → World2 씬 기반 내비게이션 기본 동작 검증.</summary>
+    /// <summary>Intro → Menu → Village → Dungeon 씬 기반 내비게이션 기본 동작 검증.</summary>
     public class GamePlayNavigationTests
     {
         [UnitySetUp]
@@ -33,7 +33,7 @@ namespace ZoneFlow.Tests.Runtime
         });
 
         [UnityTest]
-        public IEnumerator Navigate_IntroToWorld2_ModeTransitions() =>
+        public IEnumerator Navigate_IntroToDungeon_ModeTransitions() =>
             UniTask.ToCoroutine(async () =>
             {
                 var d = GamePlayDirector.Instance;
@@ -48,50 +48,40 @@ namespace ZoneFlow.Tests.Runtime
                 AssertMode<PanelMode>("Menu", d, expectedStack: 2);
                 Assert.AreEqual("menu", ((PanelMode)d.ActiveMode).PanelId, "[Menu] PanelId");
 
-                // World1: ExplorationMode, ReplaceAll → Stack=1 (Intro+Menu 모두 해제)
-                await d.NavigateAsync("gameplay://exploration/world1?switch=replaceall", ct);
-                AssertMode<ExplorationMode>("World1", d, expectedStack: 1);
+                // Village: ExplorationMode, ReplaceAll → Stack=1 (Intro+Menu 모두 해제)
+                await d.NavigateAsync("gameplay://exploration/village?switch=replaceall", ct);
+                AssertMode<ExplorationMode>("Village", d, expectedStack: 1);
 
-                // World2: ExplorationMode, Replace → Stack=1
-                await d.NavigateAsync("gameplay://exploration/world2", ct);
-                AssertMode<ExplorationMode>("World2", d, expectedStack: 1);
+                // Dungeon: ExplorationMode, Replace → Stack=1
+                await d.NavigateAsync("gameplay://exploration/dungeon", ct);
+                AssertMode<ExplorationMode>("Dungeon", d, expectedStack: 1);
             });
 
         /// <summary>
-        /// w1 → w1_b → w2_b → w2 → w1 존 사이클 내비게이션 검증.
-        /// 각 단계에서 올바른 Zone이 활성화되어 있는지 확인한다.
+        /// village → dungeon → village 존 사이클 내비게이션 검증.
+        /// 각 단계에서 올바른 Zone이 활성화되어 있는지 확인한다 (씬 단위 load/unload).
         /// </summary>
         [UnityTest]
-        public IEnumerator Navigate_ZoneCycle_W1_W1b_W2b_W2_W1() =>
+        public IEnumerator Navigate_ZoneCycle_Village_Dungeon_Village() =>
             UniTask.ToCoroutine(async () =>
             {
                 var d = GamePlayDirector.Instance;
                 var ct = CancellationToken.None;
 
-                // world1 진입
-                await d.NavigateAsync("gameplay://exploration/world1?switch=replaceall", ct);
-                AssertMode<ExplorationMode>("World1", d, expectedStack: 1);
-                Assert.AreEqual("world1", FindActiveZone()?.ZoneId, "[World1] ZoneId 불일치");
+                // village 진입
+                await d.NavigateAsync("gameplay://exploration/village?switch=replaceall", ct);
+                AssertMode<ExplorationMode>("Village", d, expectedStack: 1);
+                Assert.AreEqual("village", FindActiveZone()?.ZoneId, "[Village] ZoneId 불일치");
 
-                // world1_b 진입 (같은 씬 내 다른 Zone)
-                await d.NavigateAsync("gameplay://exploration/world1_b", ct);
-                AssertMode<ExplorationMode>("World1_b", d, expectedStack: 1);
-                Assert.AreEqual("world1_b", FindActiveZone()?.ZoneId, "[World1_b] ZoneId 불일치");
+                // dungeon 진입 (다른 씬)
+                await d.NavigateAsync("gameplay://exploration/dungeon", ct);
+                AssertMode<ExplorationMode>("Dungeon", d, expectedStack: 1);
+                Assert.AreEqual("dungeon", FindActiveZone()?.ZoneId, "[Dungeon] ZoneId 불일치");
 
-                // world2_b 진입 (다른 씬)
-                await d.NavigateAsync("gameplay://exploration/world2_b", ct);
-                AssertMode<ExplorationMode>("World2_b", d, expectedStack: 1);
-                Assert.AreEqual("world2_b", FindActiveZone()?.ZoneId, "[World2_b] ZoneId 불일치");
-
-                // world2 진입 (같은 씬 내 다른 Zone)
-                await d.NavigateAsync("gameplay://exploration/world2", ct);
-                AssertMode<ExplorationMode>("World2", d, expectedStack: 1);
-                Assert.AreEqual("world2", FindActiveZone()?.ZoneId, "[World2] ZoneId 불일치");
-
-                // world1 복귀
-                await d.NavigateAsync("gameplay://exploration/world1?switch=replaceall", ct);
-                AssertMode<ExplorationMode>("World1 (복귀)", d, expectedStack: 1);
-                Assert.AreEqual("world1", FindActiveZone()?.ZoneId, "[World1 복귀] ZoneId 불일치");
+                // village 복귀 (다시 다른 씬)
+                await d.NavigateAsync("gameplay://exploration/village?switch=replaceall", ct);
+                AssertMode<ExplorationMode>("Village (복귀)", d, expectedStack: 1);
+                Assert.AreEqual("village", FindActiveZone()?.ZoneId, "[Village 복귀] ZoneId 불일치");
             });
 
         /// <summary>현재 씬에서 활성화된 Zone 중 첫 번째를 반환한다.</summary>

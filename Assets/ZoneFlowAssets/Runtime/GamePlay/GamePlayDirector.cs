@@ -249,14 +249,14 @@ namespace ZoneFlow
 
         /// <summary>
         /// prevMode/nextMode를 보고 전환 효과를 선택한다.
-        /// 어느 쪽이든 PanelMode면 전환 없음(null). 그 외에는 InstantBlackScreen.
+        /// 어느 쪽이든 PanelMode면 전환 없음(null). 그 외에는 FadeScreen으로 암전→이동→복귀 연출.
         /// </summary>
         private static async UniTask<TransitionFxScope> SelectTransitionAsync(
             GamePlayMode prevMode, GamePlayMode nextMode, CancellationToken ct)
         {
             if (prevMode is PanelMode || nextMode is PanelMode)
                 return null;
-            return await UiService.Transition<InstantBlackScreen>(ct);
+            return await UiService.Transition<FadeScreen>(ct);
         }
 
         private GamePlayMode CreateMode(NavigationRequest request)
