@@ -14,11 +14,6 @@ namespace ZoneFlow
         public const string PanelId = "menu";
         private const string NewGameUri = "gameplay://exploration/village?switch=replaceall";
 
-        private void Awake()
-        {
-            if (transform.childCount == 0)
-                BuildDefaultUi();
-        }
 
         // ──────────────────────────────────────────
         // 버튼 핸들러
@@ -52,8 +47,10 @@ namespace ZoneFlow
 #endif
         }
 
+        [ContextMenu("Build Ui")]
         private void BuildDefaultUi()
         {
+            if (transform.childCount > 0) return;
             // PopupLayer의 Canvas 아래에 배치되므로 자체 Canvas 불필요.
             // MenuPanel RectTransform을 전체화면으로 확장한다.
             var selfRect = transform as RectTransform;
@@ -77,10 +74,10 @@ namespace ZoneFlow
                 new Vector2(0, 180), new Vector2(360, 60), 40);
 
             // Buttons
-            AddMenuButton(panelGo.transform, "NewGameBtn",   "New Game",   new Vector2(0,  80), OnNewGame);
-            AddMenuButton(panelGo.transform, "LoadGameBtn",  "Load Game",  new Vector2(0,   0), OnLoadGame);
-            AddMenuButton(panelGo.transform, "SettingsBtn",  "Settings",   new Vector2(0, -80), OnSettings);
-            AddMenuButton(panelGo.transform, "QuitBtn",      "Quit",       new Vector2(0,-160), OnQuit);
+            AddMenuButton(panelGo.transform, "NewGameBtn",   "New Game",   new Vector2(0,  80), OnNewGame).interactable = true;
+            AddMenuButton(panelGo.transform, "LoadGameBtn",  "Load Game",  new Vector2(0,   0), OnLoadGame).interactable = false;
+            AddMenuButton(panelGo.transform, "SettingsBtn",  "Settings",   new Vector2(0, -80), OnSettings).interactable = false;
+            AddMenuButton(panelGo.transform, "QuitBtn",      "Quit",       new Vector2(0,-160), OnQuit).interactable = false;
         }
 
         private static void AddLabel(Transform parent, string name, string text,
@@ -100,7 +97,7 @@ namespace ZoneFlow
             tmp.color = Color.white;
         }
 
-        private static void AddMenuButton(Transform parent, string name, string label,
+        private static Button AddMenuButton(Transform parent, string name, string label,
             Vector2 anchoredPos, UnityEngine.Events.UnityAction onClick)
         {
             var go = new GameObject(name);
@@ -128,6 +125,8 @@ namespace ZoneFlow
             tmp.fontSize = 24;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = Color.white;
+
+            return btn;
         }
     }
 }
