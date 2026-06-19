@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "unity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "anklebreaker-unity-mcp@latest"
+      ],
+      "env": {
+        "UNITY_BRIDGE_PORT": "7890"
+      }
+    }
+  }
+}
