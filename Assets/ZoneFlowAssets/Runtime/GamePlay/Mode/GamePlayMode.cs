@@ -47,6 +47,7 @@ namespace ZoneFlow
         /// </summary>
         internal virtual bool IsOverlay => false;
 
+        private bool _needSpawn = false;
         // SpawnPoint로 초기화되고 SleptAsync 등 주요 이벤트마다 갱신되는 플레이어 위치.
         private Vector3 _savedPosition;
         private Quaternion _savedRotation;
@@ -57,12 +58,13 @@ namespace ZoneFlow
             ZoneAsset = zoneAsset;
             SpawnPointId = spawnPointId;
             State = ModeState.Created;
+            _needSpawn = zoneAsset != null && !string.IsNullOrEmpty(spawnPointId);
         }
 
         /// <summary>OnModeInAsync에서 명시적으로 호출해 플레이어를 배치한다.</summary>
         protected void SpawnPlayer()
         {
-            if (Zone != null)
+            if (_needSpawn)
             {
                 PlayerService.Instance.SpawnAt(_savedPosition, _savedRotation);
             }
@@ -85,7 +87,7 @@ namespace ZoneFlow
             if (ZoneAsset != null)
                 Zone = await Director.ZoneRegistry.AcquireAsync(ZoneAsset, ct);
 
-            if (Zone != null)
+            if (Zone != null && _needSpawn)
             {
                 // SpawnPointId가 비면 GetSpawnPoint가 해당 Zone의 DefaultSpawnPoint를 반환한다.
                 var sp = Zone.GetSpawnPoint(SpawnPointId);
@@ -119,7 +121,7 @@ namespace ZoneFlow
         internal async UniTask SleptAsync(CancellationToken ct, bool keepZoneActive = false)
         {
             State = ModeState.Slept;
-            if (Zone != null)
+            if (Zone != null && _needSpawn)
             {
                 var player = PlayerService.Instance.Player;
                 if (player != null)
