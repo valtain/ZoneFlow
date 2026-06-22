@@ -11,10 +11,5 @@ namespace ZoneFlow
             : base(zoneAsset, spawnPointId) { }
 
         /// <summary>모드 진입 시 플레이어를 배치한다.</summary>
-        protected override UniTask OnModeInAsync(CancellationToken ct)
-        {
-            SpawnPlayer();
-            return UniTask.CompletedTask;
-        }
     }
 }

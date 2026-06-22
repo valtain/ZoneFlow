@@ -33,7 +33,6 @@ namespace ZoneFlow
         /// <summary>모드 진입 시 플레이어를 배치하고 HUD를 슬라이드인한 뒤 프롬프트를 연결한다.</summary>
         protected override async UniTask OnModeInAsync(CancellationToken ct)
         {
-            SpawnPlayer();
             await UiService.Instance.ShowMainViewAsync(ct);
             _prompt?.Bind();
         }

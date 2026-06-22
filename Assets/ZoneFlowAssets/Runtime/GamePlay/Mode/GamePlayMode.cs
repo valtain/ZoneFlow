@@ -63,7 +63,9 @@ namespace ZoneFlow
         protected void SpawnPlayer()
         {
             if (Zone != null)
+            {
                 PlayerService.Instance.SpawnAt(_savedPosition, _savedRotation);
+            }
         }
 
         // ── 상태 전이 메서드 (Director가 호출, 상태 하나당 함수 하나) ─────────────────
@@ -92,6 +94,7 @@ namespace ZoneFlow
             }
 
             await OnPlayedAsync(ct);
+            SpawnPlayer();
         }
 
         /// <summary>ModeIn 상태. 진입 연출 후 Active로 전이한다.</summary>
@@ -137,6 +140,7 @@ namespace ZoneFlow
             if (Zone != null && !Zone.gameObject.activeSelf)
                 Zone.gameObject.SetActive(true);
             await OnResumedAsync(ct);
+            SpawnPlayer();
         }
 
         /// <summary>Stopped 상태. Zone을 언로드하고 정리한다.</summary>
