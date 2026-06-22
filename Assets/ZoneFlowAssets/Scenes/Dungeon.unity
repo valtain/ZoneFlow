@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 450129169}
   - component: {fileID: 450129168}
   m_Layer: 0
-  m_Name: Portal_portal_to_village
+  m_Name: Portal_portal_dungeon_to_overworld
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -413,9 +413,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474a4ed0463c4e648951d24b44577845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
-  <NavigationUri>k__BackingField: gameplay://exploration/village?id=village_entrance
-  <PortalId>k__BackingField: portal_to_village
-  <DisplayLabel>k__BackingField: portal_to_village
+  <NavigationUri>k__BackingField: gameplay://exploration/overworld?id=overworld_from_dungeon
+  <PortalId>k__BackingField: portal_dungeon_to_overworld
+  <DisplayLabel>k__BackingField: "Overworld\uB85C"
 --- !u!23 &450129169
 MeshRenderer:
   m_ObjectHideFlags: 0
