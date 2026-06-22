@@ -31,8 +31,8 @@ namespace ZoneFlow.Editor
         public static void SetupDemoMvp()
         {
             AddZoneToScene("Village", zoneId: "village", offset: new Vector3(0, 0, 80),
-                portalId: "portal_to_dungeon", portalTargetUri: "gameplay://exploration/dungeon?id=dungeon_entrance");
-            AddZoneToScene("Dungeon", zoneId: "dungeon", offset: new Vector3(0, 0, 80),
+                portalId: "portal_to_dungeon", portalTargetUri: "gameplay://exploration/dungeon_0?id=dungeon_0_entrance");
+            AddZoneToScene("Dungeon", zoneId: "dungeon_0", offset: new Vector3(0, 0, 80),
                 portalId: "portal_to_village", portalTargetUri: "gameplay://exploration/village?id=village_entrance");
         }
 

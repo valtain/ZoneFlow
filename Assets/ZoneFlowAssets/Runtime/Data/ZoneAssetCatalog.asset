@@ -17,7 +17,15 @@ MonoBehaviour:
     <SceneName>k__BackingField: Intro
   - <ZoneId>k__BackingField: village
     <SceneName>k__BackingField: Village
-  - <ZoneId>k__BackingField: dungeon
+  - <ZoneId>k__BackingField: dungeon_0
+    <SceneName>k__BackingField: Dungeon
+  - <ZoneId>k__BackingField: dungeon_1
+    <SceneName>k__BackingField: Dungeon
+  - <ZoneId>k__BackingField: dungeon_2
+    <SceneName>k__BackingField: Dungeon
+  - <ZoneId>k__BackingField: dungeon_3
+    <SceneName>k__BackingField: Dungeon
+  - <ZoneId>k__BackingField: dungeon_4
     <SceneName>k__BackingField: Dungeon
   - <ZoneId>k__BackingField: boss_room
     <SceneName>k__BackingField: BossRoom

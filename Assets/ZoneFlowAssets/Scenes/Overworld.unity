@@ -1603,7 +1603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474a4ed0463c4e648951d24b44577845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
-  <NavigationUri>k__BackingField: gameplay://exploration/dungeon?id=dungeon_entrance
+  <NavigationUri>k__BackingField: gameplay://exploration/dungeon_0?id=dungeon_0_entrance
   <PortalId>k__BackingField: portal_to_dungeon
   <DisplayLabel>k__BackingField: "\uB358\uC804\uC73C\uB85C"
 --- !u!23 &2031265481

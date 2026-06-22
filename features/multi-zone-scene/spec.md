@@ -6,7 +6,14 @@
 
 현재 구조(씬:Zone = 1:1)를 씬:Zone = 1:N으로 확장하여, 지형이 연결된 구역을 하나의 씬에 묶거나 씬 파일 수를 줄이는 것이 목적이다.
 
-## 변경 범위
+## 구현 현황 (2026-06-22 갱신)
+
+> 아래 ZoneRegistry·CatalogBaker 변경은 **현재 코드에 이미 반영되어 있다**(스펙 구식).
+> [ZoneRegistry.ReleaseAsync](../../Assets/ZoneFlowAssets/Runtime/GamePlay/Zone/ZoneRegistry.cs)는
+> 씬 내 모든 Zone RefCount가 0일 때만 언로드하고, [CatalogBaker](../../Assets/ZoneFlowAssets/Editor/CatalogBaker.cs)는
+> 씬당 모든 Zone을 등록한다. 따라서 잔여 작업은 엔진 변경이 아니라 **콘텐츠 시연**(tasks.md #74)이다.
+
+## 변경 범위 (참고 — 대부분 구현 완료)
 
 ### ZoneRegistry
 

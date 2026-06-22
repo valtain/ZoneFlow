@@ -16,9 +16,33 @@ MonoBehaviour:
   - InteractableId: portal_village_to_overworld
     ZoneId: village
     NavigationUri: gameplay://exploration/overworld?id=overworld_from_village
-  - InteractableId: portal_dungeon_to_overworld
-    ZoneId: dungeon
+  - InteractableId: portal_d0_to_overworld
+    ZoneId: dungeon_0
     NavigationUri: gameplay://exploration/overworld?id=overworld_from_dungeon
+  - InteractableId: portal_d0_to_d1
+    ZoneId: dungeon_0
+    NavigationUri: gameplay://exploration/dungeon_1?id=dungeon_1_from_0
+  - InteractableId: portal_d1_to_d0
+    ZoneId: dungeon_1
+    NavigationUri: gameplay://exploration/dungeon_0?id=dungeon_0_from_1
+  - InteractableId: portal_d1_to_d2
+    ZoneId: dungeon_1
+    NavigationUri: gameplay://exploration/dungeon_2?id=dungeon_2_from_1
+  - InteractableId: portal_d2_to_d1
+    ZoneId: dungeon_2
+    NavigationUri: gameplay://exploration/dungeon_1?id=dungeon_1_from_2
+  - InteractableId: portal_d2_to_d3
+    ZoneId: dungeon_2
+    NavigationUri: gameplay://exploration/dungeon_3?id=dungeon_3_from_2
+  - InteractableId: portal_d3_to_d2
+    ZoneId: dungeon_3
+    NavigationUri: gameplay://exploration/dungeon_2?id=dungeon_2_from_3
+  - InteractableId: portal_d3_to_d4
+    ZoneId: dungeon_3
+    NavigationUri: gameplay://exploration/dungeon_4?id=dungeon_4_from_3
+  - InteractableId: portal_d4_to_d3
+    ZoneId: dungeon_4
+    NavigationUri: gameplay://exploration/dungeon_3?id=dungeon_3_from_4
   - InteractableId: portal_boss_room_to_overworld
     ZoneId: boss_room
     NavigationUri: gameplay://exploration/overworld?id=overworld_from_boss_room
@@ -27,7 +51,7 @@ MonoBehaviour:
     NavigationUri: gameplay://exploration/village?id=village_entrance
   - InteractableId: portal_to_dungeon
     ZoneId: overworld
-    NavigationUri: gameplay://exploration/dungeon?id=dungeon_entrance
+    NavigationUri: gameplay://exploration/dungeon_0?id=dungeon_0_entrance
   - InteractableId: portal_to_boss_room
     ZoneId: overworld
     NavigationUri: gameplay://exploration/boss_room?id=boss_room_entrance

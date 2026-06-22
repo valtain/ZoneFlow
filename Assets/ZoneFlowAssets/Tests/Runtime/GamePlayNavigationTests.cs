@@ -53,7 +53,7 @@ namespace ZoneFlow.Tests.Runtime
                 AssertMode<ExplorationMode>("Village", d, expectedStack: 1);
 
                 // Dungeon: ExplorationMode, Replace → Stack=1
-                await d.NavigateAsync("gameplay://exploration/dungeon", ct);
+                await d.NavigateAsync("gameplay://exploration/dungeon_0", ct);
                 AssertMode<ExplorationMode>("Dungeon", d, expectedStack: 1);
             });
 
@@ -74,9 +74,9 @@ namespace ZoneFlow.Tests.Runtime
                 Assert.AreEqual("village", FindActiveZone()?.ZoneId, "[Village] ZoneId 불일치");
 
                 // dungeon 진입 (다른 씬)
-                await d.NavigateAsync("gameplay://exploration/dungeon", ct);
+                await d.NavigateAsync("gameplay://exploration/dungeon_0", ct);
                 AssertMode<ExplorationMode>("Dungeon", d, expectedStack: 1);
-                Assert.AreEqual("dungeon", FindActiveZone()?.ZoneId, "[Dungeon] ZoneId 불일치");
+                Assert.AreEqual("dungeon_0", FindActiveZone()?.ZoneId, "[Dungeon] ZoneId 불일치");
 
                 // village 복귀 (다시 다른 씬)
                 await d.NavigateAsync("gameplay://exploration/village?switch=replaceall", ct);

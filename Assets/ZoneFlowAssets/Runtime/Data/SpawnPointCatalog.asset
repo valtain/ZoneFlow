@@ -19,8 +19,24 @@ MonoBehaviour:
     zoneId: village
   - spawnPointId: village_entrance
     zoneId: village
-  - spawnPointId: dungeon_entrance
-    zoneId: dungeon
+  - spawnPointId: dungeon_0_entrance
+    zoneId: dungeon_0
+  - spawnPointId: dungeon_0_from_1
+    zoneId: dungeon_0
+  - spawnPointId: dungeon_1_from_0
+    zoneId: dungeon_1
+  - spawnPointId: dungeon_1_from_2
+    zoneId: dungeon_1
+  - spawnPointId: dungeon_2_from_1
+    zoneId: dungeon_2
+  - spawnPointId: dungeon_2_from_3
+    zoneId: dungeon_2
+  - spawnPointId: dungeon_3_from_2
+    zoneId: dungeon_3
+  - spawnPointId: dungeon_3_from_4
+    zoneId: dungeon_3
+  - spawnPointId: dungeon_4_from_3
+    zoneId: dungeon_4
   - spawnPointId: boss_room_default
     zoneId: boss_room
   - spawnPointId: boss_room_entrance
