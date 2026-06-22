@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.ColdStartup
   <StartNavigation>k__BackingField:
     <Host>k__BackingField: 0
-    <ZoneId>k__BackingField: world2
+    <ZoneId>k__BackingField: dungeon
     <Id>k__BackingField: 
     <Switch>k__BackingField: 0
 --- !u!1 &33862689
