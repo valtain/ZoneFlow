@@ -19,3 +19,7 @@ MonoBehaviour:
     <SceneName>k__BackingField: Village
   - <ZoneId>k__BackingField: dungeon
     <SceneName>k__BackingField: Dungeon
+  - <ZoneId>k__BackingField: boss_room
+    <SceneName>k__BackingField: BossRoom
+  - <ZoneId>k__BackingField: overworld
+    <SceneName>k__BackingField: Overworld

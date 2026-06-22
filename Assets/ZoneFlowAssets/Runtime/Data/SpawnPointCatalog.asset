@@ -21,3 +21,15 @@ MonoBehaviour:
     zoneId: village
   - spawnPointId: dungeon_entrance
     zoneId: dungeon
+  - spawnPointId: boss_room_default
+    zoneId: boss_room
+  - spawnPointId: boss_room_entrance
+    zoneId: boss_room
+  - spawnPointId: overworld_default
+    zoneId: overworld
+  - spawnPointId: overworld_from_village
+    zoneId: overworld
+  - spawnPointId: overworld_from_dungeon
+    zoneId: overworld
+  - spawnPointId: overworld_from_boss_room
+    zoneId: overworld

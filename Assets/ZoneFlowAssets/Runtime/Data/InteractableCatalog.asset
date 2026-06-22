@@ -13,9 +13,21 @@ MonoBehaviour:
   m_Name: InteractableCatalog
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.InteractableCatalog
   _interactables:
-  - InteractableId: portal_to_dungeon
+  - InteractableId: portal_village_to_overworld
     ZoneId: village
-    NavigationUri: gameplay://exploration/dungeon?id=dungeon_entrance
-  - InteractableId: portal_to_village
+    NavigationUri: gameplay://exploration/overworld?id=overworld_from_village
+  - InteractableId: portal_dungeon_to_overworld
     ZoneId: dungeon
+    NavigationUri: gameplay://exploration/overworld?id=overworld_from_dungeon
+  - InteractableId: portal_boss_room_to_overworld
+    ZoneId: boss_room
+    NavigationUri: gameplay://exploration/overworld?id=overworld_from_boss_room
+  - InteractableId: portal_to_village
+    ZoneId: overworld
     NavigationUri: gameplay://exploration/village?id=village_entrance
+  - InteractableId: portal_to_dungeon
+    ZoneId: overworld
+    NavigationUri: gameplay://exploration/dungeon?id=dungeon_entrance
+  - InteractableId: portal_to_boss_room
+    ZoneId: overworld
+    NavigationUri: gameplay://exploration/boss_room?id=boss_room_entrance
