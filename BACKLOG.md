@@ -37,6 +37,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | zone-entry-guard | active | — |
 | portal-interaction-label | closed | interaction-prompt |
 | demo-connected-world | closed | demo-mvp-scene, overworld-hub |
+| zone-entry-camera | closed | TASK 이슈 |
 
 ## Architectural Questions
 

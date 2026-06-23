@@ -10,7 +10,7 @@ namespace ZoneFlow
 
         /// <summary>ZoneAsset과 스폰 포인트 ID로 스토리 모드를 생성한다.</summary>
         public StoryMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
-            : base(zoneAsset, spawnPointId) { }
+            : base(zoneAsset, spawnPointId, zoneAsset != null) { }
 
         /// <summary>Zone 로드 직후 HUD를 숨김 상태로 생성한다.</summary>
         protected override async UniTask OnPlayedAsync(CancellationToken ct)

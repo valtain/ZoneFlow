@@ -53,12 +53,12 @@ namespace ZoneFlow
         private Quaternion _savedRotation;
 
         /// <summary>ZoneAsset과 초기 스폰 포인트 ID를 주입하여 모드를 생성한다.</summary>
-        protected GamePlayMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
+        protected GamePlayMode(ZoneAsset zoneAsset = null, string spawnPointId = null, bool needSpawn = true)
         {
             ZoneAsset = zoneAsset;
             SpawnPointId = spawnPointId;
             State = ModeState.Created;
-            _needSpawn = zoneAsset != null && !string.IsNullOrEmpty(spawnPointId);
+            _needSpawn = needSpawn;
         }
 
         /// <summary>OnModeInAsync에서 명시적으로 호출해 플레이어를 배치한다.</summary>
@@ -103,6 +103,10 @@ namespace ZoneFlow
         internal async UniTask ModeInAsync(CancellationToken ct)
         {
             State = ModeState.ModeIn;
+            if (PlayerService.IsReady && PlayerService.Instance.Player != null)
+            {
+                PlayerService.Instance.Player.PlayEntryReveal();
+            }
             await OnModeInAsync(ct);
             State = ModeState.Active;
         }

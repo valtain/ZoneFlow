@@ -396,6 +396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Player.PlayerController
   <MainCamera>k__BackingField: {fileID: 0}
+  _vcam: {fileID: 5307715631321991620}
 --- !u!114 &6933779132078180460
 MonoBehaviour:
   m_ObjectHideFlags: 0
