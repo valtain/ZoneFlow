@@ -752,7 +752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/overworld?id=overworld_from_dungeon
   <PortalId>k__BackingField: portal_d0_to_overworld
-  <DisplayLabel>k__BackingField: "Overworld\uB85C"
+  <DisplayLabel>k__BackingField: To Overworld
 --- !u!23 &450129169
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -882,7 +882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_3?id=dungeon_3_from_4
   <PortalId>k__BackingField: portal_d4_to_d3
-  <DisplayLabel>k__BackingField: "\u2190 \uAD6C\uC5ED 3"
+  <DisplayLabel>k__BackingField: <- Area 3
 --- !u!23 &517307066
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1012,7 +1012,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_0?id=dungeon_0_from_1
   <PortalId>k__BackingField: portal_d1_to_d0
-  <DisplayLabel>k__BackingField: "\u2190 \uAD6C\uC5ED 0"
+  <DisplayLabel>k__BackingField: <- Area 0
 --- !u!23 &537578280
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1932,7 +1932,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_2?id=dungeon_2_from_3
   <PortalId>k__BackingField: portal_d3_to_d2
-  <DisplayLabel>k__BackingField: "\u2190 \uAD6C\uC5ED 2"
+  <DisplayLabel>k__BackingField: <- Area 2
 --- !u!23 &850145761
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2311,7 +2311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_1?id=dungeon_1_from_0
   <PortalId>k__BackingField: portal_d0_to_d1
-  <DisplayLabel>k__BackingField: "\uAD6C\uC5ED 1 \u2192"
+  <DisplayLabel>k__BackingField: Area 1 ->
 --- !u!23 &1028680378
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2441,7 +2441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_2?id=dungeon_2_from_1
   <PortalId>k__BackingField: portal_d1_to_d2
-  <DisplayLabel>k__BackingField: "\uAD6C\uC5ED 2 \u2192"
+  <DisplayLabel>k__BackingField: Area 2 ->
 --- !u!23 &1045421427
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3130,7 +3130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_3?id=dungeon_3_from_2
   <PortalId>k__BackingField: portal_d2_to_d3
-  <DisplayLabel>k__BackingField: "\uAD6C\uC5ED 3 \u2192"
+  <DisplayLabel>k__BackingField: Area 3 ->
 --- !u!23 &1318319885
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3806,7 +3806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_4?id=dungeon_4_from_3
   <PortalId>k__BackingField: portal_d3_to_d4
-  <DisplayLabel>k__BackingField: "\uAD6C\uC5ED 4 \u2192"
+  <DisplayLabel>k__BackingField: Area 4 ->
 --- !u!23 &1476180802
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5139,7 +5139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_1?id=dungeon_1_from_2
   <PortalId>k__BackingField: portal_d2_to_d1
-  <DisplayLabel>k__BackingField: "\u2190 \uAD6C\uC5ED 1"
+  <DisplayLabel>k__BackingField: <- Area 1
 --- !u!23 &1938374589
 MeshRenderer:
   m_ObjectHideFlags: 0

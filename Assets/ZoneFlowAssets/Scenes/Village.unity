@@ -217,7 +217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/overworld?id=overworld_from_village
   <PortalId>k__BackingField: portal_village_to_overworld
-  <DisplayLabel>k__BackingField: "Overworld\uB85C"
+  <DisplayLabel>k__BackingField: To Overworld
 --- !u!23 &11487932
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1396,7 +1396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://story/village
   <PortalId>k__BackingField: portal_village_to_story
-  <DisplayLabel>k__BackingField: "Story \uBAA8\uB4DC\uB85C"
+  <DisplayLabel>k__BackingField: Enter Story Mode
 --- !u!23 &1071332512
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -461,7 +461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/village?id=village_entrance
   <PortalId>k__BackingField: portal_to_village
-  <DisplayLabel>k__BackingField: "\uB9C8\uC744\uB85C"
+  <DisplayLabel>k__BackingField: To Village
 --- !u!23 &581500879
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -955,7 +955,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/boss_room?id=boss_room_entrance
   <PortalId>k__BackingField: portal_to_boss_room
-  <DisplayLabel>k__BackingField: "\uBCF4\uC2A4\uBC29\uC73C\uB85C"
+  <DisplayLabel>k__BackingField: To Boss Room
 --- !u!23 &1170690670
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1605,7 +1605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Portal
   <NavigationUri>k__BackingField: gameplay://exploration/dungeon_0?id=dungeon_0_entrance
   <PortalId>k__BackingField: portal_to_dungeon
-  <DisplayLabel>k__BackingField: "\uB358\uC804\uC73C\uB85C"
+  <DisplayLabel>k__BackingField: To Dungeon
 --- !u!23 &2031265481
 MeshRenderer:
   m_ObjectHideFlags: 0
