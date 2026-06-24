@@ -1,0 +1,7 @@
+title: intro
+---
+<<declare $story_progress = 0>>
+<<set $story_progress = 1>>
+나레이터: 모험이 시작됩니다. (마을)
+나레이터: 진행도가 {$story_progress}로 기록되었습니다.
+===

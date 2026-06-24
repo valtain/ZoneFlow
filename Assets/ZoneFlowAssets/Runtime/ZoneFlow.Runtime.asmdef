@@ -6,7 +6,8 @@
         "PrimeTween.Runtime",
         "Unity.Cinemachine",
         "Unity.TextMeshPro",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "YarnSpinner.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

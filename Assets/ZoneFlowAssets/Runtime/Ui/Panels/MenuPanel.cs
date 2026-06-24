@@ -22,9 +22,17 @@ namespace ZoneFlow
         public void OnNewGame()
         {
             if (!GamePlayDirector.IsReady) return;
-            GamePlayDirector.Instance
-                .NavigateAsync(NewGameUri, CancellationToken.None)
-                .Forget();
+            StartNewGameAsync().Forget();
+        }
+
+        /// <summary>
+        /// 콘텐츠 세션을 연다: ContentServices 씬(DialogueService 호스트)을 먼저 로드한 뒤 콘텐츠로 진입한다.
+        /// ContentServices의 로드~언로드 경계가 내러티브 진행 상태의 수명이 된다.
+        /// </summary>
+        private static async UniTaskVoid StartNewGameAsync()
+        {
+            await SceneService.EnsureContentServicesLoaded();
+            await GamePlayDirector.Instance.NavigateAsync(NewGameUri, CancellationToken.None);
         }
 
         public void OnLoadGame()

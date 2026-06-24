@@ -1,0 +1,7 @@
+title: zone_a
+---
+나레이터: 던전에 도착했습니다.
+나레이터: Zone을 넘어왔지만 진행도는 {$story_progress} 그대로입니다.
+<<set $story_progress = $story_progress + 1>>
+나레이터: 이제 진행도는 {$story_progress}입니다.
+===
