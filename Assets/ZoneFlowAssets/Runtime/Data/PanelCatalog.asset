@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: PanelCatalog
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.PanelCatalog
   _panels:
-  - PanelId: dialogue
-    Prefab: {fileID: 6902347561238162475, guid: f6f692417765c274983639f20212c5af, type: 3}
-  - PanelId: exploration-hud
-    Prefab: {fileID: 3248424465265054513, guid: f6cfbc127cfa8a8458479d238279d3a6, type: 3}
   - PanelId: menu
     Prefab: {fileID: 7440968753012972485, guid: 4cc54ccaebe695a48a3bc63f7ea67a3a, type: 3}
+  - PanelId: exploration-hud
+    Prefab: {fileID: 3248424465265054513, guid: f6cfbc127cfa8a8458479d238279d3a6, type: 3}
   - PanelId: story-hud
     Prefab: {fileID: 8480746315295989133, guid: e5c8b0e4eb7f6f745a4fb46e0f0679b4, type: 3}
+  - PanelId: dialogue
+    Prefab: {fileID: 6902347561238162475, guid: f6f692417765c274983639f20212c5af, type: 3}
+  - PanelId: interaction-prompt
+    Prefab: {fileID: 4799334620934402509, guid: 23a5a76db0bf57a488cac5be4721ed52, type: 3}
