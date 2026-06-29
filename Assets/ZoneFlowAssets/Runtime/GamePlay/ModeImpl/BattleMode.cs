@@ -8,7 +8,7 @@ namespace ZoneFlow
     {
         /// <summary>ZoneAsset과 스폰 포인트 ID로 전투 모드를 생성한다.</summary>
         public BattleMode(ZoneAsset zoneAsset = null, string spawnPointId = null)
-            : base(zoneAsset, spawnPointId) { }
+            : base(zoneAsset, spawnPointId, zoneAsset != null) { }
 
         /// <summary>모드 진입 시 플레이어를 배치한다.</summary>
     }
