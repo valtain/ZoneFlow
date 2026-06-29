@@ -35,6 +35,16 @@ $map = @{
     'next'             = @{ level = 'Medium'; model = 'sonnet'; action = 'none' }
     # quick
     'quick'            = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
+    # level 서브커맨드
+    'level list'       = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
+    'level new'        = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'level-designer' }
+    'level improve'    = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'level-designer' }
+    'level review'     = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'level-designer' }
+    # ui 서브커맨드
+    'ui list'          = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
+    'ui new'           = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'ui-designer' }
+    'ui improve'       = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'ui-designer' }
+    'ui review'        = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'ui-designer' }
 }
 
 $key  = if ($sub -and $map.ContainsKey("$command $sub")) { "$command $sub" } else { $command }

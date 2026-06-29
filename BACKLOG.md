@@ -51,3 +51,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | AQ-3 | Mode 스택(stack switch)과 Story 내러티브 공존 | ❓ Open | story-yarnspinner → #49 |
 | AQ-4 | Addressable 전환 시 Zone 생명주기 인터페이스 변화 | ❓ Open | — |
 | AQ-5 | Save/Load과 Zone-Mode 상태 상호작용 | ❓ Open | — |
+| AQ-6 | 콘텐츠 풍부화 시 CatalogBaker `BakeAll` 전량 재스캔이 저작 루프 병목/충돌점이 되는가 (AQ-4 인접) | ❓ Open | level-designer·ui-designer 도입 |
