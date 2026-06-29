@@ -18,14 +18,14 @@ $map = @{
     'review'           = @{ level = 'Medium'; model = 'sonnet'; action = 'none' }
     'simplify'         = @{ level = 'Medium'; model = 'sonnet'; action = 'none' }
     'security-review'  = @{ level = 'High';   model = 'opus';   action = 'confirm' }
-    'explore'          = @{ level = 'High';   model = 'opus';   action = 'confirm' }
+    'explore'          = @{ level = 'High';   model = 'opus';   action = 'confirm'; agent = 'architecture-director' }
     # issue 서브커맨드
     'issue new'        = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
     'issue list'       = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
     'issue show'       = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
     'issue close'      = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
-    'issue do'         = @{ level = 'Medium'; model = 'sonnet'; action = 'none' }
-    'issue review'     = @{ level = 'High';   model = 'opus';   action = 'confirm' }
+    'issue do'         = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'unity-specialist' }
+    'issue review'     = @{ level = 'High';   model = 'opus';   action = 'confirm'; agent = 'architecture-director' }
     # feature 서브커맨드
     'feature new'      = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
     'feature list'     = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
@@ -50,4 +50,8 @@ switch ($info.action) {
         Write-Output "[Complexity Hook] /$key → $($info.level) → model='$($info.model)' 권장"
         Write-Output "이 커맨드는 High 복잡도입니다. 작업 시작 전 사용자에게 확인하세요: '$($info.model) 모델로 진행하시겠습니까? (추가 비용 발생)'"
     }
+}
+
+if ($info.agent) {
+    Write-Output "[Subagent] /$key → '$($info.agent)' 역할 에이전트로 위임하세요 (Agent 도구, subagent_type='$($info.agent)'). 사용자 승인 게이트는 메인 세션이 중재."
 }

@@ -22,8 +22,8 @@
   - (상세 기준: `.claude/docs/complexity.md`)
 - **Command Execution**: `UserPromptSubmit` hook(`complexity-hint.ps1`)이 슬래시 커맨드를 자동 감지하여 복잡도를 주입한다. Hook 출력을 반드시 따를 것.
   - **Low** (`/git-commit`, `/bridge`, `/work-log`, `/quick`, `/issue new|list|show|close`, `/feature new|list|show`): Agent 도구로 `model='haiku'` 서브에이전트를 생성하여 전체 작업 위임
-  - **Medium** (`/init`, `/review`, `/next`, `/issue do`, `/feature plan`): 현재 모델 유지, 알림 없음
-  - **High** (`/security-review`, `/explore`, `/issue review`): 작업 시작 전 사용자에게 Opus 모델 전환 여부 확인
+  - **Medium** (`/init`, `/review`, `/next`, `/issue do`, `/feature plan`): 현재 모델 유지, 알림 없음. **구현 위임은 `unity-specialist` 에이전트로** (`/issue do`).
+  - **High** (`/security-review`, `/explore`, `/issue review`): 작업 시작 전 사용자에게 Opus 모델 전환 여부 확인. **설계·검토 위임은 `architecture-director` 에이전트로** (`/explore`, `/issue review`).
 - **구현 워크플로우**: Plan 승인 후 아래 기준으로 후속 액션을 결정할 것.
   - **Implementation Plan** (기능 구현·리팩터링·버그 수정 등 코드 변경 수반):
     1. **Plan 모드** 진입 → 설계 정리 및 사용자 승인
@@ -33,6 +33,31 @@
   - **Analysis Plan** (코드 리뷰·보안 리뷰·설계 검토 등 코드 변경 없음):
     1. **Plan 모드** 진입 → 분석 범위 정리 및 사용자 승인
     2. 승인 후 바로 작업 실행 (이슈 등록·`/issue do` 생략)
+
+## Subagents (역할 기반)
+
+complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)*을 담당한다 — 추가일 뿐 충돌 없음. 정의: `.claude/agents/`.
+
+- **`architecture-director`** (Opus) — Zone-Mode 분리 검토, AQ 발견·제안, 시스템 간 연동 설계. `/explore`·`/issue review`가 위임. 설계 중심(읽기 위주).
+- **`unity-specialist`** (Sonnet) — Unity API·구현 권위자, `unity_*` MCP로 에디터 조작, 경로 rules 강제. `/issue do`가 위임.
+
+주의: 서브에이전트는 `AskUserQuestion`·`ExitPlanMode`를 쓸 수 없다 → **사용자 승인 게이트는 메인 세션이 중재**한다. 에이전트 파일을 디스크에서 새로 추가/수정하면 **세션 재시작 후** 로드된다.
+
+## Path-Scoped Rules
+
+특정 경로의 파일을 Edit/Write 하기 **전에** 대응 rule을 먼저 읽고 적용한다. 정의: `.claude/rules/` (frontmatter `paths:` glob). `docs/`가 canonical source이며 rule은 경로별 핵심만 추출·링크.
+
+| glob | rule |
+| --- | --- |
+| `Assets/ZoneFlowAssets/Runtime/**` | `runtime-code.md` |
+| `Assets/**/Editor/**` | `editor-code.md` |
+| `Assets/ZoneFlowAssets/Runtime/Data/**` | `scriptable-data.md` |
+| `Assets/ZoneFlowAssets/Tests/**` | `tests.md` |
+
+## Templates
+
+- `.claude/templates/architecture-decision.md` — ADR. 채워서 `docs/decisions/`에 저장 (constraints.md가 참조).
+- `.claude/templates/feature-spec.md` — `/feature`·`/issue` 흐름의 설계 입력.
 
 ## Architectural Principles
 
