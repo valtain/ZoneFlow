@@ -50,6 +50,8 @@
 | `/next` | Medium | 상태 자동 감지 → feature plan·이슈 생성·구현 흐름 오케스트레이션 |
 | `/review` | Medium | 변경사항 분석 + 의견 제시 |
 | `/simplify` | Medium | 변경 코드 품질·효율성 검토 및 수정 |
+| `/battle new / tune / review` | Medium | 턴제 전투 설계·구현, `combat-specialist` 위임 (`list`는 Low) |
+| `/systems new / improve / review` | Medium | 시뮬 서비스·데이터 모델 설계·구현, `systems-designer` 위임 (`list`는 Low) |
 | `/explore` | High | 아키텍처 탐색, 다중 candidate 비교, 트레이드오프 추론 |
 | `/issue review` | High | decisions/coding-style 읽기 + Opus 에이전트 리뷰 위임 |
 | `/security-review` | High | 취약점 분석, 판단 요구 높음 |

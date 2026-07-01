@@ -45,6 +45,16 @@ $map = @{
     'ui new'           = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'ui-designer' }
     'ui improve'       = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'ui-designer' }
     'ui review'        = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'ui-designer' }
+    # battle 서브커맨드
+    'battle list'      = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
+    'battle new'       = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'combat-specialist' }
+    'battle tune'      = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'combat-specialist' }
+    'battle review'    = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'combat-specialist' }
+    # systems 서브커맨드
+    'systems list'     = @{ level = 'Low';    model = 'haiku';  action = 'auto' }
+    'systems new'      = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'systems-designer' }
+    'systems improve'  = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'systems-designer' }
+    'systems review'   = @{ level = 'Medium'; model = 'sonnet'; action = 'none'; agent = 'systems-designer' }
 }
 
 $key  = if ($sub -and $map.ContainsKey("$command $sub")) { "$command $sub" } else { $command }

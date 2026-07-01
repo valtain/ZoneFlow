@@ -42,6 +42,8 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 - **`unity-specialist`** (Sonnet) — Unity API·구현 권위자, `unity_*` MCP로 에디터 조작, 경로 rules 강제. `/issue do`가 위임.
 - **`level-designer`** (Sonnet) — 존/레벨 콘텐츠 설계·저작(레이아웃·연결성·페이싱·상호작용/내러티브 + 공간에 내재한 아트 디렉션). `unity_*` MCP로 씬 저작. `/level`이 위임. (art-director는 머티리얼/라이팅 파이프라인이 반복되면 분화할 미래 후보 — 현재는 본 에이전트가 흡수.)
 - **`ui-designer`** (Sonnet) — UI/HUD/패널 설계·저작(정보설계·레이아웃·프리팹, PanelCatalog 등록). `unity_*` MCP로 패널 저작. `/ui`가 위임. 시스템 코드·Mode↔Panel 매핑은 unity-specialist로 에스컬레이션.
+- **`combat-specialist`** (Sonnet) — 턴제 전투 설계·구현(BattleMode·BattleService·스킬/페르소나 데이터). 전투 결과는 모드 간 결과 채널(ADR-0002), 파티/스탯은 읽기만. `/battle`이 위임. 아키텍처는 architecture-director, 시뮬 데이터는 systems-designer로 에스컬레이션.
+- **`systems-designer`** (Sonnet) — 시뮬 시스템·데이터 모델(시간·파티·세이브·인벤 Service + SO/POCO). 시뮬 전역 상태는 Service 계층(ADR-0001), Save/Load는 ISaveable 순회·부분 복원(ADR-0003). `/systems`가 위임. 전투 로직은 combat-specialist로 에스컬레이션.
 
 주의: 서브에이전트는 `AskUserQuestion`·`ExitPlanMode`를 쓸 수 없다 → **사용자 승인 게이트는 메인 세션이 중재**한다. 에이전트 파일을 디스크에서 새로 추가/수정하면 **세션 재시작 후** 로드된다.
 
@@ -57,6 +59,7 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 | `Assets/ZoneFlowAssets/Tests/**` | `tests.md` |
 | `Assets/ZoneFlowAssets/Scenes/**`, `Assets/ZoneFlowAssets/Story/**` | `level-content.md` |
 | `Assets/ZoneFlowAssets/Runtime/Ui/**`, `Runtime/Prefabs/**`(UI 패널 한정) | `ui-design.md` (`runtime-code.md`와 동시 매칭) |
+| `Assets/ZoneFlowAssets/Runtime/GamePlay/Battle/**`, `Runtime/GamePlay/ModeImpl/BattleMode.cs` | `combat-code.md` (`runtime-code.md`와 동시 매칭) |
 
 ## Templates
 
@@ -83,3 +86,5 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 - `/explore` — 아키텍처 탐색 및 후보 비교
 - `/level` — 존/레벨 콘텐츠 설계·저작 (`/level list|new|improve|review`) → `level-designer` 위임
 - `/ui` — UI/HUD/패널 설계·저작 (`/ui list|new|improve|review`) → `ui-designer` 위임
+- `/battle` — 턴제 전투 설계·구현 (`/battle list|new|tune|review`) → `combat-specialist` 위임
+- `/systems` — 시뮬 시스템·데이터 모델 설계·구현 (`/systems list|new|improve|review`) → `systems-designer` 위임
