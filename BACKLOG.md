@@ -38,6 +38,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | portal-interaction-label | closed | interaction-prompt |
 | demo-connected-world | closed | demo-mvp-scene, overworld-hub |
 | zone-entry-camera | closed | TASK 이슈 |
+| persona5-slice | closed | ADR-0001/0002/0003, AQ-5/7/8, feature 후보 5건 |
 
 ## Architectural Questions
 
@@ -50,5 +51,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | AQ-2 | Story 진행 상태의 Zone 전환 후 지속성 | ❓ Open | story-yarnspinner → #49 |
 | AQ-3 | Mode 스택(stack switch)과 Story 내러티브 공존 | ❓ Open | story-yarnspinner → #49 |
 | AQ-4 | Addressable 전환 시 Zone 생명주기 인터페이스 변화 | ❓ Open | — |
-| AQ-5 | Save/Load과 Zone-Mode 상태 상호작용 | ❓ Open | — |
+| AQ-5 | Save/Load과 Zone-Mode 상태 상호작용 | ✅ Answered | persona5-slice → ADR-0003 |
 | AQ-6 | 콘텐츠 풍부화 시 CatalogBaker `BakeAll` 전량 재스캔이 저작 루프 병목/충돌점이 되는가 (AQ-4 인접) | ❓ Open | level-designer·ui-designer 도입 |
+| AQ-7 | 시간/날짜 진행은 Service 상태 + 명시적 커밋 액션인가, Mode 전환 훅인가 | ✅ Answered | persona5-slice → ADR-0001 |
+| AQ-8 | BattleMode 종료 후 승/패/이탈 결과를 직전 스택에 전달하는 계약 | ✅ Answered | persona5-slice → ADR-0002 |
