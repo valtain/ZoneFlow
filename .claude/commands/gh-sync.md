@@ -1,5 +1,5 @@
 # /gh-sync
-<!-- Complexity Hint: Low → Haiku 4.5 -->
+<!-- Complexity Hint: Low → haiku -->
 
 GitHub와 로컬 파일 간 동기화를 수행한다.
 

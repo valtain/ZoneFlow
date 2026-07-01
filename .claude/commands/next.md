@@ -1,5 +1,5 @@
 # /next
-<!-- Complexity Hint: Medium → Sonnet 4.6 -->
+<!-- Complexity Hint: Medium → sonnet -->
 
 현재 상태를 읽고 다음 단계를 자동으로 결정하는 통합 진입점. explore와 feature 양쪽 상태를 넘나들며 멈추지 않고 흘러간다.
 

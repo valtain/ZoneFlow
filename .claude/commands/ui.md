@@ -1,5 +1,5 @@
 # /ui
-<!-- Complexity Hint: Medium → Sonnet 4.6 (list 서브커맨드는 Low → Haiku) -->
+<!-- Complexity Hint: Medium → sonnet (list 서브커맨드는 Low → haiku) -->
 
 UI/HUD/패널을 설계·저작한다. PanelCatalog·PanelMode·ShellMode·InteractionPrompt·Dialogue 표현 등 패널 레이아웃·정보설계·프리팹을 다룬다. 구현은 `ui-designer` 역할 에이전트가 수행한다.
 

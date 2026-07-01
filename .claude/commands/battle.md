@@ -1,5 +1,5 @@
 # /battle
-<!-- Complexity Hint: Medium → Sonnet 4.6 (list 서브커맨드는 Low → Haiku) -->
+<!-- Complexity Hint: Medium → sonnet (list 서브커맨드는 Low → haiku) -->
 
 턴제 전투를 설계·구현한다. 기존 Zone-Mode 골격 위에 `BattleMode`·`BattleService`와 전투 데이터(스킬·페르소나·적)를 저작하며, 전투 결과는 모드 간 결과 채널(ADR-0002)로 전달한다. 구현은 `combat-specialist` 역할 에이전트가 수행한다.
 

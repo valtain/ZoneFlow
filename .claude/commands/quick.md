@@ -1,5 +1,5 @@
 # /quick
-<!-- Complexity Hint: Low → Haiku 4.5 -->
+<!-- Complexity Hint: Low → haiku -->
 
 이슈 추적 없이 소규모 작업을 즉시 처리한다.
 

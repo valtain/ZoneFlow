@@ -16,10 +16,10 @@
 ## Operational Rules
 
 - **Plan Phase**: Plan 모드 진입 시 아래 기준으로 복잡도를 먼저 평가할 것.
-  - **Low → Haiku 4.5**: 파일 읽기·검색, 단순 편집, 커밋 메시지, 규칙 적용
-  - **Medium → Sonnet 4.6**: 단일 시스템 기능 구현, 버그 수정, 리팩터링, 코드 리뷰
-  - **High → Opus 4.8**: 아키텍처 설계, 시스템 간 연동, 다중 패키지 구조 변경, 새 패턴 도입
-  - (상세 기준: `.claude/docs/complexity.md`)
+  - **Low → haiku**: 파일 읽기·검색, 단순 편집, 커밋 메시지, 규칙 적용
+  - **Medium → sonnet**: 단일 시스템 기능 구현, 버그 수정, 리팩터링, 코드 리뷰
+  - **High → opus**: 아키텍처 설계, 시스템 간 연동, 다중 패키지 구조 변경, 새 패턴 도입
+  - (모델은 별칭으로 지정 — 별칭은 현재 최신 모델로 자동 해석되므로 버전 번호를 고정하지 않는다. 상세 기준: `.claude/docs/complexity.md`)
 - **Command Execution**: `UserPromptSubmit` hook(`complexity-hint.ps1`)이 슬래시 커맨드를 자동 감지하여 복잡도를 주입한다. Hook 출력을 반드시 따를 것.
   - **Low** (`/git-commit`, `/bridge`, `/work-log`, `/quick`, `/issue new|list|show|close`, `/feature new|list|show`): Agent 도구로 `model='haiku'` 서브에이전트를 생성하여 전체 작업 위임
   - **Medium** (`/init`, `/review`, `/next`, `/issue do`, `/feature plan`): 현재 모델 유지, 알림 없음. **구현 위임은 `unity-specialist` 에이전트로** (`/issue do`).

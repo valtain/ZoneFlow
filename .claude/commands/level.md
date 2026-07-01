@@ -1,5 +1,5 @@
 # /level
-<!-- Complexity Hint: Medium → Sonnet 4.6 (list 서브커맨드는 Low → Haiku) -->
+<!-- Complexity Hint: Medium → sonnet (list 서브커맨드는 Low → haiku) -->
 
 존/레벨 콘텐츠를 설계·저작한다. 기존 Zone-Mode·Portal·SpawnPoint·NavigationUri·Yarn 시스템을 **활용**해 존 레이아웃·연결성·페이싱·상호작용/내러티브를 풍부하게 만든다. 구현은 `level-designer` 역할 에이전트가 수행한다.
 

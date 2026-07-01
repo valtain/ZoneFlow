@@ -1,5 +1,5 @@
 # work-log: 오늘의 커밋 분석 → 설계 의도 중심 업무 보고서 생성
-<!-- Complexity Hint: Low → Haiku 4.5 -->
+<!-- Complexity Hint: Low → haiku -->
 
 ## 1. 커밋 목록 조회
 

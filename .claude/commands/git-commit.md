@@ -1,5 +1,5 @@
 # git-commit: staged 파일 선택 → .meta 자동처리 → 커밋 메시지 생성 → 커밋
-<!-- Complexity Hint: Low → Haiku 4.5 -->
+<!-- Complexity Hint: Low → haiku -->
 
 ## 1. 변경 파일 선택
 

@@ -1,5 +1,5 @@
 # /systems
-<!-- Complexity Hint: Medium → Sonnet 4.6 (list 서브커맨드는 Low → Haiku) -->
+<!-- Complexity Hint: Medium → sonnet (list 서브커맨드는 Low → haiku) -->
 
 시뮬 시스템(시간·파티·세이브·인벤)을 설계·구현한다. Zone-Mode 전환에 직교하는 전역 상태를 CoreServices 상주 Service + 데이터 모델로 짓는다(ADR-0001). Save/Load는 ISaveable 순회 + 안정 상태 세이브 + 부분 복원(ADR-0003)을 따른다. 구현은 `systems-designer` 역할 에이전트가 수행한다.
 
