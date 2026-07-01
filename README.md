@@ -11,7 +11,9 @@
 
 이 프로젝트에서는 **어디(Zone)와 무엇(Mode)을 분리**해 세계와 행동을 독립적으로 확장할 수 있는 구조를 만든다. 어떤 구역에서도 원하는 행동을 자유롭게 조합할 수 있고, 하나를 수정해도 나머지에 영향을 주지 않는 것이 목표다. 간략한 게임 형태로 구현해 이 설계의 실제 적용 가능성을 직접 확인한다.
 
-이 탐구 과정 전체에서 AI를 적극 활용한다. 단순한 코드 생성 도구가 아니라, 탐색·설계·구현의 각 단계에서 AI가 맥락을 함께 추적하고 다음으로 확인해야 할 아키텍처 질문을 먼저 제안한다. 개발자는 방향을 결정하는 데 집중하고, AI는 그 흐름이 끊기지 않도록 돕는다.
+**지금은 그 다음 단계로 진화 중이다.** Zone-Mode 골격이 프로덕션급에 도달해, 이제 그 위에 **Persona5형 이중 루프**(사회 시뮬 ↔ 던전 턴제 전투) 콘텐츠 레이어를 얹어 실전에서 검증한다. 아키텍처 학습이라는 핵심 정체성은 유지하되, "골격 검증"에서 "콘텐츠로 부딪히는 검증"으로 무게중심이 옮겨간 단계다. → [로드맵](#로드맵)
+
+이 탐구 과정 전체에서 AI를 적극 활용한다. 단순한 코드 생성 도구가 아니라, 탐색·설계·구현의 각 단계에서 AI가 맥락을 함께 추적하고 다음으로 확인해야 할 아키텍처 질문을 먼저 제안한다. 개발자는 방향을 결정하는 데 집중하고, AI는 그 흐름이 끊기지 않도록 돕는다. → [개발 방식](#개발-방식)
 
 → 현재 탐색 중인 아키텍처 질문: [docs/project-goals.md](docs/project-goals.md)
 
@@ -30,8 +32,8 @@
 | Mode | 역할 |
 | --- | --- |
 | **ExplorationMode** | 월드 탐색, NPC 상호작용 |
-| **StoryMode** | 스토리 연출 |
-| **BattleMode** | 전투 진행 |
+| **StoryMode** | 스토리 연출 (Yarn Spinner 대사) |
+| **BattleMode** | 턴제 전투 진행 |
 | **ShellMode** | 로비·허브 공간 |
 | **PanelMode** | UI 오버레이 (Zone 로드 없음) |
 
@@ -43,7 +45,7 @@
 
 | 계층 | 역할 |
 | --- | --- |
-| **Service** | 영속적 시스템. 게임 전체에서 하나만 존재하며 다른 계층에서 참조한다 |
+| **Service** | 영속적 시스템. 게임 전체에서 하나만 존재하며 다른 계층에서 참조한다. 시뮬 백본(TimeService·PartyService·SaveService)이 여기 상주한다 ([ADR-0001](docs/decisions/0001-sim-state-in-service-layer.md)) |
 | **Scene** | Unity 씬의 로드·언로드를 조율한다 |
 | **Zone** | 게임플레이 공간 단위. 씬 위에서 생명주기를 관리한다 |
 | **Mode** | 플레이어의 현재 행동 상태. Zone 위에서 동작하며 스택으로 관리된다 |
@@ -61,6 +63,25 @@
 | Mode 스택 | 교체·쌓기·전체 초기화 방식의 Mode 전환 (`GamePlayDirector`) |
 | HUD | Mode마다 전용 UI 패널 (탐색용·스토리용 분리) |
 | Bootstrap | 게임 시작 시 씬을 순서대로 초기화하는 흐름 |
+| Dialogue | Yarn Spinner 기반 대사·내러티브. `DialogueService`로 Zone 전환 간 진행 상태 보존 |
+| 멀티존 던전 체인 | 단일 씬 안에서 dungeon_0~4를 선형으로 오가는 인-씬 이동 시연 |
+| Interaction Prompt | 포털·상호작용 대상에 근접 시 라벨을 띄우는 프롬프트 패널 |
+| 전투 수직 *(진행 중)* | `BattleMode`·`BattleService` 턴제 골격 — 턴 순서·스킬 실행·HP/데미지 |
+
+---
+
+## 로드맵
+
+Persona5형 수직 슬라이스(`캘린더 1일 → 던전 → 턴제 전투 → 귀가 → 날짜 진행`)를 향한 6단계 진행. 아키텍처 결정 근거는 [docs/decisions/](docs/decisions/), 탐색 산출물은 [explorations/persona5-slice/findings.md](explorations/persona5-slice/findings.md) 참조.
+
+| Phase | 내용 | 상태 |
+| --- | --- | --- |
+| 0 | 아키텍처 매핑 | ✅ 완료 |
+| 1 | 역할 기반 에이전트 셋업 | ✅ 완료 |
+| 2 | 백본 서비스 (TimeService·SaveService·PartyService) | 예정 |
+| 3 | 전투 수직 (BattleMode·BattleService) | 진행 중 |
+| 4 | 시뮬 루프 배선 (UI·Zone) | 예정 |
+| 5 | 통합·저장 검증 | 예정 |
 
 ---
 
@@ -78,6 +99,30 @@
 
 전 과정을 AI와 협업해 진행한다. 탐색·설계·구현의 흐름을 AI가 함께 추적하고, 다음 아키텍처 질문을 먼저 제안하기도 한다.
 
+### 역할 기반 서브에이전트
+
+[claude-code-game-studios](https://github.com/donchitos/claude-code-game-studios)의 영향으로 **역할 기반 서브에이전트 라우팅**을 도입했다. complexity-routing이 작업 난이도에 따라 *tier(모델)* 를 고르고, 아래 에이전트가 *role(정체성)* 을 담당한다 — 두 축은 직교한다. 정의: [.claude/agents/](.claude/agents/).
+
+| 에이전트 | 역할 | 위임 커맨드 |
+| --- | --- | --- |
+| **architecture-director** | Zone-Mode 분리 검토, 아키텍처 질문(AQ) 발견·제안 | `/explore`, `/issue review` |
+| **unity-specialist** | Unity API·구현 권위자, 단일 시스템 기능 구현 | `/issue do` |
+| **level-designer** | 존/레벨 콘텐츠 설계·저작 (레이아웃·연결성·페이싱) | `/level` |
+| **ui-designer** | UI/HUD/패널 설계·저작 (PanelCatalog 등록) | `/ui` |
+| **combat-specialist** | 턴제 전투 설계·구현 (BattleMode·스킬·페르소나) | `/battle` |
+| **systems-designer** | 시뮬 시스템·데이터 모델 (시간·파티·세이브·인벤) | `/systems` |
+
+작업 복잡도에 따라 모델 티어(haiku/sonnet/opus)를 자동 라우팅하고, 특정 경로의 파일을 수정하기 전에는 대응하는 **path-scoped rules**([.claude/rules/](.claude/rules/))를 먼저 적용한다. 상세 기준은 [CLAUDE.md](CLAUDE.md)·[.claude/docs/complexity.md](.claude/docs/complexity.md) 참조.
+
+### 커스텀 커맨드
+
+| 커맨드 | 용도 |
+| --- | --- |
+| `/explore` `/feature` `/issue` | 탐색 → 설계 → 구현 코어 흐름 |
+| `/level` `/ui` | 존/레벨·UI 콘텐츠 저작 |
+| `/battle` `/systems` | 전투·시뮬 시스템 설계·구현 |
+| `/next` `/quick` `/bridge` | 흐름 오케스트레이션·소규모 작업·세션 인수인계 |
+
 탐색 및 Feature 인덱스 → [BACKLOG.md](BACKLOG.md)
 
 ---
@@ -88,5 +133,7 @@
 | --- | --- |
 | [docs/project-goals.md](docs/project-goals.md) | 프로젝트 목표 + 탐색 중인 아키텍처 질문 |
 | [docs/architecture/](docs/architecture/) | 씬 계층·시스템 계층·제약 원칙 |
+| [docs/decisions/](docs/decisions/) | 아키텍처 결정 기록 (ADR) — 시뮬 상태·전투 결과 채널·Save/Load |
 | [docs/conventions/coding-style.md](docs/conventions/coding-style.md) | 코딩 규칙 |
-| [BACKLOG.md](BACKLOG.md) | Feature·Exploration 인덱스 |
+| [.claude/agents/](.claude/agents/) · [.claude/rules/](.claude/rules/) | 역할 기반 에이전트 정의·경로별 규칙 |
+| [BACKLOG.md](BACKLOG.md) | Feature·Exploration 인덱스 + Architectural Questions 추적 |
