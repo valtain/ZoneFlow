@@ -16,7 +16,7 @@ namespace ZoneFlow
         private UiPanel _panel;
 
         /// <summary>패널 ID로 패널 모드를 생성한다.</summary>
-        public PanelMode(string panelId) : base()
+        public PanelMode(string panelId) : base(null, null, false)
         {
             PanelId = panelId;
         }
