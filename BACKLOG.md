@@ -18,6 +18,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | interaction-prompt | features/interaction-prompt/ |
 | demo-mvp-scene | features/demo-mvp-scene/ |
 | overworld-hub | features/overworld-hub/ |
+| combat-battle-service | features/combat-battle-service/ |
 
 ## Explorations
 
@@ -38,7 +39,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | portal-interaction-label | closed | interaction-prompt |
 | demo-connected-world | closed | demo-mvp-scene, overworld-hub |
 | zone-entry-camera | closed | TASK 이슈 |
-| persona5-slice | closed | ADR-0001/0002/0003, AQ-5/7/8, feature 후보 5건 |
+| persona5-slice | closed | ADR-0001/0002/0003, AQ-5/7/8, feature 후보 5건, combat-battle-service |
 
 ## Architectural Questions
 

@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using ZoneFlow.Battle;
 
 namespace ZoneFlow
 {
@@ -42,6 +43,30 @@ namespace ZoneFlow
         {
             _prompt?.Unbind();
             return UiService.Instance.HideMainViewAsync(ct);
+        }
+
+        /// <summary>
+        /// 전투 모드 pop 후 Resume 시 전투 결과를 pull한다.
+        /// 패배(<see cref="BattleResult.Lose"/>)이면 Village(허브)로 ReplaceAll(게임오버 복귀).
+        /// 승리·도주·결과 없음이면 탐색을 계속한다(ADR-0002).
+        /// </summary>
+        protected override async UniTask OnResumedAsync(CancellationToken ct)
+        {
+            var outcome = BattleService.IsReady
+                ? BattleService.Instance.ConsumeOutcome()
+                : null;
+
+            if (outcome != null && outcome.Result == BattleResult.Lose)
+            {
+                // 패배: Village(허브)로 ReplaceAll — 게임오버 복귀
+                // "gameplay://exploration/village?switch=replaceall" 는
+                // GamePlayNavigationTests·포털 사용처에서 확인한 실 허브 진입 URI다.
+                await Director.NavigateAsync(
+                    "gameplay://exploration/village?switch=replaceall", ct);
+                return;
+            }
+
+            // 승리·도주·결과 없음: 탐색 계속 (base는 Zone 재활성화·SpawnPlayer를 이미 수행함)
         }
 
         /// <summary>모드 종료 시 HUD와 프롬프트 인스턴스를 파괴한다.</summary>

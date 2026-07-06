@@ -150,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Player.PlayerService
   _playerPrefab: {fileID: 8546876273070169666, guid: 6cf23a259376b8848aa9c298d8f6bafa, type: 3}
   _spawnCooldown: 1
+  _maxHp: 100
 --- !u!4 &9146414
 Transform:
   m_ObjectHideFlags: 0
@@ -352,7 +353,6 @@ MonoBehaviour:
   <ZoneAssets>k__BackingField: {fileID: 11400000, guid: 68861529c7eb67a47bee8fa7245234a5, type: 2}
   <SpawnPoints>k__BackingField: {fileID: 11400000, guid: 2450ebbccdf7f3740ae9ed0f61ecd36b, type: 2}
   <Interactables>k__BackingField: {fileID: 11400000, guid: 2bb6cf5961fc1744a8e0022754465fc1, type: 2}
-  <ZonePrefabRoot>k__BackingField: {fileID: 1796441338}
 --- !u!4 &131728368
 Transform:
   m_ObjectHideFlags: 0
@@ -768,6 +768,51 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191147770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1222706729
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1222706731}
+  - component: {fileID: 1222706730}
+  m_Layer: 0
+  m_Name: BattleService
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1222706730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222706729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38234df9fb2df4f46b2cc202fdf1a15e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Battle.BattleService
+  <DefaultEncounter>k__BackingField: {fileID: 0}
+--- !u!4 &1222706731
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222706729}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1345,6 +1390,8 @@ MonoBehaviour:
   _bgCover: {fileID: 1851937751}
   _fadeScreen:
     _duration: 0.3
+  _instantBlackScreen:
+    _hideDuration: 0.3
 --- !u!114 &1915847559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1509,3 +1556,4 @@ SceneRoots:
   - {fileID: 1191147773}
   - {fileID: 1796441338}
   - {fileID: 1937292987}
+  - {fileID: 1222706731}
