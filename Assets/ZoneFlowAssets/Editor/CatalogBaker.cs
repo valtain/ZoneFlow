@@ -180,6 +180,8 @@ namespace ZoneFlow.Editor
                     entries.Add(new PanelCatalog.Entry { PanelId = DialoguePanel.PanelId, Prefab = dialoguePanel });
                 else if (prefab.TryGetComponent<InteractionPromptPanel>(out var promptPanel))
                     entries.Add(new PanelCatalog.Entry { PanelId = InteractionPromptPanel.PanelId, Prefab = promptPanel });
+                else if (prefab.TryGetComponent<BattlePanel>(out var battlePanel))
+                    entries.Add(new PanelCatalog.Entry { PanelId = BattlePanel.PanelId, Prefab = battlePanel });
             }
 
             catalog.SetPanels(entries.ToArray());
