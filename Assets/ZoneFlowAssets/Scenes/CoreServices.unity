@@ -805,7 +805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38234df9fb2df4f46b2cc202fdf1a15e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.Battle.BattleService
-  <DefaultEncounter>k__BackingField: {fileID: 0}
+  <DefaultEncounter>k__BackingField: {fileID: 11400000, guid: 3fad09d4795cf7d4e98a74e40177da95, type: 2}
 --- !u!4 &1222706731
 Transform:
   m_ObjectHideFlags: 0
