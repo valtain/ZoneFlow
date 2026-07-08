@@ -21,6 +21,7 @@
     "demo-mvp-scene":   50,
     "interaction-prompt": 56,
     "overworld-hub":    67,
-    "combat-battle-service": 78
+    "combat-battle-service": 78,
+    "combat-turn-loop-ui": 86
   }
 }
