@@ -19,6 +19,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | demo-mvp-scene | features/demo-mvp-scene/ |
 | overworld-hub | features/overworld-hub/ |
 | combat-battle-service | features/combat-battle-service/ |
+| combat-turn-loop-ui | features/combat-turn-loop-ui/ |
 
 ## Explorations
 
