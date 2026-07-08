@@ -50,7 +50,7 @@ namespace ZoneFlow
         /// 패배(<see cref="BattleResult.Lose"/>)이면 Village(허브)로 ReplaceAll(게임오버 복귀).
         /// 승리·도주·결과 없음이면 탐색을 계속한다(ADR-0002).
         /// </summary>
-        protected override async UniTask OnResumedAsync(CancellationToken ct)
+        protected override UniTask OnResumedAsync(CancellationToken ct)
         {
             var outcome = BattleService.IsReady
                 ? BattleService.Instance.ConsumeOutcome()
@@ -58,15 +58,25 @@ namespace ZoneFlow
 
             if (outcome != null && outcome.Result == BattleResult.Lose)
             {
-                // 패배: Village(허브)로 ReplaceAll — 게임오버 복귀
-                // "gameplay://exploration/village?switch=replaceall" 는
-                // GamePlayNavigationTests·포털 사용처에서 확인한 실 허브 진입 URI다.
-                await Director.NavigateAsync(
-                    "gameplay://exploration/village?switch=replaceall", ct);
-                return;
+                // 패배: Village(허브)로 ReplaceAll — 게임오버 복귀.
+                // Resume 전환 안에서 NavigateAsync를 직접 await하면 GamePlayDirector의 전환 재진입
+                // 가드(한 번에 하나의 전환)에 막혀 드롭되므로, 진행 중인 Resume 전환이 풀린 뒤
+                // 실행되도록 fire-and-forget으로 분리한다.
+                DeferredGameOverAsync(ct).Forget();
             }
 
             // 승리·도주·결과 없음: 탐색 계속 (base는 Zone 재활성화·SpawnPlayer를 이미 수행함)
+            return UniTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 진행 중이던 Resume 전환이 풀린 뒤 Village(허브)로 ReplaceAll하여 게임오버 복귀한다.
+        /// "gameplay://exploration/village?switch=replaceall" 는 GamePlayNavigationTests·포털 사용처에서 확인한 실 허브 진입 URI다.
+        /// </summary>
+        private async UniTask DeferredGameOverAsync(CancellationToken ct)
+        {
+            await UniTask.Yield();
+            await Director.NavigateAsync("gameplay://exploration/village?switch=replaceall", ct);
         }
 
         /// <summary>모드 종료 시 HUD와 프롬프트 인스턴스를 파괴한다.</summary>

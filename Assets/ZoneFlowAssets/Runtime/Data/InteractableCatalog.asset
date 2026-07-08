@@ -25,6 +25,9 @@ MonoBehaviour:
   - InteractableId: portal_d0_to_d1
     ZoneId: dungeon_0
     NavigationUri: gameplay://exploration/dungeon_1?id=dungeon_1_from_0
+  - InteractableId: encounter_boss
+    ZoneId: dungeon_0
+    NavigationUri: gameplay://battle/boss_room?switch=stack
   - InteractableId: portal_d1_to_d0
     ZoneId: dungeon_1
     NavigationUri: gameplay://exploration/dungeon_0?id=dungeon_0_from_1
