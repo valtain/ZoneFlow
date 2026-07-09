@@ -442,6 +442,8 @@ namespace ZoneFlow
             hpFillRect.sizeDelta = Vector2.zero;
             var hpFillImg = hpFillGo.AddComponent<Image>();
             hpFillImg.color      = new Color(0.2f, 0.8f, 0.25f);
+            // Filled 타입은 소스 스프라이트가 있어야 fillAmount로 클립된다(없으면 꽉 찬 쿼드로 렌더).
+            hpFillImg.sprite     = UnityEditor.AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
             hpFillImg.type       = Image.Type.Filled;
             hpFillImg.fillMethod = Image.FillMethod.Horizontal;
             hpFillImg.fillAmount = 1f;
