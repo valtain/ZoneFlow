@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -38,16 +39,40 @@ namespace ZoneFlow.BattleView
             Debug.Assert(_actorViewPrefab != null, "[BattleStage] _actorViewPrefab이 할당되지 않았다.");
         }
 
-        /// <summary>setup 기준으로 아군/적 뷰를 앵커에 스폰하고 side 머티리얼을 적용한다.</summary>
+        /// <summary>setup 기준으로 아군/적 뷰를 앵커에 스폰하고 side 머티리얼·HUD 이름/HP를 적용한다.</summary>
         /// <param name="setup">전투 초기화 데이터.</param>
-        public void SetupViews(BattleSetup setup)
+        /// <param name="names">전투원 Id → 표시명 맵(HUD 이름 라벨용).</param>
+        public void SetupViews(BattleSetup setup, IReadOnlyDictionary<int, string> names)
         {
             Debug.Assert(setup != null, "[BattleStage] SetupViews: setup이 null이다.");
             if (setup == null) return;
 
             ClearViews();
-            SpawnSide(setup.Party, _allyAnchors, _allyMaterial);
-            SpawnSide(setup.Enemies, _enemyAnchors, _enemyMaterial);
+            SpawnSide(setup.Party, _allyAnchors, _allyMaterial, names);
+            SpawnSide(setup.Enemies, _enemyAnchors, _enemyMaterial, names);
+        }
+
+        /// <summary>
+        /// 지정한 타겟 후보들의 3D 캡슐을 클릭 가능하게 하고 어포던스 틴트를 적용한다.
+        /// <see cref="IDisposable.Dispose"/> 시 원복해 타겟 선택 단계 종료를 표현한다.
+        /// </summary>
+        /// <param name="ids">선택 가능한 전투원 Id 목록.</param>
+        /// <param name="onPicked">클릭된 전투원 Id를 통지하는 콜백.</param>
+        public IDisposable BeginTargetPicking(IReadOnlyList<int> ids, Action<int> onPicked)
+        {
+            var activated = new List<BattleActorView>();
+            if (ids != null)
+            {
+                foreach (var id in ids)
+                {
+                    var view = GetView(id);
+                    if (view == null) continue;
+
+                    view.SetPickable(true, onPicked);
+                    activated.Add(view);
+                }
+            }
+            return new TargetPickingScope(activated);
         }
 
         /// <summary>전투 카메라 우선도를 올려 CinemachineBrain이 전투캠으로 블렌드하게 한다.</summary>
@@ -80,6 +105,7 @@ namespace ZoneFlow.BattleView
 
             await attackerView.LungeAsync(targetView.Position, ct);
             await targetView.HitReactAsync(attackerView.Position, ct);
+            targetView.SetHp(target.Hp, target.MaxHp);
             await SpawnDamageNumberAsync(targetView.Position, result.DamageDealt, ct);
 
             if (result.IsKilled)
@@ -93,7 +119,9 @@ namespace ZoneFlow.BattleView
             ReleaseBattleCamera();
         }
 
-        private void SpawnSide(IReadOnlyList<Combatant> combatants, Transform[] anchors, Material material)
+        private void SpawnSide(
+            IReadOnlyList<Combatant> combatants, Transform[] anchors, Material material,
+            IReadOnlyDictionary<int, string> names)
         {
             if (_actorViewPrefab == null || anchors == null || combatants == null) return;
 
@@ -106,11 +134,18 @@ namespace ZoneFlow.BattleView
                 }
 
                 var anchor = anchors[i];
+                var combatant = combatants[i];
                 var view = Instantiate(_actorViewPrefab, anchor.position, anchor.rotation, transform);
                 view.ApplyMaterial(material);
-                _views[combatants[i].Id] = view;
+                view.SetCombatantId(combatant.Id);
+                view.SetName(ResolveName(combatant.Id, names));
+                view.SetHp(combatant.Hp, combatant.MaxHp);
+                _views[combatant.Id] = view;
             }
         }
+
+        private static string ResolveName(int id, IReadOnlyDictionary<int, string> names)
+            => names != null && names.TryGetValue(id, out var name) ? name : $"Combatant {id}";
 
         private async UniTask SpawnDamageNumberAsync(Vector3 targetPos, int amount, CancellationToken ct)
         {
@@ -136,6 +171,20 @@ namespace ZoneFlow.BattleView
             foreach (var view in _views.Values)
                 if (view != null) Destroy(view.gameObject);
             _views.Clear();
+        }
+
+        /// <summary>Dispose 시 활성화됐던 뷰들의 피킹 가능 상태를 원복하는 스코프 핸들.</summary>
+        private sealed class TargetPickingScope : IDisposable
+        {
+            private readonly List<BattleActorView> _views;
+
+            public TargetPickingScope(List<BattleActorView> views) => _views = views;
+
+            public void Dispose()
+            {
+                foreach (var view in _views)
+                    if (view != null) view.SetPickable(false, null);
+            }
         }
     }
 }

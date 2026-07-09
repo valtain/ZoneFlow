@@ -47,13 +47,12 @@ namespace ZoneFlow
 
             // SO → POCO 변환 + 표시명/행동 선택지 뷰모델 파생
             _setup = CombatantFactory.BuildSetup(_encounter);
+            BuildViewModel();
 
-            // 3D 연출 레이어(있으면) 확보 + 뷰 스폰. 없으면 null 가드로 2D 패널만 진행한다.
+            // 3D 연출 레이어(있으면) 확보 + 뷰 스폰(HUD 이름/HP 초기화 포함). 없으면 null 가드로 2D 패널만 진행한다.
             _stage = Zone != null ? Zone.GetComponentInChildren<BattleStage>(true) : null;
             Debug.Assert(_stage != null, "[BattleMode] BossRoom Zone 아래 BattleStage를 찾지 못했다.");
-            _stage?.SetupViews(_setup);
-
-            BuildViewModel();
+            _stage?.SetupViews(_setup, _names);
 
             if (UiService.Instance.Panels == null) return;
             if (!UiService.Instance.Panels.TryGetPanel(BattlePanel.PanelId, out var prefabRef)) return;
@@ -138,7 +137,8 @@ namespace ZoneFlow
                         $"[BattleMode] 플레이어 {actor.Id}의 생존 타겟이 없는데 Ongoing 상태다.");
                     if (aliveTargets.Count == 0) break;
 
-                    action = await _panel.AwaitPlayerActionAsync(actor, options, aliveTargets, ct);
+                    action = await _panel.AwaitPlayerActionAsync(actor, options, aliveTargets, ct,
+                        _stage != null ? _stage.BeginTargetPicking : null);
                 }
                 else
                 {

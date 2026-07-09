@@ -1,7 +1,10 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ZoneFlow.BattleView
 {
@@ -9,11 +12,18 @@ namespace ZoneFlow.BattleView
     /// 전투원 1명의 3D 스탠드인 뷰. 결정론 엔진(<c>ZoneFlow.Battle</c>)은 이 타입을 모른다.
     /// 프리미티브(캡슐 + side 머티리얼) 기본 구현이며, <c>_renderer</c>를 비우면 실모델 서브클래스가
     /// 자체 렌더링을 담당하도록 no-op 처리한다(교체 seam).
+    /// 캡슐 위 월드 HUD(이름·HP 바)와 <see cref="IPointerClickHandler"/>를 통한 3D 타겟 클릭도 담당한다.
     /// </summary>
-    public class BattleActorView : MonoBehaviour
+    public class BattleActorView : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private Transform _root;
         [SerializeField] private Renderer _renderer;
+
+        [Header("HUD")]
+        [SerializeField] private Transform _hudBillboard;
+        [SerializeField] private TextMeshProUGUI _nameLabel;
+        [SerializeField] private RectTransform _hpFillRect;
+        [SerializeField] private TextMeshProUGUI _hpText;
 
         private const float LungeDistanceRatio = 0.8f;
         private const float LungeOutDuration = 0.15f;
@@ -26,7 +36,13 @@ namespace ZoneFlow.BattleView
         private const float DieDuration = 0.5f;
         private const float DieSinkDistance = 0.5f;
 
+        private const float HpFillTweenDuration = 0.35f;
+        private static readonly Color PickableTintColor = new(1f, 0.95f, 0.35f);
+
         private Color _baseColor = Color.white;
+        private int _combatantId;
+        private bool _pickable;
+        private Action<int> _onPicked;
 
         /// <summary>이 전투원 뷰의 월드 위치(연출 대상 좌표로 사용).</summary>
         public Vector3 Position => _root != null ? _root.position : transform.position;
@@ -41,6 +57,57 @@ namespace ZoneFlow.BattleView
 
             _renderer.material = sideMaterial;
             _baseColor = _renderer.material.color;
+        }
+
+        /// <summary>3D 클릭 타겟 선택 통지에 쓰일 전투원 Id를 설정한다.</summary>
+        /// <param name="combatantId">스폰 시 대응시킨 전투원 Id.</param>
+        public void SetCombatantId(int combatantId) => _combatantId = combatantId;
+
+        /// <summary>HUD 이름 라벨을 갱신한다.</summary>
+        /// <param name="displayName">표시할 이름.</param>
+        public void SetName(string displayName)
+        {
+            if (_nameLabel != null) _nameLabel.text = displayName;
+        }
+
+        /// <summary>
+        /// HUD HP 바와 수치 텍스트를 갱신한다. fill은 sprite/fillAmount 대신 <c>anchorMax.x</c> 트윈으로
+        /// 리사이즈해 늘어남 없는 사각 형태를 유지한다.
+        /// </summary>
+        /// <param name="current">현재 HP.</param>
+        /// <param name="max">최대 HP.</param>
+        public void SetHp(int current, int max)
+        {
+            if (_hpText != null) _hpText.text = $"{Mathf.Max(0, current)}/{max}";
+            if (_hpFillRect == null || max <= 0) return;
+
+            var ratio = Mathf.Clamp01((float)current / max);
+            var startRatio = _hpFillRect.anchorMax.x;
+            Tween.Custom(startRatio, ratio, HpFillTweenDuration,
+                v => _hpFillRect.anchorMax = new Vector2(v, _hpFillRect.anchorMax.y));
+        }
+
+        /// <summary>
+        /// 3D 타겟 클릭 가능 여부를 토글한다. 가능하면 어포던스 틴트를 적용하고 클릭 콜백을 등록,
+        /// 아니면 원래 진영 색으로 원복하고 콜백을 해제한다.
+        /// </summary>
+        /// <param name="pickable">클릭 가능 여부.</param>
+        /// <param name="onPicked">클릭 시 전투원 Id를 통지하는 콜백(가능할 때만 사용).</param>
+        public void SetPickable(bool pickable, Action<int> onPicked)
+        {
+            _pickable = pickable;
+            _onPicked = pickable ? onPicked : null;
+
+            if (_renderer == null) return;
+            _renderer.material.color = pickable ? PickableTintColor : _baseColor;
+        }
+
+        /// <summary>EventSystem(PhysicsRaycaster)을 통한 3D 클릭. 피킹 가능 상태에서만 콜백을 통지한다.</summary>
+        /// <param name="eventData">클릭 이벤트 데이터(미사용).</param>
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!_pickable) return;
+            _onPicked?.Invoke(_combatantId);
         }
 
         /// <summary>대상 쪽으로 80% 전진 후 복귀하는 공격 런지 연출.</summary>
@@ -93,6 +160,16 @@ namespace ZoneFlow.BattleView
             var sinkTask = Tween.Position(_root, sinkPos, DieDuration, Ease.InQuad).ToUniTask(cancellationToken: ct);
 
             await UniTask.WhenAll(scaleTask, sinkTask);
+        }
+
+        /// <summary>HUD 캔버스를 매 프레임 메인 카메라 회전으로 정렬해 빌보드처럼 보이게 한다.</summary>
+        private void LateUpdate()
+        {
+            if (_hudBillboard == null || !CameraService.IsReady) return;
+            var cam = CameraService.Instance.MainCamera;
+            if (cam == null) return;
+
+            _hudBillboard.rotation = cam.transform.rotation;
         }
     }
 }

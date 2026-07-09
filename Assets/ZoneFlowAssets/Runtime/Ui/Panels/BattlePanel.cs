@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -46,7 +47,6 @@ namespace ZoneFlow
         [SerializeField] private TextMeshProUGUI _logText;
 
         private const float FadeDuration     = 0.25f;
-        private const float HpTweenDuration  = 0.35f;
         private const float ResultHoldDelay  = 0.5f;
 
         private static readonly Color DefaultRowColor      = new(0.12f, 0.12f, 0.12f, 0.75f);
@@ -56,6 +56,13 @@ namespace ZoneFlow
         private readonly Dictionary<int, BattleCombatantRow> _rows = new();
         private readonly List<GameObject> _spawnedButtons = new();
         private IReadOnlyDictionary<int, string> _names;
+
+        /// <summary>
+        /// 3D 캡슐 타겟 클릭을 시작하는 브리지(있으면). BattleMode가 BattleStage.BeginTargetPicking을 주입한다.
+        /// BattlePanel은 BattleStage를 직접 참조하지 않는다(Ui/BattleView 레이어링 유지).
+        /// </summary>
+        private Func<IReadOnlyList<int>, Action<int>, IDisposable> _beginExternalTargeting;
+        private IDisposable _externalTargetingScope;
 
         private void Awake()
         {
@@ -79,7 +86,6 @@ namespace ZoneFlow
                 Debug.Assert(refs != null, "[BattlePanel] CombatantRow 템플릿에 BattleCombatantRow가 없습니다.");
 
                 refs.NameLabel.text     = ResolveName(combatant.Id);
-                refs.HpFill.fillAmount  = HpRatio(combatant);
                 refs.RowBg.color        = DefaultRowColor;
                 refs.TargetButton.interactable = false;
 
@@ -93,11 +99,16 @@ namespace ZoneFlow
         /// <summary>
         /// 플레이어 턴: 현재 행동자의 선택지·생존 타겟을 제시하고, 입력을 <see cref="BattleAction"/>으로 완성해 반환한다.
         /// </summary>
+        /// <param name="beginExternalTargeting">
+        /// 3D 캡슐 클릭 타겟팅을 시작하는 브리지(있으면). BattleMode가 BattleStage.BeginTargetPicking을 주입한다.
+        /// null이면 UI 행 클릭만으로 타겟을 선택한다.
+        /// </param>
         public UniTask<BattleAction> AwaitPlayerActionAsync(
             Combatant current,
             IReadOnlyList<BattleActionOption> options,
             IReadOnlyList<Combatant> aliveTargets,
-            CancellationToken ct)
+            CancellationToken ct,
+            Func<IReadOnlyList<int>, Action<int>, IDisposable> beginExternalTargeting = null)
         {
             Debug.Assert(current != null, "[BattlePanel] current가 null입니다.");
             Debug.Assert(options != null && options.Count > 0, "[BattlePanel] options가 비어 있습니다.");
@@ -105,6 +116,8 @@ namespace ZoneFlow
 
             if (_actorLabel != null) _actorLabel.text = $"{ResolveName(current.Id)}'s turn";
             HighlightActor(current.Id);
+
+            _beginExternalTargeting = beginExternalTargeting;
 
             var tcs = new UniTaskCompletionSource<BattleAction>();
             var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, destroyCancellationToken);
@@ -114,7 +127,7 @@ namespace ZoneFlow
             return AwaitAndCleanupAsync(tcs, linkedCts);
         }
 
-        /// <summary>제출된 액션 결과를 연출한다(데미지·처치 표시 + 대상/전체 HP 갱신).</summary>
+        /// <summary>제출된 액션 결과를 연출한다(데미지·처치 로그 표시. HP는 캐릭터 위 월드 HUD가 담당한다).</summary>
         public async UniTask PresentActionAsync(ActionResult result, Combatant actor, Combatant target, CancellationToken ct)
         {
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, destroyCancellationToken);
@@ -123,14 +136,6 @@ namespace ZoneFlow
                 _logText.text = result.IsKilled
                     ? $"{ResolveName(actor.Id)} hits {ResolveName(target.Id)} for {result.DamageDealt} - defeated!"
                     : $"{ResolveName(actor.Id)} hits {ResolveName(target.Id)} for {result.DamageDealt}";
-
-            if (_rows.TryGetValue(target.Id, out var row))
-            {
-                var startRatio = row.HpFill.fillAmount;
-                var endRatio   = HpRatio(target);
-                await Tween.Custom(startRatio, endRatio, HpTweenDuration,
-                    v => row.HpFill.fillAmount = v).ToUniTask(cancellationToken: linked.Token);
-            }
 
             await UniTask.Delay((int)(ResultHoldDelay * 1000), cancellationToken: linked.Token);
         }
@@ -194,8 +199,12 @@ namespace ZoneFlow
             Combatant current, BattleActionOption option,
             IReadOnlyList<Combatant> aliveTargets, UniTaskCompletionSource<BattleAction> tcs)
         {
+            var targetIds = new List<int>(aliveTargets.Count);
+
             foreach (var target in aliveTargets)
             {
+                targetIds.Add(target.Id);
+
                 if (!_rows.TryGetValue(target.Id, out var row))
                 {
                     Debug.Assert(false, $"[BattlePanel] 타겟 Id={target.Id}에 대응하는 row가 없습니다.");
@@ -206,13 +215,21 @@ namespace ZoneFlow
                 row.RowBg.color = TargetSelectableColor;
 
                 var targetId = target.Id;
-                row.TargetButton.onClick.AddListener(() =>
-                {
-                    var kind = option.SkillPower.HasValue ? BattleActionKind.Skill : BattleActionKind.Attack;
-                    var action = new BattleAction(kind, current.Id, targetId, option.SkillPower);
-                    tcs.TrySetResult(action);
-                });
+                row.TargetButton.onClick.AddListener(() => CompleteTargetSelection(current, option, targetId, tcs));
             }
+
+            // UI 행 클릭과 동등하게, 3D 캡슐 클릭으로도 같은 액션을 완성할 수 있게 브리지한다.
+            if (_beginExternalTargeting != null)
+                _externalTargetingScope = _beginExternalTargeting(targetIds,
+                    targetId => CompleteTargetSelection(current, option, targetId, tcs));
+        }
+
+        private static void CompleteTargetSelection(
+            Combatant current, BattleActionOption option, int targetId, UniTaskCompletionSource<BattleAction> tcs)
+        {
+            var kind = option.SkillPower.HasValue ? BattleActionKind.Skill : BattleActionKind.Attack;
+            var action = new BattleAction(kind, current.Id, targetId, option.SkillPower);
+            tcs.TrySetResult(action);
         }
 
         private void HideActionButtons()
@@ -235,6 +252,9 @@ namespace ZoneFlow
                 row.TargetButton.onClick.RemoveAllListeners();
                 row.TargetButton.interactable = false;
             }
+
+            _externalTargetingScope?.Dispose();
+            _externalTargetingScope = null;
         }
 
         private void HighlightActor(int actorId)
@@ -258,8 +278,6 @@ namespace ZoneFlow
 
         private string ResolveName(int id)
             => _names != null && _names.TryGetValue(id, out var name) ? name : $"Combatant {id}";
-
-        private static float HpRatio(Combatant c) => c.MaxHp > 0 ? (float)c.Hp / c.MaxHp : 0f;
 
 #if UNITY_EDITOR
         [ContextMenu("Build Battle UI")]
@@ -409,13 +427,14 @@ namespace ZoneFlow
             rowButton.targetGraphic = rowBg;
             rowButton.transition    = Selectable.Transition.None;
 
+            // HP는 캐릭터 위 월드 HUD(BattleActorView)가 담당하므로 행은 이름 + 타겟 클릭만 갖는다.
             var nameGo = new GameObject("NameLabel");
             nameGo.transform.SetParent(rowGo.transform, false);
             var nameRect = nameGo.AddComponent<RectTransform>();
-            nameRect.anchorMin = new Vector2(0f, 0.55f);
+            nameRect.anchorMin = new Vector2(0f, 0f);
             nameRect.anchorMax = new Vector2(1f, 1f);
             nameRect.offsetMin = new Vector2(8f, 0f);
-            nameRect.offsetMax = new Vector2(-8f, -4f);
+            nameRect.offsetMax = new Vector2(-8f, 0f);
             var nameTmp = nameGo.AddComponent<TextMeshProUGUI>();
             nameTmp.text      = "Name";
             nameTmp.fontSize  = 20;
@@ -423,36 +442,9 @@ namespace ZoneFlow
             nameTmp.color     = Color.white;
             nameTmp.raycastTarget = false;
 
-            var hpBgGo = new GameObject("HpBg");
-            hpBgGo.transform.SetParent(rowGo.transform, false);
-            var hpBgRect = hpBgGo.AddComponent<RectTransform>();
-            hpBgRect.anchorMin = new Vector2(0f, 0.1f);
-            hpBgRect.anchorMax = new Vector2(1f, 0.5f);
-            hpBgRect.offsetMin = new Vector2(8f, 0f);
-            hpBgRect.offsetMax = new Vector2(-8f, 0f);
-            var hpBgImg = hpBgGo.AddComponent<Image>();
-            hpBgImg.color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
-            hpBgImg.raycastTarget = false;
-
-            var hpFillGo = new GameObject("HpFill");
-            hpFillGo.transform.SetParent(hpBgGo.transform, false);
-            var hpFillRect = hpFillGo.AddComponent<RectTransform>();
-            hpFillRect.anchorMin = Vector2.zero;
-            hpFillRect.anchorMax = Vector2.one;
-            hpFillRect.sizeDelta = Vector2.zero;
-            var hpFillImg = hpFillGo.AddComponent<Image>();
-            hpFillImg.color      = new Color(0.2f, 0.8f, 0.25f);
-            // Filled 타입은 소스 스프라이트가 있어야 fillAmount로 클립된다(없으면 꽉 찬 쿼드로 렌더).
-            hpFillImg.sprite     = UnityEditor.AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
-            hpFillImg.type       = Image.Type.Filled;
-            hpFillImg.fillMethod = Image.FillMethod.Horizontal;
-            hpFillImg.fillAmount = 1f;
-            hpFillImg.raycastTarget = false;
-
             var rowRefs = rowGo.AddComponent<BattleCombatantRow>();
             var rowSo = new UnityEditor.SerializedObject(rowRefs);
             rowSo.FindProperty("_nameLabel").objectReferenceValue   = nameTmp;
-            rowSo.FindProperty("_hpFill").objectReferenceValue      = hpFillImg;
             rowSo.FindProperty("_rowBg").objectReferenceValue       = rowBg;
             rowSo.FindProperty("_targetButton").objectReferenceValue = rowButton;
             rowSo.ApplyModifiedProperties();
