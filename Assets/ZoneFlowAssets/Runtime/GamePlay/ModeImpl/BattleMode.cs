@@ -3,6 +3,8 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using ZoneFlow.Battle;
+using ZoneFlow.BattleView;
+using ZoneFlow.Player;
 
 namespace ZoneFlow
 {
@@ -10,6 +12,7 @@ namespace ZoneFlow
     /// 전투 모드. <see cref="BattlePanel"/>로 플레이어 턴 입력을 받아 전투를 종료까지 구동하고,
     /// 결과를 <see cref="BattleService"/>에 기록한 뒤 pop으로 복귀한다(ADR-0002).
     /// 적 턴은 결정론 auto-policy(첫 생존 상대 기본공격)로 진행한다.
+    /// 3D 연출은 <see cref="BattleStage"/>(있으면)에 위임하는 병렬 프레젠테이션 레이어이며 엔진 호출에는 영향을 주지 않는다.
     /// </summary>
     public sealed class BattleMode : GamePlayMode
     {
@@ -19,6 +22,7 @@ namespace ZoneFlow
         private BattleService _service;
         private BattleEncounterAsset _encounter;
         private BattleSetup _setup;
+        private BattleStage _stage;
 
         private readonly Dictionary<int, string> _names = new();
         private readonly Dictionary<int, IReadOnlyList<BattlePanel.BattleActionOption>> _optionsById = new();
@@ -43,6 +47,12 @@ namespace ZoneFlow
 
             // SO → POCO 변환 + 표시명/행동 선택지 뷰모델 파생
             _setup = CombatantFactory.BuildSetup(_encounter);
+
+            // 3D 연출 레이어(있으면) 확보 + 뷰 스폰. 없으면 null 가드로 2D 패널만 진행한다.
+            _stage = Zone != null ? Zone.GetComponentInChildren<BattleStage>(true) : null;
+            Debug.Assert(_stage != null, "[BattleMode] BossRoom Zone 아래 BattleStage를 찾지 못했다.");
+            _stage?.SetupViews(_setup);
+
             BuildViewModel();
 
             if (UiService.Instance.Panels == null) return;
@@ -71,19 +81,28 @@ namespace ZoneFlow
 
             await UiService.Instance.ShowMainViewAsync(ct);
 
+            // 전투 카메라로 블렌드 + 앵커와 겹치지 않도록 플레이어 메시를 숨긴다(GameObject는 활성 유지 — vcam 블렌드-from 소스).
+            _stage?.ActivateBattleCamera();
+            SetPlayerMeshVisible(false);
+
             // 전투 루프는 ModeIn 전환이 끝난 뒤(Active 상태) 구동한다.
             // OnModeInAsync 내부에서 종료 pop을 호출하면 GamePlayDirector의 전환 재진입 가드(한 번에 하나의 전환)에
             // 막혀 드롭되므로, 루프를 fire-and-forget으로 분리해 진행 중인 ModeIn 전환을 먼저 완료시킨다.
             RunBattleAsync(ct).Forget();
         }
 
-        /// <summary>모드 퇴장 시 전투 패널을 슬라이드아웃한다.</summary>
+        /// <summary>모드 퇴장 시 전투 패널을 슬라이드아웃하고, 전투 카메라를 릴리즈하며 플레이어 메시를 복원한다.</summary>
         protected override UniTask OnModeOutAsync(CancellationToken ct)
-            => UiService.Instance.HideMainViewAsync(ct);
+        {
+            _stage?.ReleaseBattleCamera();
+            SetPlayerMeshVisible(true);
+            return UiService.Instance.HideMainViewAsync(ct);
+        }
 
-        /// <summary>모드 종료 시 전투 패널 인스턴스를 파괴한다.</summary>
+        /// <summary>모드 종료 시 3D 연출 뷰를 정리하고 전투 패널 인스턴스를 파괴한다.</summary>
         protected override UniTask OnStoppedAsync(CancellationToken ct)
         {
+            _stage?.Teardown();
             UiService.Instance.ClearMainViewIfIs(_panel);
             _panel = null;
             return UniTask.CompletedTask;
@@ -138,7 +157,12 @@ namespace ZoneFlow
                 // 제출 전에 대상 전투원을 확보해 결과 연출에 전달한다.
                 var targetCombatant = FindById(engine, action.TargetId);
                 var result = engine.SubmitAction(action);
-                await _panel.PresentActionAsync(result, actor, targetCombatant, ct);
+
+                var presentPanel = _panel.PresentActionAsync(result, actor, targetCombatant, ct);
+                var presentStage = _stage != null
+                    ? _stage.PlayActionAsync(result, actor, targetCombatant, ct)
+                    : UniTask.CompletedTask;
+                await UniTask.WhenAll(presentPanel, presentStage);
 
                 ct.ThrowIfCancellationRequested();
             }
@@ -243,6 +267,19 @@ namespace ZoneFlow
                     return c;
             }
             return null;
+        }
+
+        /// <summary>
+        /// 플레이어 렌더러 일체를 켜거나 끈다(GameObject는 활성 유지 — vcam 블렌드-from 소스).
+        /// 3D 스탠드인 앵커와 겹치지 않도록 전투 중에만 숨긴다.
+        /// </summary>
+        private static void SetPlayerMeshVisible(bool visible)
+        {
+            var player = PlayerService.IsReady ? PlayerService.Instance.Player : null;
+            if (player == null) return;
+
+            foreach (var renderer in player.GetComponentsInChildren<Renderer>(true))
+                renderer.enabled = visible;
         }
     }
 }
