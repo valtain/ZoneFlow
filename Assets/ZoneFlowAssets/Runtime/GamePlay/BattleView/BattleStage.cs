@@ -93,8 +93,8 @@ namespace ZoneFlow.BattleView
         }
 
         /// <summary>
-        /// 액션 결과를 4비트로 연출한다: 런지 → 피격 → 데미지 숫자 → (처치 시) 사망+카메라 흔들림.
-        /// 1~3은 인과 가독성을 위해 순차, 4는 단일 임팩트를 위해 병렬로 재생한다.
+        /// 액션 결과를 3비트로 연출한다: 런지 → 임팩트(피격 + HP + 데미지 숫자) → (처치 시) 사망+카메라 흔들림.
+        /// 런지는 인과 가독성을 위해 선행하고, 임팩트의 세 요소는 단일 타격감을 위해 병렬로 재생한다.
         /// </summary>
         /// <param name="result">엔진이 반환한 액션 결과.</param>
         /// <param name="actor">행동자 전투원.</param>
@@ -107,9 +107,11 @@ namespace ZoneFlow.BattleView
             if (attackerView == null || targetView == null) return;
 
             await attackerView.LungeAsync(targetView.Position, ct);
-            await targetView.HitReactAsync(attackerView.Position, ct);
+
+            var hitTask = targetView.HitReactAsync(attackerView.Position, ct);
+            var damageTask = SpawnDamageNumberAsync(targetView.Position, result.DamageDealt, ct);
             targetView.SetHp(target.Hp, target.MaxHp);
-            await SpawnDamageNumberAsync(targetView.Position, result.DamageDealt, ct);
+            await UniTask.WhenAll(hitTask, damageTask);
 
             if (result.IsKilled)
                 await UniTask.WhenAll(targetView.DieAsync(ct), ShakeCameraAsync(ct));
