@@ -18,3 +18,4 @@ MonoBehaviour:
   <Speed>k__BackingField: 9
   <Skills>k__BackingField:
   - {fileID: 11400000, guid: 204fd39fa251bfb4cb8716d901c5e23a, type: 2}
+  <BattleView>k__BackingField: {fileID: 3496675692413808970, guid: 34e13690f7701b14d82c63c65b15e432, type: 3}
