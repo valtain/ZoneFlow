@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZoneFlow.BattleView;
 
 namespace ZoneFlow.Battle
 {
@@ -24,5 +25,8 @@ namespace ZoneFlow.Battle
 
         /// <summary>보유 스킬 목록. 전투 개시 시 Damage 스킬 Power가 Combatant.SkillPowers에 매핑된다.</summary>
         [field: SerializeField] public SkillAsset[] Skills { get; private set; } = System.Array.Empty<SkillAsset>();
+
+        /// <summary>3D 전투 뷰 프리팹(VRM 모델 포함). 미설정이면 캡슐로 폴백.</summary>
+        [field: SerializeField] public BattleActorView BattleView { get; private set; }
     }
 }

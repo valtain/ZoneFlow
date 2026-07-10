@@ -42,14 +42,17 @@ namespace ZoneFlow.BattleView
         /// <summary>setup 기준으로 아군/적 뷰를 앵커에 스폰하고 side 머티리얼·HUD 이름/HP를 적용한다.</summary>
         /// <param name="setup">전투 초기화 데이터.</param>
         /// <param name="names">전투원 Id → 표시명 맵(HUD 이름 라벨용).</param>
-        public void SetupViews(BattleSetup setup, IReadOnlyDictionary<int, string> names)
+        /// <param name="models">전투원 Id → 커스텀 뷰 프리팹 맵(SO 데이터 주도, 미설정 시 <see cref="_actorViewPrefab"/>로 폴백).</param>
+        public void SetupViews(
+            BattleSetup setup, IReadOnlyDictionary<int, string> names,
+            IReadOnlyDictionary<int, BattleActorView> models = null)
         {
             Debug.Assert(setup != null, "[BattleStage] SetupViews: setup이 null이다.");
             if (setup == null) return;
 
             ClearViews();
-            SpawnSide(setup.Party, _allyAnchors, _allyMaterial, names);
-            SpawnSide(setup.Enemies, _enemyAnchors, _enemyMaterial, names);
+            SpawnSide(setup.Party, _allyAnchors, _allyMaterial, names, models);
+            SpawnSide(setup.Enemies, _enemyAnchors, _enemyMaterial, names, models);
         }
 
         /// <summary>
@@ -121,7 +124,7 @@ namespace ZoneFlow.BattleView
 
         private void SpawnSide(
             IReadOnlyList<Combatant> combatants, Transform[] anchors, Material material,
-            IReadOnlyDictionary<int, string> names)
+            IReadOnlyDictionary<int, string> names, IReadOnlyDictionary<int, BattleActorView> models)
         {
             if (_actorViewPrefab == null || anchors == null || combatants == null) return;
 
@@ -135,11 +138,14 @@ namespace ZoneFlow.BattleView
 
                 var anchor = anchors[i];
                 var combatant = combatants[i];
-                var view = Instantiate(_actorViewPrefab, anchor.position, anchor.rotation, transform);
+                var prefab = models != null
+                    && models.TryGetValue(combatant.Id, out var m) && m != null ? m : _actorViewPrefab;
+                var view = Instantiate(prefab, anchor.position, anchor.rotation, transform);
                 view.ApplyMaterial(material);
                 view.SetCombatantId(combatant.Id);
                 view.SetName(ResolveName(combatant.Id, names));
                 view.SetHp(combatant.Hp, combatant.MaxHp);
+                view.ApplySideVisual(combatant.Side);
                 _views[combatant.Id] = view;
             }
         }

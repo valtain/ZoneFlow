@@ -25,6 +25,7 @@ namespace ZoneFlow
         private BattleStage _stage;
 
         private readonly Dictionary<int, string> _names = new();
+        private readonly Dictionary<int, BattleActorView> _viewsById = new();
         private readonly Dictionary<int, IReadOnlyList<BattlePanel.BattleActionOption>> _optionsById = new();
 
         /// <summary>ZoneAsset과 스폰 포인트 ID로 전투 모드를 생성한다.</summary>
@@ -52,7 +53,7 @@ namespace ZoneFlow
             // 3D 연출 레이어(있으면) 확보 + 뷰 스폰(HUD 이름/HP 초기화 포함). 없으면 null 가드로 2D 패널만 진행한다.
             _stage = Zone != null ? Zone.GetComponentInChildren<BattleStage>(true) : null;
             Debug.Assert(_stage != null, "[BattleMode] BossRoom Zone 아래 BattleStage를 찾지 못했다.");
-            _stage?.SetupViews(_setup, _names);
+            _stage?.SetupViews(_setup, _names, _viewsById);
 
             if (UiService.Instance.Panels == null) return;
             if (!UiService.Instance.Panels.TryGetPanel(BattlePanel.PanelId, out var prefabRef)) return;
@@ -194,6 +195,7 @@ namespace ZoneFlow
         private void BuildViewModel()
         {
             _names.Clear();
+            _viewsById.Clear();
             _optionsById.Clear();
 
             for (int i = 0; i < _setup.Party.Count; i++)
@@ -201,6 +203,7 @@ namespace ZoneFlow
                 var combatant = _setup.Party[i];
                 var persona   = _encounter.Party[i];
                 _names[combatant.Id] = persona.DisplayName;
+                _viewsById[combatant.Id] = persona.BattleView;
 
                 var options = new List<BattlePanel.BattleActionOption>
                 {
@@ -216,7 +219,10 @@ namespace ZoneFlow
             }
 
             for (int i = 0; i < _setup.Enemies.Count; i++)
+            {
                 _names[_setup.Enemies[i].Id] = _encounter.Enemies[i].DisplayName;
+                _viewsById[_setup.Enemies[i].Id] = _encounter.Enemies[i].BattleView;
+            }
         }
 
         // ─────────────────────────────────────────────────────────────
