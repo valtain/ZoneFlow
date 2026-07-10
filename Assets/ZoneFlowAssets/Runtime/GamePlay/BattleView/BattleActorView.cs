@@ -48,6 +48,8 @@ namespace ZoneFlow.BattleView
         private static readonly Color AllySideColor = new(0.3f, 0.55f, 1f);
         private static readonly Color EnemySideColor = new(1f, 0.3f, 0.3f);
 
+        private const int AnimatorLayer = 0;
+
         private static readonly int DamagedTrigger = Animator.StringToHash("Damaged");
         private static readonly int LoseTrigger = Animator.StringToHash("Lose");
 
@@ -208,9 +210,13 @@ namespace ZoneFlow.BattleView
             _animator.SetTrigger(triggerHash);
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
 
-            var length = _animator.GetCurrentAnimatorStateInfo(0).length;
-            if (length > 0f)
-                await UniTask.Delay(TimeSpan.FromSeconds(length), cancellationToken: ct);
+            // 전이가 끝나기 전에는 GetCurrentAnimatorStateInfo가 목적지가 아니라 출발 상태를 반환한다.
+            var state = _animator.IsInTransition(AnimatorLayer)
+                ? _animator.GetNextAnimatorStateInfo(AnimatorLayer)
+                : _animator.GetCurrentAnimatorStateInfo(AnimatorLayer);
+
+            if (state.length > 0f)
+                await UniTask.Delay(TimeSpan.FromSeconds(state.length), cancellationToken: ct);
         }
 
         /// <summary>HUD 캔버스를 매 프레임 메인 카메라 회전으로 정렬해 빌보드처럼 보이게 한다.</summary>
