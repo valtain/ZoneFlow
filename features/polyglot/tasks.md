@@ -6,16 +6,16 @@ Source: [tmp-multilingual-font-engine](../../explorations/tmp-multilingual-font-
 
 | # | 태스크 | 상태 |
 | --- | --- | --- |
-| 1 | seam 계약 정의(순수): `IFontProvider`(locale→폰트 세트 로드) + TMP/Localization을 감싸는 facade 인터페이스(TMP Settings 적용·활성 locale 조회). 구현 없이 계약만 | todo |
-| 2 | 데이터 SO: `FontRef`(폰트+메타) · `FontCatalog`(locale→FontRef 매핑) 스켈레톤 + `CreateAssetMenu`. 식별자는 `so.name` | todo |
-| 3 | `DirectRefFontProvider` — `IFontProvider` 직접참조 구현. `FontCatalog`에서 활성 locale 폰트 세트 로드(Addressables는 후속 seam) | todo |
-| 4 | TMP/Localization facade 구현 — `TMP_Settings` 기본 폰트·전역 fallback·활성 스타일시트 적용 + Localization selected-locale 조회를 **패키지 내부 1곳에 격리** (`TMPro.*`/`UnityEngine.Localization.*` 직접 호출 여기만) | todo |
-| 5 | 부팅 엔진 API `FontEngine` — 활성 locale → `IFontProvider` 로드 → facade로 TMP Settings 적용(부팅 1회, 런타임 swap 없음) | todo |
-| 6 | 게임 측 어댑터 `FontService : MonoService<FontService>`(ZoneFlowAssets) + CoreServices 씬 배치 + 부팅 훅 1회 호출 배선(UniTask) | todo |
-| 7 | 저작 제어(Editor): TMP 컴포넌트 Font Asset 필드 잠금·Style-only Inspector + 저장 가드(폰트 자동 스트립·검증), 기존 프리팹 1회 diff | todo |
-| 8 | 오염 방지 가드(Editor): `AssetModificationProcessor.OnWillSaveAssets` `ClearFontAssetData()` + 폰트별 Clear Dynamic Data on Build | todo |
-| 9 | 에디터 프리뷰: Unity Localization `LocalizedTmpFont` + Game View locale 스위처 도입(프리뷰 전용, 컴포넌트 폰트 미직렬화 유지) | todo |
-| 10 | EditMode 테스트: provider(locale→폰트) · facade 적용 · 엔진 부팅 결정론 · 오염 불변식(폰트 미직렬화) 검증 | todo |
+| 1 | seam 계약 정의(순수): `IFontProvider`(locale→폰트 세트 로드) + TMP/Localization을 감싸는 facade 인터페이스(TMP Settings 적용·활성 locale 조회). 구현 없이 계약만 | #96 |
+| 2 | 데이터 SO: `FontRef`(폰트+메타) · `FontCatalog`(locale→FontRef 매핑) 스켈레톤 + `CreateAssetMenu`. 식별자는 `so.name` | #97 |
+| 3 | `DirectRefFontProvider` — `IFontProvider` 직접참조 구현. `FontCatalog`에서 활성 locale 폰트 세트 로드(Addressables는 후속 seam) | #98 |
+| 4 | TMP/Localization facade 구현 — `TMP_Settings` 기본 폰트·전역 fallback·활성 스타일시트 적용 + Localization selected-locale 조회를 **패키지 내부 1곳에 격리** (`TMPro.*`/`UnityEngine.Localization.*` 직접 호출 여기만) | #99 |
+| 5 | 부팅 엔진 API `FontEngine` — 활성 locale → `IFontProvider` 로드 → facade로 TMP Settings 적용(부팅 1회, 런타임 swap 없음) | #100 |
+| 6 | 게임 측 어댑터 `FontService : MonoService<FontService>`(ZoneFlowAssets) + CoreServices 씬 배치 + 부팅 훅 1회 호출 배선(UniTask) | #101 |
+| 7 | 저작 제어(Editor): TMP 컴포넌트 Font Asset 필드 잠금·Style-only Inspector + 저장 가드(폰트 자동 스트립·검증), 기존 프리팹 1회 diff | #102 |
+| 8 | 오염 방지 가드(Editor): `AssetModificationProcessor.OnWillSaveAssets` `ClearFontAssetData()` + 폰트별 Clear Dynamic Data on Build | #103 |
+| 9 | 에디터 프리뷰: Unity Localization `LocalizedTmpFont` + Game View locale 스위처 도입(프리뷰 전용, 컴포넌트 폰트 미직렬화 유지) | #104 |
+| 10 | EditMode 테스트: provider(locale→폰트) · facade 적용 · 엔진 부팅 결정론 · 오염 불변식(폰트 미직렬화) 검증 | #105 |
 
 ## 의존 순서
 

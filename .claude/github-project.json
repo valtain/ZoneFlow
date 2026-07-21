@@ -22,6 +22,7 @@
     "interaction-prompt": 56,
     "overworld-hub":    67,
     "combat-battle-service": 78,
-    "combat-turn-loop-ui": 86
+    "combat-turn-loop-ui": 86,
+    "polyglot": 95
   }
 }
