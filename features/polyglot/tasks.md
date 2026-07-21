@@ -27,3 +27,4 @@ Source: [tmp-multilingual-font-engine](../../explorations/tmp-multilingual-font-
 - 컴포넌트/프리팹에 폰트 asset **직렬화 금지**(locale 기본 폰트 상속 + Style만). Candidate C 재도입 금지.
 - `Polyglot` 어셈블리는 `Assembly-CSharp` **역참조 금지**(순수 엔진). 게임 연결은 task 6 어댑터만.
 - 서비스 생성은 씬 책임 · 비동기 UniTask · 단언 `Debug.Assert`(constraints.md).
+- **facade(4)·FontEngine(5)은 seam(`IFontProvider`/`FontSet`)만 의존** — `FontCatalog`/`FontRef`를 직접 참조하지 않는다. 미래 provider 교체(Direct→Addressables)를 국소화하기 위함(AQ-9). 카탈로그↔provider 결선은 game 어댑터(6)가 소유.
