@@ -3,7 +3,8 @@
     "rootNamespace": "Polyglot",
     "references": [
         "Unity.TextMeshPro",
-        "Unity.Localization"
+        "Unity.Localization",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
