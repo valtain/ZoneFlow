@@ -1,0 +1,11 @@
+{
+  "name": "com.zoneflow.polyglot",
+  "version": "0.1.0",
+  "displayName": "Polyglot",
+  "description": "다국어 TextMeshPro 폰트 엔진. 부팅 1회 locale 기반 TMP Settings 세팅 + Style-only 저작 + IFontProvider seam. TextMeshPro·Unity Localization 내장 기능을 최대한 활용하고 두 패키지의 API 접점을 어댑터 한 곳에 격리해 버전 변경에 유연하게 대응한다. 순수 엔진 패키지 — MonoBehaviour 서비스에 비의존하며 게임 측이 얇은 어댑터로 부팅 시 호출한다.",
+  "unity": "6000.0",
+  "dependencies": {
+    "com.unity.ugui": "2.0.0",
+    "com.unity.localization": "1.5.12"
+  }
+}
