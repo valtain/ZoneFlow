@@ -5,7 +5,9 @@
         "Polyglot",
         "Polyglot.Editor",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Unity.TextMeshPro",
+        "UniTask"
     ],
     "includePlatforms": [
         "Editor"
