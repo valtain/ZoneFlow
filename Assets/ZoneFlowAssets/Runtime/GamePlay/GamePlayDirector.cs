@@ -52,6 +52,8 @@ namespace ZoneFlow
         public static async UniTask BootstrapAsync(string sceneToUnload, NavigationConfig navigation)
         {
             await SceneService.EnsureCoreServicesLoaded();
+            Debug.Assert(FontService.IsReady, "[GamePlayDirector] CoreServices에 FontService가 없습니다.");
+            await FontService.Instance.BootAsync();
             await SceneManager.UnloadSceneAsync(sceneToUnload).ToUniTask();
             await Instance.NavigateAsync(navigation.BuildUri(), CancellationToken.None);
         }
