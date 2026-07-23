@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 namespace Polyglot
@@ -32,6 +33,19 @@ namespace Polyglot
             }
 
             return null;
+        }
+
+        /// <summary>모든 Entry의 <see cref="FontRef.DefaultFont"/>를 null이 아닌 것만 모아 반환한다.</summary>
+        public System.Collections.Generic.IReadOnlyList<TMP_FontAsset> AllFonts()
+        {
+            var fonts = new System.Collections.Generic.List<TMP_FontAsset>();
+            foreach (Entry entry in Entries)
+            {
+                if (entry.Font != null && entry.Font.DefaultFont != null)
+                    fonts.Add(entry.Font.DefaultFont);
+            }
+
+            return fonts;
         }
     }
 }

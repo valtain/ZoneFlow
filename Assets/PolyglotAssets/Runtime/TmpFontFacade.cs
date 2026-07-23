@@ -26,5 +26,21 @@ namespace Polyglot
             TMP_Settings.fallbackFontAssets = new List<TMP_FontAsset>(fontSet.GlobalFallback);
             TMP_Settings.defaultStyleSheet = fontSet.ActiveStyleSheet;
         }
+
+        /// <summary>Localization 선택 locale을 localeCode로 전환한다. concrete 전용 API(IFontFacade 계약 아님).</summary>
+        /// <param name="localeCode">전환할 locale 코드(예: "ko").</param>
+        public void SetActiveLocale(string localeCode)
+        {
+            var loc = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
+            Debug.Assert(loc != null, $"locale '{localeCode}'를 찾지 못했습니다.");
+            LocalizationSettings.SelectedLocale = loc;
+        }
+
+        /// <summary>TMP_Settings 전역 fallback 목록을 설정한다. concrete 전용 API(IFontFacade 계약 아님).</summary>
+        /// <param name="fonts">fallback으로 적용할 폰트 목록.</param>
+        public void SetFallbacks(IReadOnlyList<TMP_FontAsset> fonts)
+        {
+            TMP_Settings.fallbackFontAssets = new List<TMP_FontAsset>(fonts);
+        }
     }
 }

@@ -41,6 +41,10 @@ namespace ZoneFlow
                 Tween.Alpha(_canvasGroup, endValue: 1f, duration: FadeInDuration).ToUniTask(cancellationToken: ct)
             );
 
+            // GamePlayDirector.BootstrapAsync를 거치지 않는 경로이므로 폰트 부팅을 직접 수행한다.
+            Debug.Assert(FontService.IsReady, "[SplashScreen] CoreServices에 FontService가 없습니다.");
+            await FontService.Instance.BootAsync();
+
             await UniTask.Delay(TimeSpan.FromSeconds(HoldDuration), cancellationToken: ct);
 
             await Tween.Alpha(_canvasGroup, endValue: 0f, duration: FadeOutDuration).ToUniTask(cancellationToken: ct);
