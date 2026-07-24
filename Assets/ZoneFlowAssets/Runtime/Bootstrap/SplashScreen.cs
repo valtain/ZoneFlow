@@ -3,6 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
+using Polyglot;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -86,7 +87,7 @@ namespace ZoneFlow
             textRect.anchorMin = new Vector2(0.5f, 0.5f);
             textRect.anchorMax = new Vector2(0.5f, 0.5f);
             textRect.sizeDelta = new Vector2(800, 200);
-            var tmp = textGo.AddComponent<TextMeshProUGUI>();
+            var tmp = textGo.AddComponent<PolyglotText>();
             tmp.text = "ZoneFlow";
             tmp.fontSize = 96;
             tmp.fontStyle = FontStyles.Bold;

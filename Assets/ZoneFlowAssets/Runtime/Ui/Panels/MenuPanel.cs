@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
+using Polyglot;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -97,7 +98,7 @@ namespace ZoneFlow
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.anchoredPosition = anchoredPos;
             rect.sizeDelta = size;
-            var tmp = go.AddComponent<TextMeshProUGUI>();
+            var tmp = go.AddComponent<PolyglotText>();
             tmp.text = text;
             tmp.fontSize = fontSize;
             tmp.fontStyle = FontStyles.Bold;
@@ -128,7 +129,7 @@ namespace ZoneFlow
             txtGo.transform.SetParent(go.transform, false);
             var txtRect = txtGo.AddComponent<RectTransform>();
             txtRect.anchorMin = Vector2.zero; txtRect.anchorMax = Vector2.one; txtRect.sizeDelta = Vector2.zero;
-            var tmp = txtGo.AddComponent<TextMeshProUGUI>();
+            var tmp = txtGo.AddComponent<PolyglotText>();
             tmp.text = label;
             tmp.fontSize = 24;
             tmp.alignment = TextAlignmentOptions.Center;

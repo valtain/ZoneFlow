@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
+using Polyglot;
 using UnityEngine;
 using UnityEngine.UI;
 using ZoneFlow.Player;
@@ -142,7 +143,7 @@ namespace ZoneFlow
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
-            var labelTmp = labelGo.AddComponent<TextMeshProUGUI>();
+            var labelTmp = labelGo.AddComponent<PolyglotText>();
             labelTmp.text      = "◆ Interact";
             labelTmp.fontSize  = 26;
             labelTmp.alignment = TextAlignmentOptions.Center;

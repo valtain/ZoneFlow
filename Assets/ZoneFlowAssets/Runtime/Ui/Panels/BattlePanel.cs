@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
+using Polyglot;
 using UnityEngine;
 using UnityEngine.UI;
 using ZoneFlow.Battle;
@@ -309,7 +310,7 @@ namespace ZoneFlow
             actorLabelRect.pivot            = new Vector2(0.5f, 1f);
             actorLabelRect.anchoredPosition = new Vector2(0f, -30f);
             actorLabelRect.sizeDelta        = new Vector2(700f, 50f);
-            var actorLabelTmp = actorLabelGo.AddComponent<TextMeshProUGUI>();
+            var actorLabelTmp = actorLabelGo.AddComponent<PolyglotText>();
             actorLabelTmp.text      = string.Empty;
             actorLabelTmp.fontSize  = 32;
             actorLabelTmp.alignment = TextAlignmentOptions.Center;
@@ -364,7 +365,7 @@ namespace ZoneFlow
             logRect.pivot            = new Vector2(0.5f, 0f);
             logRect.anchoredPosition = new Vector2(0f, 130f);
             logRect.sizeDelta        = new Vector2(900f, 40f);
-            var logTmp = logGo.AddComponent<TextMeshProUGUI>();
+            var logTmp = logGo.AddComponent<PolyglotText>();
             logTmp.text      = string.Empty;
             logTmp.fontSize  = 22;
             logTmp.alignment = TextAlignmentOptions.Center;
@@ -435,7 +436,7 @@ namespace ZoneFlow
             nameRect.anchorMax = new Vector2(1f, 1f);
             nameRect.offsetMin = new Vector2(8f, 0f);
             nameRect.offsetMax = new Vector2(-8f, 0f);
-            var nameTmp = nameGo.AddComponent<TextMeshProUGUI>();
+            var nameTmp = nameGo.AddComponent<PolyglotText>();
             nameTmp.text      = "Name";
             nameTmp.fontSize  = 20;
             nameTmp.alignment = TextAlignmentOptions.Left;
@@ -469,7 +470,7 @@ namespace ZoneFlow
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
             labelRect.sizeDelta = Vector2.zero;
-            var labelTmp = labelGo.AddComponent<TextMeshProUGUI>();
+            var labelTmp = labelGo.AddComponent<PolyglotText>();
             labelTmp.text      = "Action";
             labelTmp.fontSize  = 22;
             labelTmp.alignment = TextAlignmentOptions.Center;

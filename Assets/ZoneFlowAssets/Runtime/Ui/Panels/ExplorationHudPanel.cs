@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
+using Polyglot;
 using UnityEngine;
 using UnityEngine.UI;
 using ZoneFlow.Player;
@@ -118,7 +119,7 @@ namespace ZoneFlow
             modeLabelRect.anchorMin = new Vector2(0f,   0f);
             modeLabelRect.anchorMax = new Vector2(0.5f, 1f);
             modeLabelRect.offsetMin = modeLabelRect.offsetMax = Vector2.zero;
-            var modeTmp = modeLabelGo.AddComponent<TextMeshProUGUI>();
+            var modeTmp = modeLabelGo.AddComponent<PolyglotText>();
             modeTmp.text      = "◆ EXPLORATION";
             modeTmp.fontSize  = 28;
             modeTmp.alignment = TextAlignmentOptions.Left;
@@ -131,7 +132,7 @@ namespace ZoneFlow
             zoneLabelRect.anchorMin = new Vector2(0.5f, 0f);
             zoneLabelRect.anchorMax = new Vector2(1f,   1f);
             zoneLabelRect.offsetMin = zoneLabelRect.offsetMax = Vector2.zero;
-            var zoneTmp = zoneLabelGo.AddComponent<TextMeshProUGUI>();
+            var zoneTmp = zoneLabelGo.AddComponent<PolyglotText>();
             zoneTmp.text      = "zone@Scene";
             zoneTmp.fontSize  = 24;
             zoneTmp.alignment = TextAlignmentOptions.Right;
