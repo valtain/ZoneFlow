@@ -38,8 +38,10 @@ namespace Polyglot
                 return;
             }
 
-            // 값을 바꾸기 전에 driven 등록 — 프리뷰 변경이 씬에 저장되지 않게 한다.
+            // 값을 바꾸기 전에 driven 등록 — 프리뷰 변경이 씬/프리팹에 저장되지 않게 한다.
+            // 폰트를 바꾸면 TMP가 머티리얼 필드도 함께 갱신하므로 그것들도 등록해야 한다.
             TmpFontFacade.MarkDriven(this, "m_fontAsset");
+            TmpFontFacade.MarkDriven(this, "m_sharedMaterial");
             TmpFontFacade.MarkDriven(this, "m_StyleSheet");
 
             if (fontSet.DefaultFont != null)
