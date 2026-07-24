@@ -25,7 +25,7 @@ namespace Polyglot
             FontRef fontRef = _catalog.Resolve(localeCode);
             Debug.Assert(fontRef != null, $"FontCatalog에 locale '{localeCode}' 항목이 없습니다.");
 
-            var fontSet = new FontSet(fontRef.DefaultFont, fontRef.GlobalFallback, fontRef.StyleSheet);
+            var fontSet = new FontSet(fontRef.DefaultFont, fontRef.GlobalFallback, fontRef.StyleSheet, fontRef.Presets);
             return UniTask.FromResult(fontSet);
         }
     }

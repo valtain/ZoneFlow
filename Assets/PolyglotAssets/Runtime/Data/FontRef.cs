@@ -16,6 +16,9 @@ namespace Polyglot
         /// <summary>locale에 대응하는 활성 스타일시트.</summary>
         [field: SerializeField] public TMP_StyleSheet StyleSheet { get; private set; }
 
+        /// <summary>스타일별 폰트·머티리얼 프리셋(기본 폰트·fallback과 별개). 부팅 시 <see cref="TmpFontFacade"/>가 등록해 <c>&lt;font=&gt;</c> 이름 해석을 가능케 한다.</summary>
+        [field: SerializeField] public FontPreset[] Presets { get; private set; } = System.Array.Empty<FontPreset>();
+
         /// <summary>에디터 표시용 라벨(메타 정보, 식별자 아님).</summary>
         [field: SerializeField] public string DisplayName { get; private set; } = string.Empty;
     }
