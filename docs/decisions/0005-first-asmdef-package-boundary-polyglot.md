@@ -29,6 +29,6 @@
 ## 결과
 
 - **강제**: `Polyglot` 어셈블리는 게임 코드(`Assembly-CSharp`)를 참조하지 않는다(순수 엔진 불변식). 게임↔엔진 연결은 게임 측 어댑터가 담당한다.
-- **강제**: TMP·Localization API 접점은 Polyglot 내부 facade 1곳에 격리(버전 변경 유연 대응) — features/polyglot 원칙.
+- **강제**: TMP·Localization API 접점은 Polyglot 내부 **지정 seam에 격리**(버전 변경 유연 대응) — features/polyglot 원칙. 접점은 **facade**(TMP Settings 적용·locale 조회) + **provider**(폰트 로딩) 둘이며(→ [ADR-0006](0006-polyglot-font-loading-localization-asset-table.md)로 리프레임), 불변식의 본질은 **게임 코드·호출부가 TMP/Localization 타입을 직접 만지지 않는 것**이다.
 - **선례**: 이후 독립 인프라 패키지는 동일 패턴(순수 코어 + 게임 어댑터, `{Name}Assets/` + asmdef)을 따른다. constraints.md가 본 ADR을 참조.
 - **새 미해결 질문(AQ 후보)**: 서비스 인프라(`MonoService`/`CoreServices`)를 공용 패키지로 추출할 것인가(대안 B) — 독립 패키지가 늘면 재검토.

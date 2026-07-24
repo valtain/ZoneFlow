@@ -59,4 +59,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | AQ-6 | 콘텐츠 풍부화 시 CatalogBaker `BakeAll` 전량 재스캔이 저작 루프 병목/충돌점이 되는가 (AQ-4 인접) | ❓ Open | level-designer·ui-designer 도입 |
 | AQ-7 | 시간/날짜 진행은 Service 상태 + 명시적 커밋 액션인가, Mode 전환 훅인가 | ✅ Answered | persona5-slice → ADR-0001 |
 | AQ-8 | BattleMode 종료 후 승/패/이탈 결과를 직전 스택에 전달하는 계약 | ✅ Answered | persona5-slice → ADR-0002 |
-| AQ-9 | Polyglot `AddressablesFontProvider`가 locale→폰트 로딩을 Localization `AssetTable`(`LocalizedAsset<FontRef>`, 최대활용·refcount·preload 공짜)로 할지 raw Addressables+AssetReference(Localization 접점 facade 1곳 유지)로 할지 — "TMP/Localization 최대활용" vs "Localization 접점 1곳" 두 원칙 충돌 (AQ-4 인접) | ❓ Open | polyglot → Addressables task |
+| AQ-9 | Polyglot `AddressablesFontProvider`가 locale→폰트 로딩을 Localization `AssetTable`(`LocalizedAsset<FontRef>`, 최대활용·refcount·preload 공짜)로 할지 raw Addressables+AssetReference(Localization 접점 facade 1곳 유지)로 할지 — "TMP/Localization 최대활용" vs "Localization 접점 1곳" 두 원칙 충돌 (AQ-4 인접) | ✅ ADR-0006 | polyglot → AddressablesFontProvider (Asset Table 채택) |

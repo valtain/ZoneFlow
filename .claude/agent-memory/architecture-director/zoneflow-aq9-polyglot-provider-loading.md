@@ -1,8 +1,12 @@
 ---
 name: zoneflow-aq9-polyglot-provider-loading
-description: Polyglot AddressablesFontProvider가 Localization AssetTable(최대활용)을 쓸지 raw Addressables(1-facade 유지)를 쓸지 — 두 원칙 충돌, Addressables 착수 시 결정 (AQ-9 제안, AQ-4 인접)
+description: Polyglot 폰트 로딩 = Localization AssetTable(X). AQ-9 해소·ADR-0006 채택 — provider도 지정 seam이라 "접점 격리" 유지
 metadata:
   type: project
+---
+
+**결론(2026-07-24, ADR-0006 채택):** X(Localization AssetTable)로 확정·구현됨. `AddressablesFontProvider`가 `LocalizationSettings.AssetDatabase.GetLocalizedAsset<FontRef>("Fonts","font",locale)`로 로드. 부팅 provider를 DirectRef→Addressables로 통째 교체(FontService·FontPreviewHook), FontEngine/facade/FontSet 무변경(교체비용 0 확인). ADR-0005 문구는 "facade 1곳"→"facade+provider 두 지정 seam"으로 리프레임. `DirectRefFontProvider`(#105 테스트)·`FontCatalog`(피커 fallback)는 존치 — 이중화 통일은 후속. 아래는 결정 배경(보존).
+
 ---
 
 Polyglot 폰트 엔진의 로딩 전략 결정이 미해결로 남았다 — AQ-9 제안(AQ-4 "Addressable 전환 시 Zone 생명주기" 인접, 별건).
