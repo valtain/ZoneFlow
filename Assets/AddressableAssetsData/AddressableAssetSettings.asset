@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 488fc69b5f1d7aa428dbae608c52c1c0
   m_currentHash:
     serializedVersion: 2
-    Hash: d2400f6eb0a699599aea96c0349e7b03
+    Hash: 7f3ec5f751174e99cbbe081b0a6331c4
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -24,11 +24,11 @@ MonoBehaviour:
   m_InternalBundleIdMode: 1
   m_AssetLoadMode: 0
   m_BundledAssetProviderType:
-    m_AssemblyName: 
-    m_ClassName: 
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
   m_AssetBundleProviderType:
-    m_AssemblyName: 
-    m_ClassName: 
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
   m_IgnoreUnsupportedFilesInBuild: 0
   m_UniqueBundleIds: 0
   m_EnableJsonCatalog: 0
@@ -61,8 +61,13 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: c00e45ecbfe38b24c8d7b3ad7574dc91, type: 2}
   - {fileID: 11400000, guid: 2bfdd90be99d0f84c9a76edd18dfe578, type: 2}
+  - {fileID: 11400000, guid: 9ffddea6ab18aaa4493e84c48c12bcf3, type: 2}
   - {fileID: 11400000, guid: 0323c3870533fd341be7770627915526, type: 2}
+  - {fileID: 11400000, guid: 64790f0293b4ef94bbb9b076bd0920b2, type: 2}
+  - {fileID: 11400000, guid: 0e1725e4d5ae8a543ab8ce2198178666, type: 2}
+  - {fileID: 11400000, guid: d540a515e8bfc874a853762b6c22dff4, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
@@ -103,6 +108,10 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Locale
+    - Locale-en
+    - Locale-ja
+    - Locale-ko
+    - Locale-zh-Hans
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 13fe76d1902b0b746b086faa867d7692, type: 2}
