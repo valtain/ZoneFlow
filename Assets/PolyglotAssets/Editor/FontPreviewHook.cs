@@ -26,26 +26,14 @@ namespace Polyglot.Editor
                 return;
             }
 
-            var catalog = FindFontCatalog();
-            if (catalog == null)
+            // 폰트 시스템 미구성(FontCatalog 부재) 시 skip — 스캐폴딩 단계 안전장치.
+            if (AssetDatabase.FindAssets("t:FontCatalog").Length == 0)
             {
                 return;
             }
 
-            new FontEngine(new DirectRefFontProvider(catalog), new TmpFontFacade())
+            new FontEngine(new AddressablesFontProvider(), new TmpFontFacade())
                 .BootAsync(CancellationToken.None).Forget();
-        }
-
-        static FontCatalog FindFontCatalog()
-        {
-            string[] guids = AssetDatabase.FindAssets("t:FontCatalog");
-            if (guids.Length == 0)
-            {
-                return null;
-            }
-
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            return AssetDatabase.LoadAssetAtPath<FontCatalog>(path);
         }
     }
 }

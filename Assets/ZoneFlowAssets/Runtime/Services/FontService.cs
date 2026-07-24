@@ -26,7 +26,8 @@ namespace ZoneFlow
 
         /// <summary>
         /// 활성 locale에 대응하는 폰트 세트를 로드해 TMP에 적용한다(부팅 1회).
-        /// <see cref="Catalog"/>가 미배정이면 skip한다.
+        /// 폰트 로드는 <see cref="AddressablesFontProvider"/>(Localization Asset Table) 경유.
+        /// <see cref="Catalog"/>가 미배정이면 폰트 시스템 미구성으로 보고 skip한다.
         /// </summary>
         public async UniTask BootAsync()
         {
@@ -36,7 +37,7 @@ namespace ZoneFlow
                 return;
             }
 
-            var provider = new DirectRefFontProvider(Catalog);
+            var provider = new AddressablesFontProvider();
             var engine = new FontEngine(provider, _facade);
             await engine.BootAsync(destroyCancellationToken);
         }
