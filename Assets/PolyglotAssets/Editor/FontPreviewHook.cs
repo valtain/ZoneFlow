@@ -8,9 +8,10 @@ using UnityEngine.Localization.Settings;
 namespace Polyglot.Editor
 {
     /// <summary>
-    /// 에디터에서 Game View locale을 전환하면 런타임 <see cref="FontEngine"/>을 그대로 재실행해
-    /// 해당 locale의 폰트를 TMP_Settings에 프리뷰로 적용한다. 컴포넌트는 손대지 않는다(불변식 유지).
-    /// FontCatalog가 아직 없는 현재는 no-op 스캐폴딩 상태다.
+    /// <b>에디트 모드 전용</b> 프리뷰 훅. Game View/Scene Controls로 locale을 전환하면 런타임
+    /// <see cref="FontEngine"/>을 그대로 재실행해 해당 locale 폰트를 TMP에 적용한다(driven이라 씬 미저장).
+    /// Play 모드에서는 no-op — 런타임 부팅은 게임 측 FontService가 소유하며, 빌드에는 이 훅이 존재하지 않아
+    /// "런타임 swap 없음" 설계와 일치시키기 위함이다.
     /// </summary>
     [InitializeOnLoad]
     static class FontPreviewHook
@@ -19,6 +20,12 @@ namespace Polyglot.Editor
 
         static void OnLocaleChanged(Locale _)
         {
+            // Play 모드는 게임 측 FontService가 부팅을 소유한다 — 에디터 프리뷰 훅이 중복 부팅하지 않는다.
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return;
+            }
+
             var catalog = FindFontCatalog();
             if (catalog == null)
             {
