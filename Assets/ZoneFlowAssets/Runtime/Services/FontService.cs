@@ -37,6 +37,10 @@ namespace ZoneFlow
                 return;
             }
 
+            // 폰트는 Addressables(Localization Asset Table) 경유 → 로드 전 초기화 완료를 보장한다.
+            Debug.Assert(AddressableService.IsReady, "[FontService] CoreServices에 AddressableService가 없습니다.");
+            await AddressableService.Instance.EnsureInitializedAsync();
+
             var provider = new AddressablesFontProvider();
             var engine = new FontEngine(provider, _facade);
             await engine.BootAsync(destroyCancellationToken);

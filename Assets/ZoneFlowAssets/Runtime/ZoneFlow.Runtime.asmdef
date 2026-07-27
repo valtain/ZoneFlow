@@ -8,7 +8,10 @@
         "Unity.TextMeshPro",
         "Unity.InputSystem",
         "YarnSpinner.Unity",
-        "Polyglot"
+        "Polyglot",
+        "Unity.Localization",
+        "UniTask.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
