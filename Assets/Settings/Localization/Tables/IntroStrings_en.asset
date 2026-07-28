@@ -10,32 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: MenuStrings_en
+  m_Name: IntroStrings_en
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
   m_LocaleId:
     m_Code: en
-  m_SharedData: {fileID: 11400000, guid: f844b61d9bf5073468147c9762c46d87, type: 2}
+  m_SharedData: {fileID: 11400000, guid: 866daebbe97a36e41befb66cb8d6c1c8, type: 2}
   m_Metadata:
     m_Items: []
   m_TableData:
-  - m_Id: 3723501568
-    m_Localized: <style="Body">New Game</style>
+  - m_Id: 226323603456
+    m_Localized: <style="Title">Every choice draws a new path.</style>
     m_Metadata:
       m_Items: []
-  - m_Id: 3778027520
-    m_Localized: <style="Body">Load Game</style>
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3782221824
-    m_Localized: <style="Body">Settings</style>
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3782221825
-    m_Localized: <style="Body">Quit</style>
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3782221826
-    m_Localized: <style="Emphasis">Welcome, traveler.</style>
+  - m_Id: 226361352192
+    m_Localized: <style="Body">Loading...</style>
     m_Metadata:
       m_Items: []
   references:

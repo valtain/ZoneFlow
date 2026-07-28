@@ -15,5 +15,6 @@ MonoBehaviour:
   <DefaultFont>k__BackingField: {fileID: 11400000, guid: c6fac76832199d345b4563b444bd21d0, type: 2}
   <GlobalFallback>k__BackingField:
   - {fileID: 11400000, guid: c6fac76832199d345b4563b444bd21d0, type: 2}
-  <StyleSheet>k__BackingField: {fileID: 0}
+  <StyleSheet>k__BackingField: {fileID: 11400000, guid: 4c906341afa53ee4ca23def2f5503de0, type: 2}
+  <Presets>k__BackingField: []
   <DisplayName>k__BackingField: Korean

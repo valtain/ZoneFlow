@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ZoneFlowAssets/Scenes/ContentServices.unity
     guid: 44488db0f86fe994682bab25bcf39633
+  - enabled: 1
+    path: Assets/ZoneFlowAssets/Scenes/LocalizationDemo.unity
+    guid: 7d48091d55dae6344ad3a0b623558fdf
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 26fe465dc6f1d4d4aac14bc665fc74c3, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: eb2927aa8d07f7046b9f3b88d5e5874c, type: 2}
