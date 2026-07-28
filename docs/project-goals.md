@@ -36,7 +36,7 @@ AI는 아래 질문들을 참조해 아직 탐색되지 않은 항목을 발견�
 | AQ-6 | 콘텐츠 풍부화 시 CatalogBaker `BakeAll` 전량 재스캔이 저작 루프 병목/충돌점이 되는가? | ❓ Open |
 | AQ-7 | 시간/날짜 진행은 Service 상태 + 명시적 커밋 액션인가, Mode 전환 훅인가? | ✅ ADR-0001 |
 | AQ-8 | BattleMode 종료 후 승/패/이탈 결과를 직전 스택에 전달하는 계약은 무엇인가? | ✅ ADR-0002 |
-| AQ-10 | Polyglot 부팅 폰트 로드의 동기 `WaitForCompletion`이 다른 Localization/Addressables 비동기 작업과 겹칠 때 재진입(`Reentering the Update method`)한다 — 부팅 폰트 로드를 async로 전환할지, 콜드부팅 Localization 선행 완료를 보장할지? | ❓ Open |
+| AQ-10 | Polyglot 부팅 폰트 로드의 동기 `WaitForCompletion`이 다른 Localization/Addressables 비동기 작업과 겹칠 때 재진입(`Reentering the Update method`)한다 — 부팅 폰트 로드를 async로 전환할지, 콜드부팅 Localization 선행 완료를 보장할지? | ✅ 해소 (`AddressablesFontProvider` async 전환) |
 
 ## 성공 기준
 
