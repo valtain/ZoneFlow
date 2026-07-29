@@ -130,13 +130,19 @@ namespace ZoneFlow
             var rect = buttonGo.AddComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(420, 90);
+            rect.sizeDelta = new Vector2(300, 55);
             rect.anchoredPosition = new Vector2(0f, yOffset);
 
+            // MenuPanel 버튼과 동일한 스타일(색·호버·폰트)로 통일한다.
             var img = buttonGo.AddComponent<Image>();
-            img.color = new Color(1f, 1f, 1f, 0.12f);
+            img.color = new Color(0.18f, 0.18f, 0.25f);
 
             var button = buttonGo.AddComponent<Button>();
+            button.targetGraphic = img;
+            var colors = button.colors;
+            colors.highlightedColor = new Color(0.3f, 0.3f, 0.5f);
+            colors.pressedColor = new Color(0.1f, 0.1f, 0.2f);
+            button.colors = colors;
             button.onClick.AddListener(() => onClick());
 
             var textGo = new GameObject("Label");
@@ -145,7 +151,7 @@ namespace ZoneFlow
             textRect.anchorMin = Vector2.zero; textRect.anchorMax = Vector2.one; textRect.sizeDelta = Vector2.zero;
             var tmp = textGo.AddComponent<PolyglotText>();
             tmp.text = label;
-            tmp.fontSize = 40;
+            tmp.fontSize = 24;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = Color.white;
         }
