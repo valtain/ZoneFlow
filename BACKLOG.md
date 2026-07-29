@@ -43,6 +43,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | zone-entry-camera | closed | TASK 이슈 |
 | persona5-slice | closed | ADR-0001/0002/0003, AQ-5/7/8, feature 후보 5건, combat-battle-service |
 | tmp-multilingual-font-engine | closed | polyglot |
+| tiered-font-loading | active | — |
 
 ## Architectural Questions
 
@@ -61,3 +62,4 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | AQ-8 | BattleMode 종료 후 승/패/이탈 결과를 직전 스택에 전달하는 계약 | ✅ Answered | persona5-slice → ADR-0002 |
 | AQ-9 | Polyglot `AddressablesFontProvider`가 locale→폰트 로딩을 Localization `AssetTable`(`LocalizedAsset<FontRef>`, 최대활용·refcount·preload 공짜)로 할지 raw Addressables+AssetReference(Localization 접점 facade 1곳 유지)로 할지 — "TMP/Localization 최대활용" vs "Localization 접점 1곳" 두 원칙 충돌 (AQ-4 인접) | ✅ ADR-0006 | polyglot → AddressablesFontProvider (Asset Table 채택) |
 | AQ-10 | Polyglot 부팅 폰트 로드(`AddressablesFontProvider.GetLocalizedAsset<FontRef>` 동기 호출 → Addressables `WaitForCompletion` 블로킹 펌프)가 다른 Localization/Addressables 비동기 작업과 겹치면 `"Reentering the Update method is not allowed"` 재진입 발생 — 부팅 폰트 로드를 async로 전환할지, 콜드부팅 시 Localization 선행 완료(seam)를 보장할지 (AQ-4 인접) | ✅ ADR-0007 | `AddressablesFontProvider` async 전환(`GetLocalizedAssetAsync`) — `WaitForCompletion` 제거로 재진입 원천 차단 |
+| AQ-11 | WebGL 빌드에서 CJK 폰트 용량(소스 TTF ~38MB, Dynamic 아틀라스, `Localization-Assets-*`가 Local Addressables라 전 locale 폰트가 초기 `.data`에 전량 포함)을 어떻게 줄일까 — 고정 문자열(Intro/부팅 UI)은 Static 서브셋·Local, 가변(콘텐츠)은 Dynamic 전체·Remote per-locale의 2단 폰트 로딩? (AQ-4/AQ-6 인접) | ❓ Open | tiered-font-loading 탐색 |
