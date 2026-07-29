@@ -15,7 +15,7 @@ paths:
 - **PanelCatalog 손편집 금지** — PanelId→프리팹 매핑은 CatalogBaker 출력물이다. 신규 패널은 프리팹을 등록한 뒤 **`BakeAll`로 반영**(선례: InteractionPromptPanel 등록). 베이크는 작업 종료 시 **메인 세션이 1회 직렬** 실행한다.
 - **패널 생명주기는 `PanelMode`/`ShellMode` 경유** — show/hide를 우회하지 않는다.
 - **Mode↔Panel 매핑·베이스 클래스 수정 금지** — `Ui/Layers/`·`Ui/TransitionFx/`·`Ui/Panels/UiPanel.cs` 및 Mode와 패널을 잇는 매핑 로직은 Mode 스택 경계에 속한다. 표현(레이아웃·정보설계)만 다루고, 매핑/시스템 변경은 에스컬레이션한다.
-- **인게임 UI 텍스트는 영문** — 한글 폰트 글리프 누락 회피(선례: 포탈 안내 라벨 영어화).
+- **인게임 UI 텍스트는 지역화** — `LocalizeStringEvent` + String Table 경유로 바인딩([ADR-0008](../../docs/decisions/0008-runtime-locale-switch-ui-localization.md)). 폴리글롯 per-locale 폰트로 글리프 누락이 해소돼 기존 "영문 강제"는 폐기. 브랜드명·기호 등 비번역 텍스트는 예외.
 - **시각 검증** — `unity_screenshot_game`/`unity_play_mode`로 패널 렌더링·레이아웃을 확인한다.
 
 ## 모호하면

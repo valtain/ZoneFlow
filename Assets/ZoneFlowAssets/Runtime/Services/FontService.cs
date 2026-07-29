@@ -20,9 +20,13 @@ namespace ZoneFlow
         [field: SerializeField] public FontCatalog Catalog { get; private set; }
 
         private readonly TmpFontFacade _facade = new();
+        private bool _isSwitching;
 
         /// <summary>언어 피커에서 locale 선택을 완료한 적이 있는지 여부(first-run 게이트).</summary>
         public bool HasLocaleBeenChosen => PlayerPrefs.HasKey(PickerShownKey);
+
+        /// <summary>Localization의 현재 선택 locale 코드. Localization API 직접 접근 대신 이 프로퍼티를 경유한다.</summary>
+        public string CurrentLocaleCode => _facade.GetActiveLocaleCode();
 
         /// <summary>
         /// 활성 locale에 대응하는 폰트 세트를 로드해 TMP에 적용한다(부팅 1회).
@@ -52,11 +56,25 @@ namespace ZoneFlow
         /// </summary>
         public async UniTask SelectLocaleAsync(string localeCode)
         {
-            _facade.SetActiveLocale(localeCode);
-            PlayerPrefs.SetString(LocaleKey, localeCode);
-            PlayerPrefs.SetInt(PickerShownKey, 1);
-            PlayerPrefs.Save();
-            await BootAsync();
+            // 전환 도중 연타로 재진입하면 폰트 리부트가 겹쳐 상태가 꼬일 수 있어 가드한다.
+            if (_isSwitching)
+            {
+                return;
+            }
+
+            _isSwitching = true;
+            try
+            {
+                _facade.SetActiveLocale(localeCode);
+                PlayerPrefs.SetString(LocaleKey, localeCode);
+                PlayerPrefs.SetInt(PickerShownKey, 1);
+                PlayerPrefs.Save();
+                await BootAsync();
+            }
+            finally
+            {
+                _isSwitching = false;
+            }
         }
 
         /// <summary>

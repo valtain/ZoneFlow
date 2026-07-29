@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Polyglot
 {
-    /// <summary>부팅 시 1회 활성 locale을 조회 → 폰트 세트를 로드 → TMP에 적용하는 부팅 엔진. 런타임 재적용(swap)은 하지 않는다.</summary>
+    /// <summary>활성 locale을 조회 → 폰트 세트를 로드 → TMP에 적용하는 부팅 엔진. locale 변경 시 <see cref="BootAsync"/> 재호출로 재적용한다(per-component 폰트 swap은 하지 않음 — ADR-0008).</summary>
     public sealed class FontEngine
     {
         private readonly IFontProvider _provider;

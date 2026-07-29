@@ -10,6 +10,8 @@
 
 런타임 문자열 지역화(대사·UI 텍스트 번역)와 Addressables 실적용은 이 feature 범위 밖 — seam/후속으로 분리한다.
 
+> **개정([ADR-0008](../../docs/decisions/0008-runtime-locale-switch-ui-localization.md), #107)**: 이후 메뉴에서 locale 런타임 변경(dropdown)이 도입됐다. 위 "런타임 swap 없음"은 **"변경 시 `SelectLocaleAsync` 재부팅으로 재적용"**으로 개정됐고, 인게임 UI 지역화도 범위에 들어왔다. 이 spec은 초기 슬라이스 기록으로 남긴다.
+
 ## 관련 배경
 
 - **Source 탐색**: [tmp-multilingual-font-engine](../../explorations/tmp-multilingual-font-engine/findings.md) — Candidate A 채택.
