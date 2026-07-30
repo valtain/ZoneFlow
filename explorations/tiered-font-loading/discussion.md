@@ -35,3 +35,5 @@
   → 이 프로토타입은 **Tier-1 전제(Static 서브셋이 TTF를 제거)만** 격리 검증한다. Remote 전제(초기 `.data`가 전체 폰트를 제외)는 별도 2차 측정(전체 폰트를 Remote 그룹에 두고 초기 `.data` 미포함 확인)으로 분리.
 
 - [2026-07-30 | measure] **실측(빌드 0, 기존 Addressables 출력 측정).** `Library/com.unity.addressables/aa/WebGL/WebGL/`의 기존 번들에서 locale별 폰트 번들 압축 크기 확인: **en 1.4M / ko 5.8M / ja 6.3M / zh-Hans 12M = 합계 ~25.5M**. 원시 TTF ~38M이 LZ4 압축 후 ~25.5M로 실제 빌드에 실림(그룹이 Local이라 전량 초기 다운로드). ko 5.8M ≈ NotoSansKR.ttf(10M) 압축분 → 번들이 Dynamic 폰트+소스 TTF를 담는 것 확증. **AQ-11 우려가 수치로 확증됨**: 어떤 언어를 쓰든 ~25.5M 폰트가 초기 `.data`에 포함. 남은 정확값(서브셋 아틀라스 크기)은 서브셋 베이크가 필요 — 측정 서브에이전트가 monthly spend limit로 중단돼 before/after 완전 diff는 보류. 추정: Tier-1 Static 서브셋(<1M/locale, TTF 제거) → ~22M 절감; Tier-2 Remote → 초기 다운로드에서 전량 제외, 선택 locale만 온디맨드.
+
+- [2026-07-30 | close] 탐색 완료. Candidate C(2단, 기구 1a) 채택 — Tier-1 per-locale Static 서브셋 우선(즉시 ~22M 절감·원격 무의존), Tier-2 Remote(C/E 미결)는 후속 phase. findings.md 작성. feature `tiered-font-loading`로 승격.

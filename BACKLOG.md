@@ -21,6 +21,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | combat-battle-service | features/combat-battle-service/ |
 | combat-turn-loop-ui | features/combat-turn-loop-ui/ |
 | polyglot | features/polyglot/ |
+| tiered-font-loading | features/tiered-font-loading/ |
 
 ## Explorations
 
@@ -43,7 +44,7 @@ Task 추적은 [GitHub Issues](https://github.com/valtain/ZoneFlow/issues)에서
 | zone-entry-camera | closed | TASK 이슈 |
 | persona5-slice | closed | ADR-0001/0002/0003, AQ-5/7/8, feature 후보 5건, combat-battle-service |
 | tmp-multilingual-font-engine | closed | polyglot |
-| tiered-font-loading | active | — |
+| tiered-font-loading | closed | tiered-font-loading |
 
 ## Architectural Questions
 
