@@ -17,10 +17,12 @@ namespace Polyglot
             _catalog = catalog;
         }
 
-        /// <summary>지정 locale 코드에 대응하는 폰트 세트를 즉시 반환한다.</summary>
+        /// <summary>지정 locale 코드에 대응하는 폰트 세트를 즉시 반환한다. <paramref name="tier"/>는 인터페이스 계약을 맞추기 위해 받되 무시한다 —
+        /// <see cref="FontCatalog"/> 직접참조에는 티어 구분이 없다(테스트/직접참조 전용 프로바이더).</summary>
         /// <param name="localeCode">Localization locale 코드(예: "ko", "ja", "zh-Hans").</param>
+        /// <param name="tier">사용하지 않음(티어 미구분).</param>
         /// <param name="ct">취소 토큰(직접참조 즉시 반환이라 사용하지 않음).</param>
-        public UniTask<FontSet> LoadAsync(string localeCode, CancellationToken ct)
+        public UniTask<FontSet> LoadAsync(string localeCode, FontTier tier, CancellationToken ct)
         {
             FontRef fontRef = _catalog.Resolve(localeCode);
             Debug.Assert(fontRef != null, $"FontCatalog에 locale '{localeCode}' 항목이 없습니다.");

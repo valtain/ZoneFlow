@@ -13,21 +13,34 @@ namespace Polyglot
     public sealed class AddressablesFontProvider : IFontProvider
     {
         private const string TableName = "Fonts";
-        private const string EntryKey = "font";
+        private const string ContentEntryKey = "font";
+        private const string BootEntryKey = "font-boot";
 
-        /// <summary>지정 locale의 FontRef를 Asset Table에서 비동기로 로드해 폰트 세트를 반환한다.</summary>
+        /// <summary>티어에 대응하는 Asset Table 엔트리키를 반환한다(엔트리키 자체가 티어 선택자 — 기구 1a).</summary>
+        /// <param name="tier">조회할 <see cref="FontTier"/>.</param>
+        private static string EntryKeyFor(FontTier tier) => tier switch
+        {
+            FontTier.Boot => BootEntryKey,
+            FontTier.Content => ContentEntryKey,
+            _ => ContentEntryKey
+        };
+
+        /// <summary>지정 locale·티어의 FontRef를 Asset Table에서 비동기로 로드해 폰트 세트를 반환한다.</summary>
         /// <param name="localeCode">Localization locale 코드(예: "ko", "ja", "zh-Hans").</param>
+        /// <param name="tier">로드할 <see cref="FontTier"/>(Boot/Content).</param>
         /// <param name="ct">취소 토큰.</param>
-        public async UniTask<FontSet> LoadAsync(string localeCode, CancellationToken ct)
+        public async UniTask<FontSet> LoadAsync(string localeCode, FontTier tier, CancellationToken ct)
         {
             var locale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
             Debug.Assert(locale != null, $"locale '{localeCode}'를 찾지 못했습니다.");
 
+            string entryKey = EntryKeyFor(tier);
+
             // 동기 GetLocalizedAsset(WaitForCompletion)은 Localization 초기화 완료 콜백(ResourceManager.Update)
             // 안에서 호출되면 Update를 재진입한다(AQ-10). 비동기 핸들을 await해 블로킹 로드를 제거한다.
-            var handle = LocalizationSettings.AssetDatabase.GetLocalizedAssetAsync<FontRef>(TableName, EntryKey, locale);
+            var handle = LocalizationSettings.AssetDatabase.GetLocalizedAssetAsync<FontRef>(TableName, entryKey, locale);
             FontRef fontRef = await handle.ToUniTask(cancellationToken: ct);
-            Debug.Assert(fontRef != null, $"Asset Table '{TableName}'에 locale '{localeCode}' FontRef가 없습니다.");
+            Debug.Assert(fontRef != null, $"Asset Table '{TableName}'에 locale '{localeCode}' 엔트리 '{entryKey}' FontRef가 없습니다.");
 
             return new FontSet(fontRef.DefaultFont, fontRef.GlobalFallback, fontRef.StyleSheet, fontRef.Presets);
         }

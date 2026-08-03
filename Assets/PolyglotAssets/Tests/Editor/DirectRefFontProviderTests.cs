@@ -54,7 +54,7 @@ namespace Polyglot.Editor.Tests
         {
             var provider = new DirectRefFontProvider(_catalog);
 
-            FontSet result = provider.LoadAsync("ko", CancellationToken.None).GetAwaiter().GetResult();
+            FontSet result = provider.LoadAsync("ko", FontTier.Content, CancellationToken.None).GetAwaiter().GetResult();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(_font, result.DefaultFont);

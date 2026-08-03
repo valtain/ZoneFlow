@@ -47,7 +47,7 @@ namespace ZoneFlow
 
             var provider = new AddressablesFontProvider();
             var engine = new FontEngine(provider, _facade);
-            await engine.BootAsync(destroyCancellationToken);
+            await engine.BootAsync(FontTier.Content, destroyCancellationToken);
         }
 
         /// <summary>

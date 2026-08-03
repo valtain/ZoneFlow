@@ -11,11 +11,13 @@ namespace Polyglot.Editor.Tests
         private class FakeFontProvider : IFontProvider
         {
             public string RequestedLocale;
+            public FontTier RequestedTier;
             public FontSet ToReturn;
 
-            public UniTask<FontSet> LoadAsync(string localeCode, CancellationToken ct)
+            public UniTask<FontSet> LoadAsync(string localeCode, FontTier tier, CancellationToken ct)
             {
                 RequestedLocale = localeCode;
+                RequestedTier = tier;
                 return UniTask.FromResult(ToReturn);
             }
         }
@@ -46,9 +48,10 @@ namespace Polyglot.Editor.Tests
                 LocaleToReturn = "ja"
             };
 
-            new FontEngine(provider, facade).BootAsync(CancellationToken.None).GetAwaiter().GetResult();
+            new FontEngine(provider, facade).BootAsync(FontTier.Content, CancellationToken.None).GetAwaiter().GetResult();
 
             Assert.AreEqual("ja", provider.RequestedLocale);
+            Assert.AreEqual(FontTier.Content, provider.RequestedTier);
             Assert.AreSame(provider.ToReturn, facade.AppliedSet);
         }
     }

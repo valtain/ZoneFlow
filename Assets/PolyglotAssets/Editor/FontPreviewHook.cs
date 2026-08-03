@@ -33,7 +33,7 @@ namespace Polyglot.Editor
             }
 
             new FontEngine(new AddressablesFontProvider(), new TmpFontFacade())
-                .BootAsync(CancellationToken.None).Forget();
+                .BootAsync(FontTier.Content, CancellationToken.None).Forget();
         }
     }
 }

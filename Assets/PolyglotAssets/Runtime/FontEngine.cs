@@ -22,13 +22,14 @@ namespace Polyglot
         }
 
         /// <summary>활성 locale을 조회해 대응 폰트 세트를 로드하고 TMP_Settings에 적용한다(부팅 1회).</summary>
+        /// <param name="tier">로드할 <see cref="FontTier"/>(Boot/Content).</param>
         /// <param name="ct">취소 토큰.</param>
-        public async UniTask BootAsync(CancellationToken ct)
+        public async UniTask BootAsync(FontTier tier, CancellationToken ct)
         {
             string localeCode = _facade.GetActiveLocaleCode();
             Debug.Assert(!string.IsNullOrEmpty(localeCode), "활성 locale 코드를 확인할 수 없습니다.");
 
-            FontSet fontSet = await _provider.LoadAsync(localeCode, ct);
+            FontSet fontSet = await _provider.LoadAsync(localeCode, tier, ct);
             _facade.Apply(fontSet);
         }
     }
