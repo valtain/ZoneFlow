@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14301507e8f65fb41ab1b4b341e4dff0, type: 3}
+  m_Name: BootFontCatalog
+  m_EditorClassIdentifier: Polyglot::Polyglot.FontCatalog
+  <Entries>k__BackingField:
+  - <LocaleCode>k__BackingField: en
+    <Font>k__BackingField: {fileID: 11400000, guid: ae2b42b92f58c5e4e9c159ef084512ef, type: 2}
+  - <LocaleCode>k__BackingField: ko
+    <Font>k__BackingField: {fileID: 11400000, guid: c2d0728c5e2514d43a984a976360567c, type: 2}
+  - <LocaleCode>k__BackingField: ja
+    <Font>k__BackingField: {fileID: 11400000, guid: 4ad1629fd159da844975b39bda742d45, type: 2}
+  - <LocaleCode>k__BackingField: zh-Hans
+    <Font>k__BackingField: {fileID: 11400000, guid: 57f3c86fb0d9b6042aac68742aab3064, type: 2}
