@@ -19,6 +19,10 @@ MonoBehaviour:
     m_Key: font
     m_Metadata:
       m_Items: []
+  - m_Id: 3608616199266304
+    m_Key: font-boot
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 2425824439496081621
@@ -36,6 +40,12 @@ MonoBehaviour:
       data:
         m_Entries:
         - m_KeyId: 2406490112
+          m_TableCodes:
+          - en
+          - ja
+          - ko
+          - zh-Hans
+        - m_KeyId: 3608616199266304
           m_TableCodes:
           - en
           - ja

@@ -15,6 +15,12 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-zh-Hans
   m_GUID: 5182546e7e5e3954782a330cae2b9ccd
   m_SerializeEntries:
+  - m_GUID: 57f3c86fb0d9b6042aac68742aab3064
+    m_Address: BootFontRef_zh-Hans
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-zh-Hans
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b29719456425d8d4891b2d0e7bb41a44
     m_Address: FontRef_zh-Hans
     m_ReadOnly: 1

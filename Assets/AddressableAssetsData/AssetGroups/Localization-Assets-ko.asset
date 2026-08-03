@@ -21,6 +21,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2d0728c5e2514d43a984a976360567c
+    m_Address: BootFontRef_ko
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: cd47c5a4be3bf7244b848e56b978bfe9, type: 2}
   m_SchemaSet:
