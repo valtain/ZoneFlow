@@ -16,8 +16,11 @@ namespace ZoneFlow
         private const string PickerShownKey = "language-picker-shown";
         private const string LocaleKey = "selected-locale";
 
-        /// <summary>locale 코드 → 폰트 세트 매핑을 보유한 카탈로그.</summary>
-        [field: SerializeField] public FontCatalog Catalog { get; private set; }
+        /// <summary>
+        /// boot 티어 폰트 카탈로그(피커 라벨 fallback 용).
+        /// content 카탈로그를 배정하면 전체 폰트가 씬 직접 참조로 딸려와 Tier-1 절감이 무효화된다.
+        /// </summary>
+        [field: SerializeField] public FontCatalog BootCatalog { get; private set; }
 
         private readonly TmpFontFacade _facade = new();
         private bool _isSwitching;
@@ -31,13 +34,13 @@ namespace ZoneFlow
         /// <summary>
         /// 활성 locale에 대응하는 폰트 세트를 로드해 TMP에 적용한다(부팅 1회).
         /// 폰트 로드는 <see cref="AddressablesFontProvider"/>(Localization Asset Table) 경유.
-        /// <see cref="Catalog"/>가 미배정이면 폰트 시스템 미구성으로 보고 skip한다.
+        /// <see cref="BootCatalog"/>가 미배정이면 폰트 시스템 미구성으로 보고 skip한다.
         /// </summary>
         public async UniTask BootAsync()
         {
-            if (Catalog == null)
+            if (BootCatalog == null)
             {
-                Debug.Log("[FontService] FontCatalog 미배정 — 폰트 부팅 skip");
+                Debug.Log("[FontService] BootFontCatalog 미배정 — 폰트 부팅 skip");
                 return;
             }
 
@@ -47,7 +50,7 @@ namespace ZoneFlow
 
             var provider = new AddressablesFontProvider();
             var engine = new FontEngine(provider, _facade);
-            await engine.BootAsync(FontTier.Content, destroyCancellationToken);
+            await engine.BootAsync(FontTier.Boot, destroyCancellationToken);
         }
 
         /// <summary>
@@ -78,14 +81,14 @@ namespace ZoneFlow
         }
 
         /// <summary>
-        /// 언어 피커 자기 라벨(네이티브 표기) 렌더용으로 <see cref="Catalog"/>의 모든 폰트를
+        /// 언어 피커 자기 라벨(네이티브 표기) 렌더용으로 <see cref="BootCatalog"/>의 모든 폰트를
         /// TMP 전역 fallback으로 임시 적용한다. 이후 <see cref="SelectLocaleAsync"/>가 정규
         /// per-locale fallback으로 덮어써 되돌린다.
         /// </summary>
         public void ApplyPickerFallbacks()
         {
-            Debug.Assert(Catalog != null, "[FontService] FontCatalog 미배정입니다.");
-            _facade.SetFallbacks(Catalog.AllFonts());
+            Debug.Assert(BootCatalog != null, "[FontService] BootFontCatalog 미배정입니다.");
+            _facade.SetFallbacks(BootCatalog.AllFonts());
         }
     }
 }

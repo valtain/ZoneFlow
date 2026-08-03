@@ -894,7 +894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7735c606f2141f24ebc5d2e41ac5b30f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZoneFlow.Runtime::ZoneFlow.FontService
-  <Catalog>k__BackingField: {fileID: 11400000, guid: 0e15532fbef2096489b25af3775a71a4, type: 2}
+  <BootCatalog>k__BackingField: {fileID: 11400000, guid: 6be06a3fa9f75194ebdb24f528ce7f77, type: 2}
 --- !u!4 &1282042819
 Transform:
   m_ObjectHideFlags: 0
