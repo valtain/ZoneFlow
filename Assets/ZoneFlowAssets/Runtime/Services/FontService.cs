@@ -28,7 +28,10 @@ namespace ZoneFlow
         /// <summary>언어 피커에서 locale 선택을 완료한 적이 있는지 여부(first-run 게이트).</summary>
         public bool HasLocaleBeenChosen => PlayerPrefs.HasKey(PickerShownKey);
 
-        /// <summary>Localization의 현재 선택 locale 코드. Localization API 직접 접근 대신 이 프로퍼티를 경유한다.</summary>
+        /// <summary>
+        /// Localization의 현재 선택 locale 코드. Localization API 직접 접근 대신 이 프로퍼티를 경유한다.
+        /// 미선택 상태면 Project Locale 코드를 보고한다.
+        /// </summary>
         public string CurrentLocaleCode => _facade.GetActiveLocaleCode();
 
         /// <summary>

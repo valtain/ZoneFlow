@@ -27,7 +27,11 @@ namespace Polyglot
         public async UniTask BootAsync(FontTier tier, CancellationToken ct)
         {
             string localeCode = _facade.GetActiveLocaleCode();
-            Debug.Assert(!string.IsNullOrEmpty(localeCode), "활성 locale 코드를 확인할 수 없습니다.");
+            if (string.IsNullOrEmpty(localeCode))
+            {
+                Debug.Log("[Polyglot] 활성 locale 없음 — 폰트 부팅 skip");
+                return;
+            }
 
             FontSet fontSet = await _provider.LoadAsync(localeCode, tier, ct);
             _facade.Apply(fontSet);

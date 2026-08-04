@@ -9,11 +9,18 @@ namespace Polyglot
     /// <summary>TMP_Settings 적용·Localization locale 조회를 이 한 곳에 격리하는 <see cref="IFontFacade"/> 구현.</summary>
     public sealed class TmpFontFacade : IFontFacade
     {
-        /// <summary>Localization 선택 locale 코드를 조회한다(미선택 시 기본 locale).</summary>
+        /// <summary>
+        /// Localization 선택 locale 코드를 조회한다. 미선택(Scene Controls의 None 등)이면
+        /// Project Locale로 대체하며, 그마저 없으면 null을 반환한다(호출자가 부팅 skip을 판단).
+        /// </summary>
         public string GetActiveLocaleCode()
         {
             var locale = LocalizationSettings.SelectedLocale;
-            Debug.Assert(locale != null, "LocalizationSettings.SelectedLocale이 null입니다.");
+            if (locale == null)
+            {
+                locale = LocalizationSettings.ProjectLocale;
+            }
+
             return locale != null ? locale.Identifier.Code : null;
         }
 

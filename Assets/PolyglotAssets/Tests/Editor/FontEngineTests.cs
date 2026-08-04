@@ -13,11 +13,13 @@ namespace Polyglot.Editor.Tests
             public string RequestedLocale;
             public FontTier RequestedTier;
             public FontSet ToReturn;
+            public int LoadCount;
 
             public UniTask<FontSet> LoadAsync(string localeCode, FontTier tier, CancellationToken ct)
             {
                 RequestedLocale = localeCode;
                 RequestedTier = tier;
+                LoadCount++;
                 return UniTask.FromResult(ToReturn);
             }
         }
@@ -53,6 +55,25 @@ namespace Polyglot.Editor.Tests
             Assert.AreEqual("ja", provider.RequestedLocale);
             Assert.AreEqual(FontTier.Content, provider.RequestedTier);
             Assert.AreSame(provider.ToReturn, facade.AppliedSet);
+        }
+
+        /// <summary>활성 locale이 없으면(Scene Controls의 None 등) 폰트 로드·적용을 모두 건너뛴다.</summary>
+        [Test]
+        public void BootAsync_WithoutActiveLocale_SkipsLoadAndApply()
+        {
+            var provider = new FakeFontProvider
+            {
+                ToReturn = new FontSet(null, new TMP_FontAsset[0], null)
+            };
+            var facade = new FakeFontFacade
+            {
+                LocaleToReturn = null
+            };
+
+            new FontEngine(provider, facade).BootAsync(FontTier.Content, CancellationToken.None).GetAwaiter().GetResult();
+
+            Assert.AreEqual(0, provider.LoadCount);
+            Assert.IsNull(facade.AppliedSet);
         }
     }
 }
