@@ -66,6 +66,22 @@ namespace Polyglot
             EditorPropertyDriver.RegisterProperty(target, propertyPath);
         }
 
+        /// <summary>
+        /// 대상 속성의 driven 등록을 해제하고, 등록 시점 스냅샷 값으로 되돌린다.
+        /// 플레이 모드·빌드에서는 아무 일도 하지 않는다.
+        /// </summary>
+        /// <param name="target">속성을 가진 오브젝트.</param>
+        /// <param name="propertyPath">직렬화 속성 경로(예: "m_fontAsset").</param>
+        public static void UnmarkDriven(Object target, string propertyPath)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            EditorPropertyDriver.UnregisterProperty(target, propertyPath);
+        }
+
         /// <summary>Localization 선택 locale을 localeCode로 전환한다. concrete 전용 API(IFontFacade 계약 아님).</summary>
         /// <param name="localeCode">전환할 locale 코드(예: "ko").</param>
         public void SetActiveLocale(string localeCode)
