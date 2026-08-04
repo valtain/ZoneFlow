@@ -13,6 +13,8 @@ Source: [tmp-multilingual-font-engine](../../explorations/tmp-multilingual-font-
 | locale 영속화는 Localization 내장 selected-locale(StartupLocaleSelector) 사용 | 위 "최대 활용"의 귀결. 탐색이 미뤄둔 커스텀 PlayerPrefs 스토어를 대체 → 코드·상태 축소. **단 최종 확인은 systems-designer**(세이브 계층과의 관계) |
 | 가드레일: Candidate C(컴포넌트별 Localization Property Variants 폰트 배선) 재도입 금지 | "Localization 최대 활용"이 폰트 대량 직렬화로 번지지 않도록 명시. 컴포넌트 폰트 미직렬화 불변식은 오염 방지의 근간 |
 | `package.json`은 문서·향후 추출용(Assets/ 하위라 Package Manager 비관리) | 실제 어셈블리 경계는 `Polyglot.asmdef`가 만든다. `Packages/`로 이전 시 그대로 UPM 패키지가 되도록 레이아웃만 미리 정렬 |
+| TMP Settings의 **디스크** 기본 스타일시트 = Polyglot locale 시트(`PolyglotStyles_en`), 전 locale 시트는 동일 style 집합 유지 (#118) | `TMP_Text.textStyle` getter는 메시 재생성 때마다 해시를 재해석하고, 실패하면 `m_TextStyleHashCode`를 Normal로 **되쓴다**. 이 필드는 driven이 아니라 저장돼야 하는 저작 정보이므로 되쓰기가 곧 디스크 유실이다. 해석 경로가 컴포넌트 `m_StyleSheet`(저장 시 스트립됨) → `TMP_Settings.defaultStyleSheet` 뿐이라, **부팅 전 에디트 모드**에서도 해석이 성립해야 Style-only 저작이 성립한다. `StyleSheetConfigTests`가 가드 |
+| TMP Settings는 `SetDirty`+`SaveAssets`로 저장하지 않는다 (#118) | driven 등록은 씬/프리팹 직렬화만 막고 **ScriptableObject 강제 저장은 막지 못한다** — 부팅이 적용해둔 locale 폰트·fallback이 그대로 애셋에 기록돼 오염된다. TMP Settings 변경이 필요하면 YAML을 직접 수정하고 `ImportAsset`으로 리로드한다 |
 
 ## 탐색에서 상속받은 결정
 

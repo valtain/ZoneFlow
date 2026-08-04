@@ -43,7 +43,7 @@ MonoBehaviour:
   m_MissingCharacterSpriteUnicode: 0
   m_EmojiFallbackTextAssets: []
   m_defaultColorGradientPresetsPath: Color Gradient Presets/
-  m_defaultStyleSheet: {fileID: 11400000, guid: f952c082cb03451daed3ee968ac6c63e,
+  m_defaultStyleSheet: {fileID: 11400000, guid: 6806d0c49092b244b871a5ce09047238,
     type: 2}
   m_StyleSheetsResourcePath: 
   m_leadingCharacters: {fileID: 4900000, guid: d82c1b31c7e74239bff1220585707d2b, type: 3}
