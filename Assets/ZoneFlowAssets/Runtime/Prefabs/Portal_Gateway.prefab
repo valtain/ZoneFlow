@@ -7079,6 +7079,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6860998477655616212}
     m_Modifications:
+    - target: {fileID: 310600832549686054, guid: 7af4241b129a3b6488af05d0b2a86981, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 619894531143064171, guid: 7af4241b129a3b6488af05d0b2a86981, type: 3}
       propertyPath: m_Name
       value: WorldLabel

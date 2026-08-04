@@ -219,7 +219,7 @@ MonoBehaviour:
   m_text: 0/0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -356,7 +356,7 @@ MonoBehaviour:
   m_text: Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -611,6 +611,9 @@ MonoBehaviour:
   _nameLabel: {fileID: 7985748550589128741}
   _hpFillRect: {fileID: 6223277415061502462}
   _hpText: {fileID: 981413631887225128}
+  _animator: {fileID: 0}
+  _selectionMarker: {fileID: 0}
+  _sideRingRenderer: {fileID: 0}
 --- !u!136 &1662759210898635972
 CapsuleCollider:
   m_ObjectHideFlags: 0
