@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Localization-Assets-ko
+  m_Name: Localization-Assets-zh-Hans-Boot
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
-  m_GroupName: Localization-Assets-ko
-  m_GUID: c380c89c79be47c46803366cf1849c5f
+  m_GroupName: Localization-Assets-zh-Hans-Boot
+  m_GUID: afed42d38827f1a47b262bda09d31983
   m_SerializeEntries:
-  - m_GUID: 37a806f02998cb9408fbc63b4004a281
-    m_Address: FontRef_ko
+  - m_GUID: 57f3c86fb0d9b6042aac68742aab3064
+    m_Address: BootFontRef_zh-Hans
     m_ReadOnly: 1
     m_SerializedLabels:
-    - Locale-ko
+    - Locale-zh-Hans
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: cd47c5a4be3bf7244b848e56b978bfe9, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 5b9865ce1ff3c4942b5b5c8da6dd6691, type: 2}
-    - {fileID: 11400000, guid: c3073f7c72c9b3e4580fec0c52c199b3, type: 2}
+    - {fileID: 11400000, guid: 314c1de0d6482f142b60c05f52594321, type: 2}
+    - {fileID: 11400000, guid: 1a029243e2f926a4a99cbcf95d24c579, type: 2}

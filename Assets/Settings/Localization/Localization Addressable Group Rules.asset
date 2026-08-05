@@ -19,7 +19,7 @@ MonoBehaviour:
   m_AssetTablesResolver:
     rid: 6559561100488867947
   m_AssetResolver:
-    rid: 6559561100488867948
+    rid: 6559561144871419989
   references:
     version: 2
     RefIds:
@@ -47,8 +47,8 @@ MonoBehaviour:
         m_LocaleGroupNamePattern: Localization-Asset-Tables-{LocaleName}
         m_LocaleGroups: []
         m_MarkEntriesReadOnly: 1
-    - rid: 6559561100488867948
-      type: {class: GroupResolver, ns: UnityEditor.Localization.Addressables, asm: Unity.Localization.Editor}
+    - rid: 6559561144871419989
+      type: {class: TieredGroupResolver, ns: Polyglot.Editor, asm: Polyglot.Editor}
       data:
         m_SharedGroupName: Localization-Assets-Shared
         m_SharedGroup: {fileID: 0}

@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-ja
   m_GUID: 394f0957da383d940b62d987f3ce90e8
   m_SerializeEntries:
-  - m_GUID: 4ad1629fd159da844975b39bda742d45
-    m_Address: BootFontRef_ja
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-ja
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bab3aa896bd15ea4793b4a883ba38f2a
     m_Address: FontRef_ja
     m_ReadOnly: 1

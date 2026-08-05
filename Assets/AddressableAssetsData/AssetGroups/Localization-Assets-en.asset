@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-en
   m_GUID: 415c7ccd10051a047a595246cd9cf7fc
   m_SerializeEntries:
-  - m_GUID: ae2b42b92f58c5e4e9c159ef084512ef
-    m_Address: BootFontRef_en
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-en
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b41677e59aa350349b22d1ad1617a882
     m_Address: FontRef_en
     m_ReadOnly: 1
