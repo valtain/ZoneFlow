@@ -2,12 +2,17 @@
 
 ## Build & Test
 
+- **Unity**: `6000.3.10f1` (URP). 실행 진입점은 `Assets/ZoneFlowAssets/Scenes/DevBootstrap.unity` → Play. Zone 씬 직접 Play는 ColdStartup 경로다.
 - **Build**: Unity Editor → File > Build Settings (no CLI build scripts)
 - **Tests**: Unity Editor → Window > General > Test Runner
   - Editor tests: `Assets/ZoneFlowAssets/Tests/Editor`
   - Runtime tests: `Assets/ZoneFlowAssets/Tests/Runtime`
   - Polyglot 패키지: `Assets/PolyglotAssets/Tests/{Editor,Runtime}`
   - Claude 실행: `unity_advanced_tool` → `unity_testing_run_tests` (결과의 `failed` 값이 유효 신호)
+  - 실행 전 `unity_get_compilation_errors`로 컴파일 상태를 먼저 확인한다.
+- **에디터 메뉴**: `ZoneFlow/Bake Catalogs`(= `CatalogBaker.BakeAll`), `ZoneFlow/Runtime State`, `ZoneFlow/Create Zone...` — Polyglot은 `Tools/Polyglot/*`.
+- **카탈로그 베이크**: `Runtime/Data/*.asset` 4종은 CatalogBaker 출력물 — 손편집 금지, 부분 베이크 없음. 서브에이전트는 베이크하지 않고 **메인 세션이 작업 종료 시 `BakeAll`을 1회 직렬 실행**한다.
+- **커밋 메시지**: `[feat|fix|refactor|style|test|docs|chore] 한국어 명사형 요약` (마침표 없음, 해당 시 `Closes #N`). `Assets/` 변경은 `.meta` 동반. 상세 흐름은 `/git-commit`.
 
 ## Collaboration Protocol
 
@@ -30,7 +35,7 @@
   - (모델은 별칭으로 지정 — 별칭은 현재 최신 모델로 자동 해석되므로 버전 번호를 고정하지 않는다. 상세 기준: `.claude/docs/complexity.md`)
 - **Command Execution**: `UserPromptSubmit` hook(`complexity-hint.ps1`)이 슬래시 커맨드를 자동 감지하여 복잡도를 주입한다. Hook 출력을 반드시 따를 것.
   - **Low** (`/git-commit`, `/bridge`, `/work-log`, `/quick`, `/issue new|list|show|close`, `/feature new|list|show`): Agent 도구로 `model='haiku'` 서브에이전트를 생성하여 전체 작업 위임
-  - **Medium** (`/init`, `/review`, `/next`, `/issue do`, `/feature plan`): 현재 모델 유지, 알림 없음. **구현 위임은 `unity-specialist` 에이전트로** (`/issue do`).
+  - **Medium** (`/init`, `/simplify`, `/next`, `/issue do`, `/feature plan`, `/level`·`/ui`·`/battle`·`/systems`의 `new|improve|tune|review`): 현재 모델 유지, 알림 없음. **구현 위임은 `unity-specialist`**(`/issue do`), 역할 커맨드는 각자의 에이전트로 위임.
   - **High** (`/security-review`, `/explore`, `/issue review`): 작업 시작 전 사용자에게 Opus 모델 전환 여부 확인. **설계·검토 위임은 `architecture-director` 에이전트로** (`/explore`, `/issue review`).
 - **구현 워크플로우**: Plan 승인 후 아래 기준으로 후속 액션을 결정할 것.
   - **Implementation Plan** (기능 구현·리팩터링·버그 수정 등 코드 변경 수반):
@@ -62,10 +67,10 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 
 | glob | rule |
 | --- | --- |
-| `Assets/ZoneFlowAssets/Runtime/**` | `runtime-code.md` |
+| `Assets/ZoneFlowAssets/Runtime/**`, `Assets/PolyglotAssets/Runtime/**` | `runtime-code.md` |
 | `Assets/**/Editor/**` | `editor-code.md` |
 | `Assets/ZoneFlowAssets/Runtime/Data/**` | `scriptable-data.md` |
-| `Assets/ZoneFlowAssets/Tests/**` | `tests.md` |
+| `Assets/ZoneFlowAssets/Tests/**`, `Assets/PolyglotAssets/Tests/**` | `tests.md` |
 | `Assets/ZoneFlowAssets/Scenes/**`, `Assets/ZoneFlowAssets/Story/**` | `level-content.md` |
 | `Assets/ZoneFlowAssets/Runtime/Ui/**`, `Runtime/Prefabs/**`(UI 패널 한정) | `ui-design.md` (`runtime-code.md`와 동시 매칭) |
 | `Assets/ZoneFlowAssets/Runtime/GamePlay/Battle/**`, `Runtime/GamePlay/ModeImpl/BattleMode.cs` | `combat-code.md` (`runtime-code.md`와 동시 매칭) |
@@ -81,9 +86,12 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 ## Architectural Principles
 
 → [docs/architecture/constraints.md](docs/architecture/constraints.md)
+→ 학습 목표·미해결 Architectural Question(AQ): [docs/project-goals.md](docs/project-goals.md)
+→ 설계 결정 기록(ADR-0001~0008): [docs/decisions/](docs/decisions/)
 
 ## Architecture & Coding Style
 
+→ 프로젝트 개요·실행 방법·로드맵: [README.md](README.md)
 → 씬 계층·시스템 계층: [docs/architecture/](docs/architecture/)
 → 코딩 스타일·네이밍: [docs/conventions/coding-style.md](docs/conventions/coding-style.md)
 → 프로젝트 구조: [docs/architecture/project-structure.md](docs/architecture/project-structure.md)
