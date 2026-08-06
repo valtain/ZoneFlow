@@ -1,9 +1,13 @@
 using NUnit.Framework;
 using UnityEngine;
 
-namespace ZoneFlow.Tests.Editor
+namespace ZoneFlow.Tests.Runtime
 {
-    /// <summary>MonoService&lt;T&gt; 등록·중복·해제 시나리오 검증.</summary>
+    /// <summary>
+    /// MonoService&lt;T&gt; 등록·중복·해제 시나리오 검증.
+    /// Awake·OnDestroy는 Play Mode에만 호출되므로(MonoService에 [ExecuteAlways]가 없다)
+    /// EditMode에서는 AddComponent가 등록을 일으키지 않는다 — 이 테스트는 Play Mode 전용이다.
+    /// </summary>
     internal class MonoServiceTests
     {
         private class TestService : MonoService<TestService> { }
