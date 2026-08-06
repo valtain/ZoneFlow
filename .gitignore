@@ -107,6 +107,7 @@ InitTestScene*.unity*
 
 # Claude Code
 .claude/settings.local.json
+.claude.local.md
 .lscache
 /[Aa]ssets/[Ss]creenshots
 /[Aa]ssets/[Ss]creenshots.meta
