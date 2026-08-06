@@ -2,6 +2,8 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using TMPro;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Polyglot.Editor.Tests
 {
@@ -73,6 +75,30 @@ namespace Polyglot.Editor.Tests
             new FontEngine(provider, facade).BootAsync(FontTier.Content, CancellationToken.None).GetAwaiter().GetResult();
 
             Assert.AreEqual(0, provider.LoadCount);
+            Assert.IsNull(facade.AppliedSet);
+        }
+
+        /// <summary>
+        /// provider가 null을 반환하면(원격 content 로드 실패) 오류를 표면화하고 Apply를 건너뛴다 —
+        /// TMP 상태가 그대로 남아 직전 티어(boot)가 기능적 바닥으로 유지되는 것이 floor 불변식이다.
+        /// </summary>
+        [Test]
+        public void BootAsync_WhenLoadFails_SurfacesErrorAndSkipsApply()
+        {
+            var provider = new FakeFontProvider
+            {
+                ToReturn = null
+            };
+            var facade = new FakeFontFacade
+            {
+                LocaleToReturn = "ko"
+            };
+
+            LogAssert.Expect(LogType.Error, "[Polyglot] locale 'ko' Content 티어 폰트 로드 실패 — 직전 폰트 상태를 유지합니다");
+
+            new FontEngine(provider, facade).BootAsync(FontTier.Content, CancellationToken.None).GetAwaiter().GetResult();
+
+            Assert.AreEqual(1, provider.LoadCount);
             Assert.IsNull(facade.AppliedSet);
         }
     }

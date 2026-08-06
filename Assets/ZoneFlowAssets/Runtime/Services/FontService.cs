@@ -25,6 +25,10 @@ namespace ZoneFlow
         private readonly TmpFontFacade _facade = new();
         private bool _isSwitching;
 
+        // 현재 적용 중인 티어. locale 전환은 BootAsync를 재호출하므로, 이 값을 기억하지 않으면
+        // content 적용 후 언어를 바꾸는 순간 boot 서브셋으로 되돌아가 본편 텍스트가 tofu가 된다.
+        private FontTier _currentTier = FontTier.Boot;
+
         /// <summary>언어 피커에서 locale 선택을 완료한 적이 있는지 여부(first-run 게이트).</summary>
         public bool HasLocaleBeenChosen => PlayerPrefs.HasKey(PickerShownKey);
 
@@ -35,7 +39,8 @@ namespace ZoneFlow
         public string CurrentLocaleCode => _facade.GetActiveLocaleCode();
 
         /// <summary>
-        /// 활성 locale에 대응하는 폰트 세트를 로드해 TMP에 적용한다(부팅 1회).
+        /// 활성 locale에 대응하는 현재 티어의 폰트 세트를 로드해 TMP에 적용한다.
+        /// 티어는 boot으로 시작하며 <see cref="BootContentAsync"/>가 content로 승격한다.
         /// 폰트 로드는 <see cref="AddressablesFontProvider"/>(Localization Asset Table) 경유.
         /// <see cref="BootCatalog"/>가 미배정이면 폰트 시스템 미구성으로 보고 skip한다.
         /// </summary>
@@ -53,7 +58,23 @@ namespace ZoneFlow
 
             var provider = new AddressablesFontProvider();
             var engine = new FontEngine(provider, _facade);
-            await engine.BootAsync(FontTier.Boot, destroyCancellationToken);
+            await engine.BootAsync(_currentTier, destroyCancellationToken);
+        }
+
+        /// <summary>
+        /// content 티어 폰트 세트를 로드해 적용하고, 이후 부팅의 기본 티어를 content로 승격한다.
+        /// Intro 이후·게임 시작 직전(<c>MenuPanel</c>의 새 게임 진입)에 1회 호출한다.
+        /// 승격 후에는 <see cref="SelectLocaleAsync"/>의 재부팅도 content 티어를 유지한다.
+        /// <para>
+        /// content 티어는 원격 그룹이라 오프라인·호스팅 장애로 실패할 수 있다. 이때 TMP 상태는 손대지 않아
+        /// boot 티어가 기능적 바닥(floor)으로 남으며, 티어 승격 자체는 되돌리지 않으므로 이후
+        /// <see cref="SelectLocaleAsync"/> 호출이 content 로드를 재시도한다.
+        /// </para>
+        /// </summary>
+        public async UniTask BootContentAsync()
+        {
+            _currentTier = FontTier.Content;
+            await BootAsync();
         }
 
         /// <summary>

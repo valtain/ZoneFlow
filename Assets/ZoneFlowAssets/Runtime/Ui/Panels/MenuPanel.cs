@@ -29,10 +29,15 @@ namespace ZoneFlow
         /// <summary>
         /// 콘텐츠 세션을 연다: ContentServices 씬(DialogueService 호스트)을 먼저 로드한 뒤 콘텐츠로 진입한다.
         /// ContentServices의 로드~언로드 경계가 내러티브 진행 상태의 수명이 된다.
+        /// 같은 경계에서 폰트도 content 티어로 승격한다(boot 서브셋에는 콘텐츠 글리프·디스플레이 서체가 없다).
         /// </summary>
         private static async UniTaskVoid StartNewGameAsync()
         {
             await SceneService.EnsureContentServicesLoaded();
+
+            Debug.Assert(FontService.IsReady, "[MenuPanel] CoreServices에 FontService가 없습니다.");
+            await FontService.Instance.BootContentAsync();
+
             await GamePlayDirector.Instance.NavigateAsync(NewGameUri, CancellationToken.None);
         }
 

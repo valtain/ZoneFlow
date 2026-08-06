@@ -21,7 +21,11 @@ namespace Polyglot
             _facade = facade;
         }
 
-        /// <summary>활성 locale을 조회해 대응 폰트 세트를 로드하고 TMP_Settings에 적용한다(부팅 1회).</summary>
+        /// <summary>
+        /// 활성 locale을 조회해 대응 폰트 세트를 로드하고 TMP_Settings에 적용한다(부팅 1회).
+        /// 로드에 실패하면 적용을 건너뛰어 직전 폰트 상태를 유지한다 — content 티어가 원격에서
+        /// 내려오지 않아도 boot 티어가 기능적 바닥(floor)으로 남는다.
+        /// </summary>
         /// <param name="tier">로드할 <see cref="FontTier"/>(Boot/Content).</param>
         /// <param name="ct">취소 토큰.</param>
         public async UniTask BootAsync(FontTier tier, CancellationToken ct)
@@ -34,6 +38,12 @@ namespace Polyglot
             }
 
             FontSet fontSet = await _provider.LoadAsync(localeCode, tier, ct);
+            if (fontSet == null)
+            {
+                Debug.LogError($"[Polyglot] locale '{localeCode}' {tier} 티어 폰트 로드 실패 — 직전 폰트 상태를 유지합니다");
+                return;
+            }
+
             _facade.Apply(fontSet);
         }
     }
