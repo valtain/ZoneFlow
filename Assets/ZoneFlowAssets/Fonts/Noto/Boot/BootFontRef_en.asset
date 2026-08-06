@@ -15,6 +15,6 @@ MonoBehaviour:
   <DefaultFont>k__BackingField: {fileID: 11400000, guid: 29aba09d3801daf4a9cd29029b0c3a31, type: 2}
   <GlobalFallback>k__BackingField:
   - {fileID: 11400000, guid: 29aba09d3801daf4a9cd29029b0c3a31, type: 2}
-  <StyleSheet>k__BackingField: {fileID: 11400000, guid: 6806d0c49092b244b871a5ce09047238, type: 2}
+  <StyleSheet>k__BackingField: {fileID: 11400000, guid: 6d75ee3a4d304d0baf6aff92e9d27ef4, type: 2}
   <Presets>k__BackingField: []
   <DisplayName>k__BackingField: English

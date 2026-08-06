@@ -183,7 +183,7 @@ namespace ZoneFlow.Tests.Editor.Battle
         [Test]
         public void AutoResolve_SameSeed_IdenticalTranscript()
         {
-            var makeSetup = () => new BattleSetup(
+            System.Func<BattleSetup> makeSetup = () => new BattleSetup(
                 party: new List<Combatant>
                 {
                     new Combatant(id: 1, side: BattleSide.Player, maxHp: 150, attack: 25, speed: 12),

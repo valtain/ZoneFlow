@@ -51,7 +51,7 @@ namespace ZoneFlow.Tests.Editor.Battle
         [Test]
         public void TurnOrder_SameInput_FullyDeterministic()
         {
-            var makeOrder = () =>
+            System.Func<TurnOrder> makeOrder = () =>
             {
                 var list = new List<Combatant>
                 {
