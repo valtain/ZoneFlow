@@ -1,11 +1,12 @@
 ---
 paths:
   - "Assets/ZoneFlowAssets/Tests/**"
+  - "Assets/PolyglotAssets/Tests/**"
 ---
 
 # Rule: 테스트
 
-`Assets/ZoneFlowAssets/Tests/**`의 파일을 다룰 때 적용한다.
+`Assets/ZoneFlowAssets/Tests/**`·`Assets/PolyglotAssets/Tests/**`의 파일을 다룰 때 적용한다.
 
 ## 필수
 

@@ -6,6 +6,8 @@
 - **Tests**: Unity Editor → Window > General > Test Runner
   - Editor tests: `Assets/ZoneFlowAssets/Tests/Editor`
   - Runtime tests: `Assets/ZoneFlowAssets/Tests/Runtime`
+  - Polyglot 패키지: `Assets/PolyglotAssets/Tests/{Editor,Runtime}`
+  - Claude 실행: `unity_advanced_tool` → `unity_testing_run_tests` (결과의 `failed` 값이 유효 신호)
 
 ## Collaboration Protocol
 
@@ -68,10 +70,13 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 | `Assets/ZoneFlowAssets/Runtime/Ui/**`, `Runtime/Prefabs/**`(UI 패널 한정) | `ui-design.md` (`runtime-code.md`와 동시 매칭) |
 | `Assets/ZoneFlowAssets/Runtime/GamePlay/Battle/**`, `Runtime/GamePlay/ModeImpl/BattleMode.cs` | `combat-code.md` (`runtime-code.md`와 동시 매칭) |
 
+**제2 패키지**: `Assets/PolyglotAssets/`(폰트·로컬라이제이션, asmdef 4개 — ADR-0005). `runtime-code.md`·`tests.md`·`editor-code.md`가 함께 매칭된다. `ZoneFlow.Runtime`을 참조하지 않는 독립 패키지이므로 씬 로딩·Bootstrap 실행 순서 규칙은 해당 없다.
+
 ## Templates
 
 - `.claude/templates/architecture-decision.md` — ADR. 채워서 `docs/decisions/`에 저장 (constraints.md가 참조).
 - `.claude/templates/feature-spec.md` — `/feature`·`/issue` 흐름의 설계 입력.
+- 산출 위치: `features/<name>/{spec,decisions,tasks,testcases}.md`, 인덱스는 루트 `BACKLOG.md`.
 
 ## Architectural Principles
 
@@ -95,3 +100,6 @@ complexity-routing이 *tier(모델)*를, 아래 에이전트가 *role(정체성)
 - `/ui` — UI/HUD/패널 설계·저작 (`/ui list|new|improve|review`) → `ui-designer` 위임
 - `/battle` — 턴제 전투 설계·구현 (`/battle list|new|tune|review`) → `combat-specialist` 위임
 - `/systems` — 시뮬 시스템·데이터 모델 설계·구현 (`/systems list|new|improve|review`) → `systems-designer` 위임
+- `/feature` — 기능 스펙 작성·조회 (`/feature new|list|show|plan`)
+- `/work-log` — 마지막 실행 이후 커밋 분석 → 설계 의도 중심 업무 보고서 생성
+- `/gh-sync` — GitHub 동기화 (`/gh-sync issues` 이슈 상태, `/gh-sync board` 프로젝트 보드 → `tasks.md` 역방향)

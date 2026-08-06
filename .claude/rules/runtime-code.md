@@ -1,11 +1,13 @@
 ---
 paths:
   - "Assets/ZoneFlowAssets/Runtime/**"
+  - "Assets/PolyglotAssets/Runtime/**"
 ---
 
 # Rule: Runtime 코드
 
-`Assets/ZoneFlowAssets/Runtime/**`의 파일을 Edit/Write 하기 전에 이 규칙을 적용한다.
+`Assets/ZoneFlowAssets/Runtime/**`·`Assets/PolyglotAssets/Runtime/**`의 파일을 Edit/Write 하기 전에 이 규칙을 적용한다.
+Polyglot은 `ZoneFlow.Runtime`을 참조하지 않는 독립 패키지이므로 씬 로딩·Bootstrap 실행 순서 항목은 해당 없다(나머지는 동일 적용).
 원문(canonical): [docs/conventions/coding-style.md](../../docs/conventions/coding-style.md), [docs/architecture/constraints.md](../../docs/architecture/constraints.md).
 
 ## 필수
