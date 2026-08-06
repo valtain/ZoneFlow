@@ -26,6 +26,7 @@ MonoBehaviour:
   m_Metadata:
     m_Items:
     - rid: 2425824439496081621
+    - rid: 6559561144871419990
   m_KeyGenerator:
     rid: 2425824439496081620
   references:
@@ -53,3 +54,7 @@ MonoBehaviour:
           - zh-Hans
         m_TypeString: Polyglot.FontRef, Polyglot, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
+    - rid: 6559561144871419990
+      type: {class: PreloadAssetTableMetadata, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_PreloadBehaviour: 0
