@@ -1,6 +1,7 @@
 # ZoneFlow
 
-![Unity](https://img.shields.io/badge/Unity-2022.2%2B-black?logo=unity)
+![Unity](https://img.shields.io/badge/Unity-6000.3%2B-black?logo=unity)
+![URP](https://img.shields.io/badge/URP-17.3-black?logo=unity)
 ![Language](https://img.shields.io/badge/Language-C%23-239120?logo=csharp)
 
 Unity 게임플레이 아키텍처 탐구 프로젝트.
@@ -15,6 +16,16 @@ Unity 게임플레이 아키텍처 탐구 프로젝트.
 개발 전반에서 AI를 파트너로 활용한다. 코드를 대신 써주는 도구가 아니라, 흐름을 함께 추적하면서 다음 아키텍처 질문을 먼저 꺼내는 역할이다. → [개발 방식](#개발-방식)
 
 → 현재 탐색 중인 아키텍처 질문: [docs/project-goals.md](docs/project-goals.md)
+
+---
+
+## 실행 방법
+
+- Unity `6000.3.10f1`, URP.
+- 클론 후 Unity Hub로 열고, `Assets/ZoneFlowAssets/Scenes/DevBootstrap.unity`를 열어 Play.
+- 주요 에디터 도구: `ZoneFlow/Bake Catalogs`(Zone·Panel 카탈로그 재생성), `ZoneFlow/Runtime State`(런타임 상태 뷰), `ZoneFlow/Create Zone...`(Zone 신규 생성).
+- 주요 의존성(`Packages/manifest.json`): UniTask, Yarn Spinner Unity, Unity Localization 1.5.12(Addressables를 전이 의존으로 끌어들임), Cinemachine 3.1.6, PrimeTween 1.4.0, UniVRM 0.131.1, Input System 1.18.0.
+- 빌드는 CLI 스크립트 없이 Unity Editor의 File > Build Settings를 사용한다.
 
 ---
 
@@ -36,6 +47,8 @@ Unity 게임플레이 아키텍처 탐구 프로젝트.
 | **ShellMode** | 로비·허브 공간 |
 | **PanelMode** | UI 오버레이 (Zone 로드 없음) |
 
+> Navigation 호스트(`NavigationHost` enum)에는 위 5종 외에 제어용 `Pop`(이전 모드 복귀)·`Portal`(포털 리다이렉트) 두 값이 더 있다. Mode를 구현하지 않는 내비게이션 전용 값이라 표에서는 제외했다.
+
 ---
 
 ## 아키텍처
@@ -44,43 +57,101 @@ Unity 게임플레이 아키텍처 탐구 프로젝트.
 
 | 계층 | 역할 |
 | --- | --- |
-| **Service** | 영속적 시스템. 게임 전체에서 하나만 존재하며 다른 계층에서 참조한다. 시뮬 백본(TimeService·PartyService·SaveService)이 여기 상주한다 ([ADR-0001](docs/decisions/0001-sim-state-in-service-layer.md)) |
+| **Service** | 영속적 시스템. 게임 전체에서 하나만 존재하며 다른 계층에서 참조한다. 시뮬 백본(TimeService·PartyService·SaveService)이 여기 상주할 예정이다 ([ADR-0001](docs/decisions/0001-sim-state-in-service-layer.md)) |
 | **Scene** | Unity 씬의 로드·언로드를 조율한다 |
 | **Zone** | 게임플레이 공간 단위. 씬 위에서 생명주기를 관리한다 |
 | **Mode** | 플레이어의 현재 행동 상태. Zone 위에서 동작하며 스택으로 관리된다 |
 
 상세 → [docs/architecture/](docs/architecture/)
 
+### 패키지 경계
+
+`Assets/ZoneFlowAssets/`(게임)와 `Assets/PolyglotAssets/`(다국어 폰트 엔진)는 별도 asmdef 패키지로 분리되어 있다. Polyglot은 `com.zoneflow.polyglot`이라는 독립 UPM 패키지로, MonoBehaviour 서비스에 의존하지 않는 순수 엔진 코드다 — 게임 쪽은 얇은 어댑터 `FontService`를 통해서만 접근한다.
+
+이 경계는 설계 선택이 아니라 강제된 결과였다. asmdef는 `Assembly-CSharp`(게임 코드)를 역참조할 수 없기 때문에, Polyglot을 별도 asmdef로 두는 순간 게임 타입 의존을 자체적으로 배제해야 했다. 프로젝트의 첫 패키지 경계 사례이고, 이 결정과 후속 문제(비동기 재진입·런타임 로케일 전환)는 [ADR-0005](docs/decisions/0005-first-asmdef-package-boundary-polyglot.md)~[0008](docs/decisions/0008-runtime-locale-switch-ui-localization.md)에 기록되어 있다.
+
 ---
 
 ## 지금까지 만든 것
 
+### 게임플레이 기반
+
 | 항목 | 설명 |
 | --- | --- |
-| Navigation | `gameplay://` URI로 Mode와 Zone을 전환하는 내비게이션 시스템 |
-| Zone 생명주기 | Zone이 여러 곳에서 참조될 때 중복 로드 없이 자동으로 관리 (`ZoneRegistry`) |
-| Mode 스택 | 교체·쌓기·전체 초기화 방식의 Mode 전환 (`GamePlayDirector`) |
-| HUD | Mode마다 전용 UI 패널 (탐색용·스토리용 분리) |
-| Bootstrap | 게임 시작 시 씬을 순서대로 초기화하는 흐름 |
-| Dialogue | Yarn Spinner 기반 대사·내러티브. `DialogueService`로 Zone 전환 간 진행 상태 보존 |
-| 멀티존 던전 체인 | 단일 씬 안에서 dungeon_0~4를 선형으로 오가는 인-씬 이동 시연 |
-| Interaction Prompt | 포털·상호작용 대상에 근접 시 라벨을 띄우는 프롬프트 패널 |
-| 전투 수직 *(진행 중)* | `BattleMode`·`BattleService` 턴제 골격 — 턴 순서·스킬 실행·HP/데미지 |
+| Navigation | `gameplay://` URI로 Mode/Zone을 전환하는 내비게이션 시스템 (`NavigationRequest`, `GamePlayDirector`) |
+| Zone 생명주기 | 참조 카운팅 기반 자동 로드/해제 (`ZoneRegistry`) |
+| Bootstrap | `Bootstrap`/`ColdStartup`/`DevBootstrap` — 어느 Zone 씬에서든 직접 진입 가능 |
+| Player | 상태 머신(Idle/Move/Sprint)·입력·애니메이터 (`Runtime/Player/`) |
+| Interaction | 근접 감지·프롬프트 패널, Portal/월드 라벨 (`InteractionDetector`, `BillboardLabel`) |
+| 멀티존 던전 체인 | `dungeon_0~4` 등 9개 Zone이 5개 씬(Intro/Village/Dungeon/BossRoom/Overworld)을 공유 (`ZoneAssetCatalog`) |
+
+### 전투 (완료)
+
+| 항목 | 설명 |
+| --- | --- |
+| 결정론적 헤드리스 엔진 | MonoBehaviour 없는 순수 C# 턴 해석 + 시드 주입 RNG (`BattleEngine`, `BattleRng`, [ADR-0004](docs/decisions/0004-deterministic-headless-battle-engine.md)) |
+| 인터랙티브 턴 루프 | `BattleMode`(291줄) + `BattlePanel`(490줄) — 대상 선택·스킬 실행 |
+| 결과 채널 | URI에 결과를 싣지 않고 `BattleOutcomeChannel`을 pull ([ADR-0002](docs/decisions/0002-battle-return-result-channel.md)) |
+| 전투 연출 | VRM 액터 스테이징·데미지 넘버 (`BattleView/`, UniVRM 0.131.1) |
+| 데이터 | `SkillAsset`/`PersonaAsset`/`EnemyAsset`/`BattleEncounterAsset` ScriptableObject + 저작 콘텐츠 |
+
+### 다국어·전달 (Polyglot)
+
+| 항목 | 설명 |
+| --- | --- |
+| 다국어 TMP 폰트 엔진 | `FontRuntime`/`FontEngine`/`PolyglotText`, `IFontProvider` 심(seam)으로 로딩 방식 교체 가능 |
+| Localization Asset Table 경유 로딩 | Unity Localization Asset Table을 폰트 소스로 사용 ([ADR-0006](docs/decisions/0006-polyglot-font-loading-localization-asset-table.md)), 로케일 en/ko/ja/zh-Hans |
+| 런타임 로케일 전환 | Intro 최초 실행 언어 선택 + 메뉴 드롭다운 ([ADR-0008](docs/decisions/0008-runtime-locale-switch-ui-localization.md)) |
+| 티어 폰트 로딩 | 부팅용 서브셋 폰트를 로컬로 굽고, 콘텐츠 폰트는 원격(Remote) 전달 — 로케일당 CJK 폰트 페이로드 문제 대응 (AQ-11) |
+| 에디터 안전장치 | 폰트 스트립 저장 왕복 불변식, 아틀라스 오염 가드, driven property 등록 (`FontStripProcessor`, `FontAtlasGuard`, `TextDrivenPropertyRegistrar`) |
+
+### UI·연출
+
+| 항목 | 설명 |
+| --- | --- |
+| UiLayer 스택 | 7단 레이어(`UiLayer`) + `PanelCatalog`(battle/dialogue/exploration-hud/interaction-prompt/menu/story-hud) |
+| 전환 효과 | 페이드·인스턴트 블랙 (`TransitionFx/`) |
+| Dialogue | Yarn Spinner 기반 대사·내러티브, `DialogueService`로 Zone 전환 간 진행 상태 보존 |
+
+---
+
+## 검증
+
+| 어셈블리 | 대상 | 파일 |
+| --- | --- | --- |
+| `ZoneFlow.Tests.Editor` | 전투 엔진·데미지·턴 순서·결과 채널, 부팅 폰트 스타일시트 | `Assets/ZoneFlowAssets/Tests/Editor/` |
+| `ZoneFlow.Tests.Runtime` | 내비게이션 왕복, 스토리 진행 상태의 Zone 간 보존(AQ-2), 상호작용 감지, MonoService | `Assets/ZoneFlowAssets/Tests/Runtime/` |
+| `Polyglot.Editor.Tests` | 폰트 스트립 왕복, 폰트 엔진, 스타일시트, driven 직렬화 | `Assets/PolyglotAssets/Tests/Editor/` |
+
+17개 파일에 걸쳐 테스트 어트리뷰트(`[Test]`/`[UnityTest]`) 61개. 실행: Unity Editor → Window > General > Test Runner.
 
 ---
 
 ## 로드맵
 
-Persona5형 수직 슬라이스(`캘린더 1일 → 던전 → 턴제 전투 → 귀가 → 날짜 진행`)를 향한 6단계 진행. 아키텍처 결정 근거는 [docs/decisions/](docs/decisions/), 탐색 산출물은 [explorations/persona5-slice/findings.md](explorations/persona5-slice/findings.md) 참조.
+Persona5형 수직 슬라이스(`캘린더 1일 → 던전 → 턴제 전투 → 귀가 → 날짜 진행`)를 두 트랙으로 나눠 진행한다. 아키텍처 결정 근거는 [docs/decisions/](docs/decisions/), 탐색 산출물은 [explorations/persona5-slice/findings.md](explorations/persona5-slice/findings.md) 참조.
 
-| Phase | 내용 | 상태 |
-| --- | --- | --- |
-| 0 | 아키텍처 매핑 | ✅ 완료 |
-| 1 | 역할 기반 에이전트 셋업 | ✅ 완료 |
-| 2 | 백본 서비스 (TimeService·SaveService·PartyService) | 예정 |
-| 3 | 전투 수직 (BattleMode·BattleService) | 진행 중 |
-| 4 | 시뮬 루프 배선 (UI·Zone) | 예정 |
-| 5 | 통합·저장 검증 | 예정 |
+### 수직 슬라이스 트랙
+
+| 단계 | 상태 |
+| --- | --- |
+| 아키텍처 매핑 | 완료 |
+| 역할 기반 에이전트 셋업 | 완료 |
+| 전투 수직 | 완료 — 헤드리스 엔진부터 연출까지 |
+| 백본 서비스 (Time·Party·Save) | 다음 — `TimeService`/`PartyService`/`SaveService` 파일은 아직 없고, ADR-0001/0003이 설계만 선행한 상태 |
+| 시뮬 루프 배선 (UI·Zone) | 예정 |
+| 통합·저장 검증 | 예정 |
+
+### 플랫폼·전달 트랙
+
+| 단계 | 상태 |
+| --- | --- |
+| 다국어 폰트 엔진 (Polyglot 패키지) | 완료 |
+| 런타임 로케일 전환 | 완료 |
+| 티어 폰트 로딩 (AQ-11) | 완료 |
+| WebGL 빌드 검증 | 예정 |
+
+Phase 번호는 두지 않는다 — 재번호가 필요해질 때마다 기존 이슈·문서 참조가 어긋나기 때문이다.
 
 ---
 
@@ -110,8 +181,9 @@ Persona5형 수직 슬라이스(`캘린더 1일 → 던전 → 턴제 전투 →
 | **ui-designer** | UI/HUD/패널 설계·저작 (PanelCatalog 등록) | `/ui` |
 | **combat-specialist** | 턴제 전투 설계·구현 (BattleMode·스킬·페르소나) | `/battle` |
 | **systems-designer** | 시뮬 시스템·데이터 모델 (시간·파티·세이브·인벤) | `/systems` |
+| **technical-writer** | 프로젝트 최상위 문서 작성·개편 (현재 README 한정) | 없음 — 문서 작성/정리 요청 시 자동 위임 |
 
-작업 복잡도에 따라 모델 티어(haiku/sonnet/opus)를 자동 라우팅하고, 특정 경로의 파일을 수정하기 전에는 대응하는 **path-scoped rules**([.claude/rules/](.claude/rules/))를 먼저 적용한다. 상세 기준은 [CLAUDE.md](CLAUDE.md)·[.claude/docs/complexity.md](.claude/docs/complexity.md) 참조.
+작업 복잡도에 따라 모델 티어(haiku/sonnet/opus)를 자동 라우팅하고, 특정 경로의 파일을 수정하기 전에는 대응하는 **path-scoped rules**([.claude/rules/](.claude/rules/), 경로별 7개)를 먼저 적용한다. 에이전트별로 프로젝트 메모리([.claude/agent-memory/](.claude/agent-memory/))를 남겨 이전 판단·피드백을 다음 작업에 이어간다. 이 프로젝트에서 AI 협업은 장식이 아니라 hook([.claude/hooks/](.claude/hooks/))으로 강제되는 규약이다. 상세 기준은 [CLAUDE.md](CLAUDE.md)·[.claude/docs/complexity.md](.claude/docs/complexity.md) 참조.
 
 ### 커스텀 커맨드
 
@@ -121,6 +193,7 @@ Persona5형 수직 슬라이스(`캘린더 1일 → 던전 → 턴제 전투 →
 | `/level` `/ui` | 존/레벨·UI 콘텐츠 저작 |
 | `/battle` `/systems` | 전투·시뮬 시스템 설계·구현 |
 | `/next` `/quick` `/bridge` | 흐름 오케스트레이션·소규모 작업·세션 인수인계 |
+| `/git-commit` `/gh-sync` `/work-log` | 커밋·GitHub 이슈 동기화·작업 로그 |
 
 탐색 및 Feature 인덱스 → [BACKLOG.md](BACKLOG.md)
 
@@ -132,7 +205,8 @@ Persona5형 수직 슬라이스(`캘린더 1일 → 던전 → 턴제 전투 →
 | --- | --- |
 | [docs/project-goals.md](docs/project-goals.md) | 프로젝트 목표 + 탐색 중인 아키텍처 질문 |
 | [docs/architecture/](docs/architecture/) | 씬 계층·시스템 계층·제약 원칙 |
-| [docs/decisions/](docs/decisions/) | 아키텍처 결정 기록 (ADR) — 시뮬 상태·전투 결과 채널·Save/Load |
+| [docs/decisions/](docs/decisions/) | 아키텍처 결정 기록 (ADR) — 시뮬 상태·전투·Polyglot 패키지 경계·로케일 전환 등 0001~0008 |
 | [docs/conventions/coding-style.md](docs/conventions/coding-style.md) | 코딩 규칙 |
 | [.claude/agents/](.claude/agents/) · [.claude/rules/](.claude/rules/) | 역할 기반 에이전트 정의·경로별 규칙 |
+| [.claude/docs/complexity.md](.claude/docs/complexity.md) | 작업 복잡도 평가·모델 티어 선택 기준 |
 | [BACKLOG.md](BACKLOG.md) | Feature·Exploration 인덱스 + Architectural Questions 추적 |
